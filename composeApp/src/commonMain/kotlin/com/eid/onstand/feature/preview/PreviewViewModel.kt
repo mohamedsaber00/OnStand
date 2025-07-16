@@ -25,6 +25,8 @@ class PreviewViewModel(
     private fun loadCustomizationOptions() {
         _uiState.value = _uiState.value.copy(
             backgroundOptions = customizationRepository.getBackgroundOptions(),
+            gradientOptions = customizationRepository.getGradientOptions(),
+            staticColorOptions = customizationRepository.getStaticColorOptions(),
             clockStyles = customizationRepository.getClockStyles(),
             fontColorOptions = customizationRepository.getFontColorOptions(),
             layoutOptions = customizationRepository.getLayoutOptions()
@@ -60,6 +62,18 @@ class PreviewViewModel(
         _uiState.value = _uiState.value.copy(
             customizationState = customizationRepository.customizationState.value
         )
+    }
+
+    fun toggleSeconds(showSeconds: Boolean) {
+        val currentClockStyle = customizationRepository.customizationState.value.selectedClockStyle
+        if (currentClockStyle?.isDigital == true) {
+            val updatedClockStyle = currentClockStyle.copy(showSeconds = showSeconds)
+            customizationRepository.selectClockStyle(updatedClockStyle)
+            // Manually update the UI state
+            _uiState.value = _uiState.value.copy(
+                customizationState = customizationRepository.customizationState.value
+            )
+        }
     }
 
     fun selectFontColor(fontColor: FontColorOption) {
@@ -101,6 +115,8 @@ class PreviewViewModel(
 
 data class PreviewUiState(
     val backgroundOptions: List<BackgroundOption> = emptyList(),
+    val gradientOptions: List<BackgroundOption> = emptyList(),
+    val staticColorOptions: List<BackgroundOption> = emptyList(),
     val clockStyles: List<ClockStyle> = emptyList(),
     val fontColorOptions: List<FontColorOption> = emptyList(),
     val layoutOptions: List<LayoutOption> = emptyList(),

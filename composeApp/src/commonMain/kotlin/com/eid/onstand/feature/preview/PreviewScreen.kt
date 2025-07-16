@@ -89,103 +89,20 @@ fun PreviewScreen(
                 // Background Selection
                 BackgroundSelector(
                     backgroundOptions = uiState.backgroundOptions,
+                    gradientOptions = uiState.gradientOptions,
+                    staticColorOptions = uiState.staticColorOptions,
                     selectedBackground = customizationState.selectedBackground,
                     onBackgroundSelected = viewModel::selectBackground,
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
-
-                // Clock Style and Font Color Row
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Clock Style
-                    Card(
-                        modifier = Modifier.weight(1f),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFF2A2A2A)
-                        ),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "🕐",
-                                    fontSize = 20.sp,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = "Clock Style",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.White
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = customizationState.selectedClockStyle?.name ?: "Digital",
-                                fontSize = 14.sp,
-                                color = Color.White.copy(alpha = 0.7f)
-                            )
-                        }
-                    }
-
-                    // Font & Color
-                    Card(
-                        modifier = Modifier.weight(1f),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFF2A2A2A)
-                        ),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "↑",
-                                    fontSize = 20.sp,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = "Font & Color",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.White
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = customizationState.selectedFontColor?.name ?: "Modern",
-                                fontSize = 14.sp,
-                                color = Color.White.copy(alpha = 0.7f)
-                            )
-                        }
-                    }
-                }
-
                 // Clock Style Selection
                 if (uiState.clockStyles.isNotEmpty()) {
                     ClockStyleSelector(
                         clockStyles = uiState.clockStyles,
                         selectedClockStyle = customizationState.selectedClockStyle,
+                        selectedFontColor = customizationState.selectedFontColor,
                         onClockStyleSelected = viewModel::selectClockStyle,
+                        onSecondsToggled = viewModel::toggleSeconds,
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
                 }

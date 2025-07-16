@@ -41,6 +41,7 @@ fun ClockWidget(
     currentTime: LocalDateTime,
     showSeconds: Boolean = true,
     fontFamily: FontFamily = FontFamily.Default,
+    textColor: Color = Color.White,
 ) {
     val timePattern = if (showSeconds) "HH:mm:ss" else "HH:mm"
     val currentTimeString =
@@ -62,7 +63,7 @@ fun ClockWidget(
                     }) {
                         Text(
                             text = it.toString(),
-                            color = Color.White,
+                            color = textColor,
                             fontSize = 80.sp,
                             fontWeight = FontWeight.Medium,
                             fontFamily = fontFamily,

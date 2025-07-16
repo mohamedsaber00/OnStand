@@ -2,22 +2,68 @@ package com.eid.onstand.core.models
 
 import androidx.compose.ui.graphics.Color
 
-data class BackgroundOption(
-    val id: String,
-    val type: BackgroundType,
-    val name: String,
-    val previewColor: Color? = null,
-    val gradientColors: List<Color> = emptyList(),
-    val imageUrl: String? = null,
-    val isLive: Boolean = false
-)
+sealed class BackgroundOption {
+    abstract val id: String
+    abstract val name: String
+    abstract val previewColor: Color
 
-enum class BackgroundType {
-    SOLID_COLOR,
-    GRADIENT,
-    ABSTRACT,
-    LIVE,
-    FOG
+    data class SolidColor(
+        override val id: String,
+        override val name: String,
+        override val previewColor: Color,
+        val color: Color
+    ) : BackgroundOption()
+
+    data class Gradient(
+        override val id: String,
+        override val name: String,
+        override val previewColor: Color,
+        val colors: List<Color>,
+        val angle: Float = 0f
+    ) : BackgroundOption()
+
+    data class Abstract(
+        override val id: String,
+        override val name: String,
+        override val previewColor: Color,
+        val patternType: AbstractPatternType
+    ) : BackgroundOption()
+
+    data class Live(
+        override val id: String,
+        override val name: String,
+        override val previewColor: Color,
+        val animationType: LiveAnimationType
+    ) : BackgroundOption()
+
+    data class Shader(
+        override val id: String,
+        override val name: String,
+        override val previewColor: Color,
+        val shaderType: ShaderType
+    ) : BackgroundOption()
+}
+
+enum class AbstractPatternType {
+    GEOMETRIC,
+    ORGANIC,
+    MINIMAL,
+    ARTISTIC
+}
+
+enum class LiveAnimationType {
+    ROTATING_GRADIENT,
+    ANIMATED_PARTICLES,
+    FOG_EFFECT,
+    BREATHING_GLOW
+}
+
+enum class ShaderType {
+    ETHER,
+    GLOWING_RING,
+    MOVING_TRIANGLES,
+    PURPLE_GRADIENT,
+    SPACE
 }
 
 data class ClockStyle(

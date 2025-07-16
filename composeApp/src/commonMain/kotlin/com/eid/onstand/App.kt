@@ -77,10 +77,10 @@ fun App() {
                             .clip(RoundedCornerShape(24.dp))
                             .background(Color.Black),
                     ) {
-                        DigitalSegmentClock(
+                  /*      DigitalSegmentClock(
                             modifier = Modifier.align(Alignment.Center),
                             currentTime = currentTime
-                        )
+                        )*/
                     }
 
                     // Floating Action Button to open customization

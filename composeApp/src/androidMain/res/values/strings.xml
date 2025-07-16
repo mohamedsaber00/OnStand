@@ -5,9 +5,12 @@
     <string name="customize_title">Customize</string>
     <string name="background_title">Background</string>
     <string name="clock_style_title">Clock Style</string>
+    <string name="clock_styles">Clock Styles</string>
     <string name="font_color_title">Font &amp; Color</string>
+    <string name="font_colors">Font Colors</string>
     <string name="layout_title">Layout</string>
     <string name="font_title">Font</string>
+    <string name="show_seconds">Show Seconds</string>
 
     <!-- Background Options -->
     <string name="gradient_background">Gradient</string>
@@ -19,8 +22,10 @@
 
     <!-- Clock Styles -->
     <string name="digital_clock">Digital</string>
-    <string name="digital_seconds_clock">Digital with Seconds</string>
+    <string name="digital_seconds_clock">Digital + Seconds</string>
+    <string name="digital_segments_clock">Digital Segments</string>
     <string name="analog_classic_clock">Analog Classic</string>
+    <string name="flip_clock">Flip Clock</string>
     <string name="minimal_clock">Minimal</string>
 
     <!-- Font Colors -->
@@ -29,6 +34,7 @@
     <string name="bold_blue_font">Bold Blue</string>
     <string name="elegant_gold_font">Elegant Gold</string>
     <string name="green_digital_font">Green Digital</string>
+    <string name="purple_glow_font">Purple Glow</string>
     <string name="default_font">Default</string>
 
     <!-- Layout Options -->

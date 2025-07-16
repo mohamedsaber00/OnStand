@@ -1,3 +1,48 @@
 <resources>
     <string name="app_name">OnStand</string>
+
+    <!-- Customization Screen -->
+    <string name="customize_title">Customize</string>
+    <string name="background_title">Background</string>
+    <string name="clock_style_title">Clock Style</string>
+    <string name="font_color_title">Font &amp; Color</string>
+    <string name="layout_title">Layout</string>
+    <string name="font_title">Font</string>
+
+    <!-- Background Options -->
+    <string name="gradient_background">Gradient</string>
+    <string name="abstract_background">Abstract</string>
+    <string name="live_background">Live</string>
+    <string name="fog_background">Fog</string>
+    <string name="black_background">Black</string>
+    <string name="white_background">White</string>
+
+    <!-- Clock Styles -->
+    <string name="digital_clock">Digital</string>
+    <string name="digital_seconds_clock">Digital with Seconds</string>
+    <string name="analog_classic_clock">Analog Classic</string>
+    <string name="minimal_clock">Minimal</string>
+
+    <!-- Font Colors -->
+    <string name="modern_font">Modern</string>
+    <string name="classic_font">Classic</string>
+    <string name="bold_blue_font">Bold Blue</string>
+    <string name="elegant_gold_font">Elegant Gold</string>
+    <string name="green_digital_font">Green Digital</string>
+    <string name="default_font">Default</string>
+
+    <!-- Layout Options -->
+    <string name="previous_minutes_layout">Previous Minutes</string>
+    <string name="clean_center_layout">Clean Center</string>
+    <string name="left_aligned_layout">Left Aligned</string>
+    <string name="right_aligned_layout">Right Aligned</string>
+
+    <!-- Actions -->
+    <string name="cancel">Cancel</string>
+    <string name="apply">Apply</string>
+    <string name="back">Back</string>
+
+    <!-- Time Format -->
+    <string name="time_format_example">10:30</string>
+    <string name="date_format_example">Tue, May 14</string>
 </resources>

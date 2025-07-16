@@ -58,6 +58,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
         }
         val desktopMain by getting {
             dependencies {
@@ -79,6 +80,9 @@ kotlin {
             implementation(libs.haze.materials)
             implementation(libs.hypnoticcanvas)
             implementation(libs.hypnoticcanvas.shaders)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation("io.insert-koin:koin-compose-viewmodel:4.0.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

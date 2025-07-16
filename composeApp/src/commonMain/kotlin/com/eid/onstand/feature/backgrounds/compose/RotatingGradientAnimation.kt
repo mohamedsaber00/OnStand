@@ -1,3 +1,5 @@
+package com.eid.onstand.feature.backgrounds.compose
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*

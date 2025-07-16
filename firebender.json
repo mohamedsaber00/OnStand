@@ -1,0 +1,7 @@
+{
+  "rules": [
+    "Project is a dock clock app using compose multiplatform for android, iOS and desktop",
+    "Don't hardcode strings",
+    "Don't add dependencies to build.gradle directly, add them in libs.versions.toml first"
+  ]
+}

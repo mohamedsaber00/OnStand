@@ -1,21 +1,19 @@
 package com.eid.onstand.core.models
 
 import androidx.compose.ui.graphics.Color
+import kotlinx.serialization.Serializable
 
 sealed class BackgroundType {
-    abstract val id: String
     abstract val name: String
     abstract val previewColor: Color
 
     data class Solid(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val color: Color
     ) : BackgroundType()
 
     data class Gradient(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val colors: List<Color>,
@@ -23,7 +21,6 @@ sealed class BackgroundType {
     ) : BackgroundType()
 
     data class Shader(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val shaderType: ShaderType,
@@ -31,7 +28,6 @@ sealed class BackgroundType {
     ) : BackgroundType()
 
     data class Live(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val animationType: LiveAnimationType,
@@ -39,7 +35,6 @@ sealed class BackgroundType {
     ) : BackgroundType()
 
     data class Pattern(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val patternType: PatternType,
@@ -82,19 +77,16 @@ enum class PatternType {
 
 // Legacy support - will be removed gradually
 sealed class BackgroundOption {
-    abstract val id: String
     abstract val name: String
     abstract val previewColor: Color
 
     data class SolidColor(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val color: Color
     ) : BackgroundOption()
 
     data class Gradient(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val colors: List<Color>,
@@ -102,21 +94,18 @@ sealed class BackgroundOption {
     ) : BackgroundOption()
 
     data class Abstract(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val patternType: AbstractPatternType
     ) : BackgroundOption()
 
     data class Live(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val animationType: LiveAnimationType
     ) : BackgroundOption()
 
     data class Shader(
-        override val id: String,
         override val name: String,
         override val previewColor: Color,
         val shaderType: ShaderType
@@ -131,7 +120,6 @@ enum class AbstractPatternType {
 }
 
 sealed class ClockType {
-    abstract val id: String
     abstract val name: String
     abstract val fontFamily: String
     abstract val showDate: Boolean
@@ -140,7 +128,6 @@ sealed class ClockType {
     abstract val showSeconds: Boolean
 
     data class Digital(
-        override val id: String,
         override val name: String,
         override val fontFamily: String = "Roboto",
         override val showDate: Boolean = true,
@@ -150,7 +137,6 @@ sealed class ClockType {
     ) : ClockType()
 
     data class DigitalSegments(
-        override val id: String,
         override val name: String,
         override val fontFamily: String = "Roboto",
         override val showDate: Boolean = false,
@@ -160,7 +146,6 @@ sealed class ClockType {
     ) : ClockType()
 
     data class Analog(
-        override val id: String,
         override val name: String,
         override val fontFamily: String = "Serif",
         override val showDate: Boolean = false,
@@ -170,7 +155,6 @@ sealed class ClockType {
     ) : ClockType()
 
     data class Flip(
-        override val id: String,
         override val name: String,
         override val fontFamily: String = "Monospace",
         override val showDate: Boolean = true,
@@ -180,7 +164,6 @@ sealed class ClockType {
     ) : ClockType()
 
     data class MorphFlip(
-        override val id: String,
         override val name: String,
         override val fontFamily: String = "Roboto",
         override val showDate: Boolean = true,
@@ -196,7 +179,6 @@ enum class TimeFormat {
 }
 
 data class FontColorOption(
-    val id: String,
     val name: String,
     val primaryColor: Color,
     val secondaryColor: Color? = null,
@@ -211,7 +193,6 @@ enum class FontStyle {
 }
 
 data class LayoutOption(
-    val id: String,
     val name: String,
     val showPreviousMinutes: Boolean = true,
     val alignment: TimeAlignment = TimeAlignment.CENTER
@@ -228,4 +209,14 @@ data class CustomizationState(
     val selectedClockType: ClockType? = null,
     val selectedFontColor: FontColorOption? = null,
     val selectedLayout: LayoutOption? = null
+)
+
+@Serializable
+data class SerializableCustomizationState(
+    val backgroundId: String? = null,
+    val backgroundType: String? = null,
+    val clockTypeId: String? = null,
+    val clockTypeName: String? = null,
+    val fontColorId: String? = null,
+    val layoutId: String? = null
 )

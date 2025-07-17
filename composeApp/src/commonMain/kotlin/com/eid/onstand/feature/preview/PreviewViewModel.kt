@@ -1,9 +1,11 @@
 package com.eid.onstand.feature.preview
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.eid.onstand.core.data.CustomizationRepository
 import com.eid.onstand.core.models.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class PreviewViewModel(
     private val customizationRepository: CustomizationRepository
@@ -16,6 +18,10 @@ class PreviewViewModel(
 
     init {
         loadCustomizationOptions()
+        // Load saved customization state
+        viewModelScope.launch {
+            customizationRepository.loadCustomizationState()
+        }
         // For now, just get the initial state without launching a coroutine
         _uiState.value = _uiState.value.copy(
             customizationState = customizationRepository.customizationState.value
@@ -100,9 +106,13 @@ class PreviewViewModel(
     }
 
     fun applyCustomization() {
-        _uiState.value = _uiState.value.copy(
-            isCustomizationApplied = true
-        )
+        viewModelScope.launch {
+            // Save the customization state
+            customizationRepository.saveCustomizationState()
+            _uiState.value = _uiState.value.copy(
+                isCustomizationApplied = true
+            )
+        }
     }
 
     fun cancelCustomization() {

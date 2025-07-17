@@ -66,10 +66,10 @@ fun BackgroundSelector(
             modifier = Modifier.fillMaxWidth()
         ) {
             items(backgroundOptions) { option ->
-                val isSelected = when (option.id) {
-                    "static_category" -> selectedBackground is BackgroundOption.SolidColor
-                    "gradient_category" -> selectedBackground is BackgroundOption.Gradient && selectedBackground.id != "gradient_category"
-                    else -> selectedBackground?.id == option.id
+                val isSelected = when (option.name) {
+                    "Static" -> selectedBackground is BackgroundOption.SolidColor
+                    "Gradient" -> selectedBackground is BackgroundOption.Gradient && selectedBackground.name != "Gradient"
+                    else -> selectedBackground == option
                 }
 
                 val scale by animateFloatAsState(
@@ -98,17 +98,17 @@ fun BackgroundSelector(
         }
 
         // Second row - Show options based on selected category
-        val showSecondRow = selectedBackground?.id == "static_category" ||
-                selectedBackground?.id == "gradient_category" ||
+        val showSecondRow = selectedBackground?.name == "Static" ||
+                selectedBackground?.name == "Gradient" ||
                 selectedBackground is BackgroundOption.SolidColor ||
-                (selectedBackground is BackgroundOption.Gradient && selectedBackground.id != "gradient_category")
+                (selectedBackground is BackgroundOption.Gradient && selectedBackground.name != "Gradient")
 
         if (showSecondRow) {
             Spacer(modifier = Modifier.height(12.dp))
 
             val secondRowOptions = when {
-                selectedBackground?.id == "static_category" || selectedBackground is BackgroundOption.SolidColor -> staticColorOptions
-                selectedBackground?.id == "gradient_category" || (selectedBackground is BackgroundOption.Gradient && selectedBackground.id != "gradient_category") -> gradientOptions
+                selectedBackground?.name == "Static" || selectedBackground is BackgroundOption.SolidColor -> staticColorOptions
+                selectedBackground?.name == "Gradient" || (selectedBackground is BackgroundOption.Gradient && selectedBackground.name != "Gradient") -> gradientOptions
                 else -> emptyList()
             }
 
@@ -118,7 +118,7 @@ fun BackgroundSelector(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items(secondRowOptions) { option ->
-                    val isSelected = selectedBackground?.id == option.id
+                    val isSelected = selectedBackground == option
                     val scale by animateFloatAsState(
                         targetValue = if (isSelected) 1.0f else 0.9f,
                         animationSpec = tween(300)
@@ -359,7 +359,7 @@ fun ClockStyleSelector(
             modifier = Modifier.fillMaxWidth()
         ) {
             items(clockTypes) { type ->
-                val isSelected = selectedClockType?.id == type.id
+                val isSelected = selectedClockType == type
                 val scale by animateFloatAsState(
                     targetValue = if (isSelected) 1.1f else 1f,
                     animationSpec = tween(300)
@@ -524,7 +524,7 @@ fun FontColorSelector(
             modifier = Modifier.fillMaxWidth()
         ) {
             items(fontColorOptions) { option ->
-                val isSelected = selectedFontColor?.id == option.id
+                val isSelected = selectedFontColor == option
                 val scale by animateFloatAsState(
                     targetValue = if (isSelected) 1.1f else 1f,
                     animationSpec = tween(300)
@@ -644,7 +644,6 @@ private fun FontColorItem(
 
 private fun getFallbackFontColor(): FontColorOption {
     return FontColorOption(
-        id = "fallback_white",
         name = "White",
         primaryColor = Color.White,
         secondaryColor = Color.White.copy(alpha = 0.7f),

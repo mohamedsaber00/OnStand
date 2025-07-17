@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 class CustomizationRepository(
     private val backgroundRepository: BackgroundRepository,
-    private val clockRepository: ClockRepository
+    private val clockRepository: ClockRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) {
 
     private val _customizationState = MutableStateFlow(CustomizationState())
@@ -29,8 +30,34 @@ class CustomizationRepository(
     fun getFontColorOptions(): List<FontColorOption> = clockRepository.getFontColorOptions()
     fun getLayoutOptions(): List<LayoutOption> = clockRepository.getLayoutOptions()
 
+    suspend fun initializeWithSavedState() {
+        val savedState = userPreferencesRepository.loadCustomizationState()
+        if (savedState != null) {
+            _customizationState.value = savedState
+        } else {
+            _customizationState.value = userPreferencesRepository.getDefaultCustomizationState()
+        }
+    }
+
     fun updateCustomizationState(newState: CustomizationState) {
         _customizationState.value = newState
+    }
+
+    suspend fun saveCurrentState() {
+        userPreferencesRepository.saveCustomizationState(_customizationState.value)
+    }
+
+    suspend fun applyAndSaveCustomization() {
+        saveCurrentState()
+    }
+
+    suspend fun cancelCustomization() {
+        val savedState = userPreferencesRepository.loadCustomizationState()
+        if (savedState != null) {
+            _customizationState.value = savedState
+        } else {
+            _customizationState.value = userPreferencesRepository.getDefaultCustomizationState()
+        }
     }
 
     fun selectBackgroundType(backgroundType: BackgroundType) {
@@ -67,245 +94,46 @@ class CustomizationRepository(
         )
     }
 
+    suspend fun saveCustomizationState() {
+        userPreferencesRepository.saveCustomizationState(_customizationState.value)
+    }
+
+    suspend fun loadCustomizationState() {
+        val savedState = userPreferencesRepository.loadCustomizationState()
+        if (savedState != null) {
+            _customizationState.value = savedState
+        }
+    }
+
     // Helper method to convert BackgroundOption to BackgroundType during migration
     private fun convertBackgroundOptionToType(option: BackgroundOption): BackgroundType {
         return when (option) {
-            is BackgroundOption.SolidColor -> {
-                when (option.id) {
-                    "solid_black" -> BackgroundType.Solid(
-                        id = "black",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
+            is BackgroundOption.SolidColor -> BackgroundType.Solid(
+                name = option.name,
+                previewColor = option.previewColor,
+                color = option.color
+            )
 
-                    "solid_white" -> BackgroundType.Solid(
-                        id = "white",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
+            is BackgroundOption.Gradient -> BackgroundType.Gradient(
+                name = option.name,
+                previewColor = option.previewColor,
+                colors = option.colors,
+                direction = GradientDirection.VERTICAL
+            )
 
-                    "solid_gray" -> BackgroundType.Solid(
-                        id = "gray",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
+            is BackgroundOption.Shader -> BackgroundType.Shader(
+                name = option.name,
+                previewColor = option.previewColor,
+                shaderType = option.shaderType
+            )
 
-                    "solid_dark_gray" -> BackgroundType.Solid(
-                        id = "dark_gray",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
-
-                    "solid_blue" -> BackgroundType.Solid(
-                        id = "blue",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
-
-                    "solid_green" -> BackgroundType.Solid(
-                        id = "green",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
-
-                    "solid_purple" -> BackgroundType.Solid(
-                        id = "purple",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
-
-                    "solid_red" -> BackgroundType.Solid(
-                        id = "red",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
-
-                    "static_category" -> BackgroundType.Solid(
-                        id = "black",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
-
-                    else -> BackgroundType.Solid(
-                        id = option.id,
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        color = option.color
-                    )
-                }
-            }
-
-            is BackgroundOption.Gradient -> {
-                when (option.id) {
-                    "gradient_sunset" -> BackgroundType.Gradient(
-                        id = "sunset",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        colors = option.colors,
-                        direction = GradientDirection.DIAGONAL_UP
-                    )
-
-                    "gradient_ocean" -> BackgroundType.Gradient(
-                        id = "ocean",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        colors = option.colors,
-                        direction = GradientDirection.VERTICAL
-                    )
-
-                    "gradient_forest" -> BackgroundType.Gradient(
-                        id = "forest",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        colors = option.colors,
-                        direction = GradientDirection.DIAGONAL_DOWN
-                    )
-
-                    "gradient_purple" -> BackgroundType.Gradient(
-                        id = "purple",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        colors = option.colors,
-                        direction = GradientDirection.VERTICAL
-                    )
-
-                    "gradient_fire" -> BackgroundType.Gradient(
-                        id = "fire",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        colors = option.colors,
-                        direction = GradientDirection.RADIAL
-                    )
-
-                    "gradient_mint" -> BackgroundType.Gradient(
-                        id = "mint",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        colors = option.colors,
-                        direction = GradientDirection.HORIZONTAL
-                    )
-
-                    "gradient_category" -> BackgroundType.Gradient(
-                        id = "sunset",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        colors = option.colors,
-                        direction = GradientDirection.VERTICAL
-                    )
-
-                    else -> BackgroundType.Gradient(
-                        id = option.id,
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        colors = option.colors,
-                        direction = GradientDirection.VERTICAL
-                    )
-                }
-            }
-
-            is BackgroundOption.Shader -> {
-                when (option.id) {
-                    "shader_ether" -> BackgroundType.Shader(
-                        id = "ether",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        shaderType = option.shaderType
-                    )
-
-                    "shader_space" -> BackgroundType.Shader(
-                        id = "space",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        shaderType = option.shaderType
-                    )
-
-                    "shader_glowing_ring" -> BackgroundType.Shader(
-                        id = "glowing_ring",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        shaderType = option.shaderType
-                    )
-
-                    "shader_purple_gradient" -> BackgroundType.Shader(
-                        id = "purple_flow",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        shaderType = option.shaderType
-                    )
-
-                    "shader_triangles" -> BackgroundType.Shader(
-                        id = "moving_triangles",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        shaderType = option.shaderType
-                    )
-
-                    "shader_moving_waves" -> BackgroundType.Shader(
-                        id = "moving_waves",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        shaderType = option.shaderType
-                    )
-
-                    "shader_turbulence" -> BackgroundType.Shader(
-                        id = "turbulence",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        shaderType = option.shaderType
-                    )
-
-                    else -> BackgroundType.Shader(
-                        id = option.id,
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        shaderType = option.shaderType
-                    )
-                }
-            }
-
-            is BackgroundOption.Live -> {
-                when (option.id) {
-                    "live_rotating_gradient" -> BackgroundType.Live(
-                        id = "rotating_gradient",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        animationType = option.animationType
-                    )
-
-                    "live_fog" -> BackgroundType.Live(
-                        id = "fog_effect",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        animationType = option.animationType
-                    )
-
-                    "live_animated_waves" -> BackgroundType.Live(
-                        id = "animated_particles",
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        animationType = option.animationType
-                    )
-
-                    else -> BackgroundType.Live(
-                        id = option.id,
-                        name = option.name,
-                        previewColor = option.previewColor,
-                        animationType = option.animationType
-                    )
-                }
-            }
+            is BackgroundOption.Live -> BackgroundType.Live(
+                name = option.name,
+                previewColor = option.previewColor,
+                animationType = option.animationType
+            )
 
             is BackgroundOption.Abstract -> BackgroundType.Pattern(
-                id = option.id,
                 name = option.name,
                 previewColor = option.previewColor,
                 patternType = when (option.patternType) {

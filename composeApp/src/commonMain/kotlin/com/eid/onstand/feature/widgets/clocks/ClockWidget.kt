@@ -6,11 +6,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format
@@ -57,7 +53,6 @@ fun ClockWidget(
 
         Row(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(horizontal = maxWidth * 0.02f, vertical = maxHeight * 0.05f)
                 .clip(RoundedCornerShape(maxWidth * 0.02f)),
             horizontalArrangement = Arrangement.Center,

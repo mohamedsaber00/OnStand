@@ -184,14 +184,12 @@ fun PreviewScreenContent() {
 private fun convertBackgroundTypeToOption(backgroundType: BackgroundType?): BackgroundOption? {
     return when (backgroundType) {
         is BackgroundType.Solid -> BackgroundOption.SolidColor(
-            id = "solid_${backgroundType.id}",
             name = backgroundType.name,
             previewColor = backgroundType.previewColor,
             color = backgroundType.color
         )
 
         is BackgroundType.Gradient -> BackgroundOption.Gradient(
-            id = "gradient_${backgroundType.id}",
             name = backgroundType.name,
             previewColor = backgroundType.previewColor,
             colors = backgroundType.colors,
@@ -199,21 +197,18 @@ private fun convertBackgroundTypeToOption(backgroundType: BackgroundType?): Back
         )
 
         is BackgroundType.Shader -> BackgroundOption.Shader(
-            id = "shader_${backgroundType.id}",
             name = backgroundType.name,
             previewColor = backgroundType.previewColor,
             shaderType = backgroundType.shaderType
         )
 
         is BackgroundType.Live -> BackgroundOption.Live(
-            id = "live_${backgroundType.id}",
             name = backgroundType.name,
             previewColor = backgroundType.previewColor,
             animationType = backgroundType.animationType
         )
 
         is BackgroundType.Pattern -> BackgroundOption.Abstract(
-            id = backgroundType.id,
             name = backgroundType.name,
             previewColor = backgroundType.previewColor,
             patternType = when (backgroundType.patternType) {

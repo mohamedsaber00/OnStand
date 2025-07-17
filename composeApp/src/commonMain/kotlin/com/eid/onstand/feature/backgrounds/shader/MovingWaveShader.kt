@@ -26,56 +26,71 @@ object MovingWaveShader : Shader {
 
     override val sksl = """
 /**
- * Realistic Moving Colored Waves (Layered Hills)
+ * Layered Waves Shader (SkSL)
  *
- * Features:
- * ✅ Multiple layered wavy hills (purple → pink → orange).
- * ✅ Smooth, natural motion.
- * ✅ Clear separation from the sky.
+ * This shader creates multiple layers of sine waves to simulate a
+ * stylized, glowing ocean effect.
  */
 
+// These uniforms are expected to be provided by the host environment.
 uniform float uTime;
 uniform vec3 uResolution;
 
-// Color gradient for waves (t goes from 0 bottom to 1 top)
-vec3 waveColor(float t) {
-    return mix(
-        vec3(1.0, 0.7, 0.4),                      // orange bottom
-        mix(vec3(1.0, 0.4, 0.7), vec3(0.5, 0.3, 1.0), t), // pink → purple
-        t
-    );
+const float PI = 3.1415926535;
+
+// wave function: generates a single layer of sine waves.
+// It takes the UV coordinates, amplitudes, frequencies, and offsets for four sine waves.
+float wave(vec2 uv, vec4 amps, vec4 freqs, vec4 offset) {
+    // Slow down the animation for a more peaceful feel.
+    float time = uTime * 0.2;
+
+    float x = uv.x;
+    float y = 0.0;
+    y += amps.x * sin(freqs.x * x + time + offset.x);
+    y += amps.y * sin(freqs.y * x + time + offset.y);
+    y += amps.z * sin(freqs.z * x + time + offset.z);
+    y += amps.w * sin(freqs.w * x + time + offset.w);
+
+    float blur = 0.025;
+    
+    // Use smoothstep to create a soft, anti-aliased line for the wave.
+    float top_wave = smoothstep(y + blur, y, uv.y);
+    // This creates a faded "underside" to the wave, giving it some thickness.
+    float bottom_wave = smoothstep(y - 1.0, y, uv.y) * 0.4;
+
+    return top_wave * bottom_wave;
 }
 
+// --- MAIN FUNCTION (SkSL) ---
 vec4 main(vec2 fragCoord) {
-    // Normalize 0..1
-    vec2 uv = fragCoord / uResolution.xy;
-    uv.y = 1.0 - uv.y; // flip for correct orientation
+    // 1. Normalize and transform coordinates.
+    // This setup centers the coordinates and scales them to be independent of screen ratio.
+    vec2 uv = 2.0 * (2.0 * fragCoord.xy - uResolution.xy) / uResolution.y;
+    
+    // 2. Set the background color to a more peaceful gradient.
+    // A deep, dark blue fading to a soft, lighter blue.
+    vec3 background_color = mix(vec3(0.05, 0.0, 0.15), vec3(0.2, 0.3, 0.6), (fragCoord.y / uResolution.y));
+    vec4 final_color = vec4(background_color, 1.0);
 
-    vec3 color = vec3(0.7, 0.6, 1.0); // default sky (soft light purple)
+    // 3. Generate the wave layers.
+    // 'f' will accumulate the brightness of all wave layers.
+    float f = 0.0;
+    // Each call to wave() adds a new, distinct layer of waves.
+    // The parameters have been adjusted for a calmer motion.
+    f += wave(uv, vec4(0.1, 0.2, 0.1, 0.05), vec4(0.1, 0.4, 0.8, 0.3), vec4(1.0, 1.5, 2.0, 2.5) * PI);
+    f += wave(uv, vec4(0.1, 0.15, 0.2, 0.1), vec4(0.8, 0.5, 0.4, 0.3), vec4(5.0, 2.0, 1.0, 3.0));
+    f += wave(uv, vec4(0.2, 0.1, 0.05, 0.1), vec4(0.9, 0.5, 0.1, 0.1), vec4(1.0, 2.0, 2.0, 3.0));
 
-    float time = uTime * 0.3;
-
-    // Draw 3 layers of hills (from back to front)
-    for (int i = 0; i < 3; i++) {
-        float layer = float(i);
-
-        // Wave height and speed per layer
-        float height = 0.25 + layer * 0.1;
-        float speed = 0.2 + layer * 0.15;
-        float offset = layer * 0.2;
-
-        // Wavy hill shape
-        float waveY = sin(uv.x * (2.0 + layer) + time * speed + offset) * 0.05
-                    + 0.3 + layer * 0.2;
-
-        // Fill the hill if below the wave line
-        if (uv.y < waveY) {
-            float t = clamp((waveY - uv.y) * 2.0, 0.0, 1.0);
-            color = mix(color, waveColor(t), 0.8);
-        }
-    }
-
-    return vec4(color, 1.0);
+    // 4. Color the waves and add them to the background.
+    // Use a soft, glowing white/light blue for a more ethereal feel.
+    vec3 wave_color = vec3(0.8, 0.9, 1.0);
+    
+    // The accumulated brightness 'f' is used as an alpha to blend the wave color.
+    final_color += vec4(f * wave_color, 1.0);
+    
+    return final_color;
 }
+
+
     """
 }

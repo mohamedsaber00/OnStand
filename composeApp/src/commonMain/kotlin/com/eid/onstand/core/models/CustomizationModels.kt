@@ -63,7 +63,9 @@ enum class ShaderType {
     GLOWING_RING,
     MOVING_TRIANGLES,
     PURPLE_GRADIENT,
-    SPACE
+    SPACE,
+    MOVING_WAVES,
+    TURBULENCE
 }
 
 data class ClockStyle(

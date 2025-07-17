@@ -19,6 +19,8 @@
     <string name="fog_background">Fog</string>
     <string name="black_background">Black</string>
     <string name="white_background">White</string>
+    <string name="moving_waves_background">Moving Waves</string>
+    <string name="turbulence_background">Turbulence</string>
 
     <!-- Clock Styles -->
     <string name="digital_clock">Digital</string>

@@ -24,6 +24,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.*
+import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
+import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
+import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground
+import com.eid.onstand.feature.backgrounds.shader.EtherShader
+import com.eid.onstand.feature.backgrounds.shader.GlowingRing
+import com.eid.onstand.feature.backgrounds.shader.MovingTrianglesShader
+import com.eid.onstand.feature.backgrounds.shader.MovingWaveShader
+import com.eid.onstand.feature.backgrounds.shader.PurpleGradientShader
+import com.eid.onstand.feature.backgrounds.shader.SpaceShader
+import com.eid.onstand.feature.backgrounds.shader.TurbulenceShader
+import com.mikepenz.hypnoticcanvas.shaderBackground
 import kotlinx.coroutines.launch
 
 @Composable
@@ -70,7 +81,7 @@ fun BackgroundSelector(
                     option = option,
                     isSelected = isSelected,
                     onSelected = {
-                    onBackgroundSelected(option)
+                        onBackgroundSelected(option)
 
                         // Animate to center the selected item
                         coroutineScope.launch {
@@ -157,8 +168,61 @@ private fun BackgroundOptionItem(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(12.dp))
-                .background(getBackgroundBrush(option))
+                .then(
+                    // Apply actual shader background if it's a shader type
+                    when (option) {
+                        is BackgroundOption.Shader -> {
+                            when (option.shaderType) {
+                                ShaderType.ETHER -> Modifier.shaderBackground(EtherShader)
+                                ShaderType.GLOWING_RING -> Modifier.shaderBackground(GlowingRing)
+                                ShaderType.MOVING_TRIANGLES -> Modifier.shaderBackground(
+                                    MovingTrianglesShader
+                                )
+                                ShaderType.MOVING_WAVES -> Modifier.shaderBackground(
+                                    MovingWaveShader
+                                )
+                                ShaderType.PURPLE_GRADIENT -> Modifier.shaderBackground(
+                                    PurpleGradientShader
+                                )
+                                ShaderType.SPACE -> Modifier.shaderBackground(SpaceShader)
+                                ShaderType.TURBULENCE -> Modifier.shaderBackground(TurbulenceShader)
+                            }
+                        }
+
+                        else -> Modifier.background(getBackgroundBrush(option))
+                    }
+                )
         ) {
+            // Render animated backgrounds (non-shader)
+            when (option) {
+                is BackgroundOption.Live -> {
+                    when (option.animationType) {
+                        LiveAnimationType.ROTATING_GRADIENT -> {
+                            RotatingGradientBackground()
+                        }
+
+                        LiveAnimationType.FOG_EFFECT -> {
+                            FoggyBackground(modifier = Modifier.fillMaxSize())
+                        }
+
+                        LiveAnimationType.ANIMATED_PARTICLES -> {
+                            AnimatedBackground(
+                                modifier = Modifier.fillMaxSize(),
+                                colors = listOf(
+                                    Color(0xFF4A90E2),
+                                    Color(0xFF7B68EE),
+                                    Color(0xFF9B59B6)
+                                )
+                            )
+                        }
+
+                        else -> {}
+                    }
+                }
+
+                else -> {}
+            }
+
             // Overlay with name
             Box(
                 modifier = Modifier

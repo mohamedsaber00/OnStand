@@ -70,6 +70,10 @@ fun ClockPreview(
                                 )
 
                                 ShaderType.SPACE -> Modifier.shaderBackground(SpaceShader)
+                                ShaderType.MOVING_WAVES -> Modifier.shaderBackground(
+                                    MovingWaveShader
+                                )
+                                ShaderType.TURBULENCE -> Modifier.shaderBackground(TurbulenceShader)
                             }
                         }
 

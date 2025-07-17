@@ -75,6 +75,18 @@ class BackgroundRepository {
             name = "Triangles",
             previewColor = Color(0xFF2C3E50),
             shaderType = ShaderType.MOVING_TRIANGLES
+        ),
+        BackgroundOption.Shader(
+            id = "shader_moving_waves",
+            name = "Moving Waves",
+            previewColor = Color(0xFF4A90E2),
+            shaderType = ShaderType.MOVING_WAVES
+        ),
+        BackgroundOption.Shader(
+            id = "shader_turbulence",
+            name = "Turbulence",
+            previewColor = Color(0xFF8E44AD),
+            shaderType = ShaderType.TURBULENCE
         )
     )
 

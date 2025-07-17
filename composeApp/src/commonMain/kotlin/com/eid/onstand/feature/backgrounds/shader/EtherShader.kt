@@ -26,38 +26,39 @@ object EtherShader : Shader {
 
     override val sksl = """
 /**
- * Ether Shader (Slowed Down Version)
+ * Ether Shader (Centered & Slowed Down)
  *
- * Slower, smoother evolution by reducing the time multiplier.
+ * ✅ Centered properly on any screen resolution.
+ * ✅ Slower, smoother evolution with adjustable timeSpeed.
  */
 
 uniform float uTime;
 uniform vec3 uResolution;
 
-// Control how fast the animation evolves (smaller = slower).
-const float timeSpeed = 0.2; // Original felt ~1.0; reduced to 0.2x speed.
+// Animation speed (smaller = slower)
+const float timeSpeed = 0.2;
 
-// A simple rotation matrix for 2D transformations.
+// Simple 2D rotation matrix
 mat2 rotate(float angle) {
     float c = cos(angle), s = sin(angle);
     return mat2(c, -s, s, c);
 }
 
-// Distance field function that defines the volumetric "clouds".
+// Distance field for volumetric clouds
 float map(vec3 p) {
-    float t = uTime * timeSpeed; // Use slowed time
+    float t = uTime * timeSpeed;
     p.xz *= rotate(t * 0.4);
     p.xy *= rotate(t * 0.3);
 
     vec3 q = p * 2.0 + t;
-
     return length(p + vec3(sin(t * 0.7), 0.0, 0.0)) * log(length(p) + 1.0)
          + sin(q.x + sin(q.z + sin(q.y))) * 0.5 - 1.0;
 }
 
-// Main entry point for the shader.
+// Main function
 vec4 main(vec2 fragCoord) {
-    vec2 uv = fragCoord.xy / uResolution.y - vec2(0.9, 0.5);
+    // ✅ Centered UV: (-1 to 1, centered)
+    vec2 uv = (fragCoord - 0.5 * uResolution.xy) / uResolution.y;
 
     vec3 finalColor = vec3(0.0);
     float dist = 2.5;

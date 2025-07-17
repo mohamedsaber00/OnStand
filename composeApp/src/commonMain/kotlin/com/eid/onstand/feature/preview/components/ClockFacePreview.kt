@@ -57,12 +57,19 @@ fun ClockFacePreview(
             is ClockType.DigitalSegments -> {
                 DigitalSegmentsPreview(
                     currentTime = currentTime,
-                    showSeconds = false,
+                    showSeconds = clockType.showSeconds,
                     activeColor = fontColorOption.primaryColor,
                     inactiveColor = fontColorOption.primaryColor.copy(alpha = 0.1f)
                 )
             }
             is ClockType.Flip -> {
+                FlipClockPreview(
+                    currentTime = currentTime,
+                    textColor = fontColorOption.primaryColor,
+                    fontFamily = getFontFamily(clockType.fontFamily)
+                )
+            }
+            is ClockType.FlipMorph -> {
                 FlipClockPreview(
                     currentTime = currentTime,
                     textColor = fontColorOption.primaryColor,
@@ -78,15 +85,9 @@ fun ClockFacePreview(
                 )
             }
             is ClockType.Digital, is ClockType.Minimal -> {
-                val showSeconds = when (clockType) {
-                    is ClockType.Digital -> clockType.showSeconds
-                    is ClockType.Minimal -> clockType.showSeconds
-                    else -> false
-                }
-
                 DigitalClockPreview(
                     currentTime = currentTime,
-                    showSeconds = showSeconds,
+                    showSeconds = clockType.showSeconds,
                     textColor = fontColorOption.primaryColor,
                     fontFamily = getFontFamily(clockType.fontFamily)
                 )

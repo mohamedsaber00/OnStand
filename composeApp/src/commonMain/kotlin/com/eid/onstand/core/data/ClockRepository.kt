@@ -27,11 +27,9 @@ class ClockRepository {
             id = "flip_clock",
             name = "Flip Clock"
         ),
-        ClockType.Flip(
+        ClockType.FlipMorph(
             id = "morph_flip_clock",
-            name = "Morph Flip",
-            flipStyle = FlipStyle.MORPH,
-            showSeconds = false
+            name = "Morph Flip"
         ),
         ClockType.Minimal(
             id = "minimal_digital",

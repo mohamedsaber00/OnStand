@@ -352,23 +352,13 @@ fun ClockStyleSelector(
         val listState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
 
-        // Supported clock types - add more IDs here to extend in the future
-        val supportedIds = listOf(
-            "digital_modern",
-            "digital_segments",
-            "flip_clock",
-            "analog_classic",
-            "morph_flip_clock"
-        )
-        val displayedTypes = clockTypes.filter { it.id in supportedIds }
-
         LazyRow(
             state = listState,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(horizontal = 4.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(displayedTypes) { type ->
+            items(clockTypes) { type ->
                 val isSelected = selectedClockType?.id == type.id
                 val scale by animateFloatAsState(
                     targetValue = if (isSelected) 1.1f else 1f,
@@ -383,7 +373,7 @@ fun ClockStyleSelector(
                         onClockTypeSelected(type)
                         // Animate to center the selected item
                         coroutineScope.launch {
-                            val selectedIndex = displayedTypes.indexOf(type)
+                            val selectedIndex = clockTypes.indexOf(type)
                             listState.animateScrollToItem(
                                 index = selectedIndex,
                                 scrollOffset = -200
@@ -396,10 +386,7 @@ fun ClockStyleSelector(
         }
 
         // Show seconds toggle for digital clocks that support it
-        val canShowSeconds = when (selectedClockType) {
-            is ClockType.Digital, is ClockType.Flip, is ClockType.Minimal -> true
-            else -> false
-        }
+        val canShowSeconds = selectedClockType?.isDigital == true
 
         if (canShowSeconds) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -418,15 +405,8 @@ fun ClockStyleSelector(
                     color = Color.White
                 )
 
-                val isSecondsEnabled = when (selectedClockType) {
-                    is ClockType.Digital -> selectedClockType.showSeconds
-                    is ClockType.Flip -> selectedClockType.showSeconds
-                    is ClockType.Minimal -> selectedClockType.showSeconds
-                    else -> false
-                }
-
                 Switch(
-                    checked = isSecondsEnabled,
+                    checked = selectedClockType?.showSeconds ?: false,
                     onCheckedChange = onSecondsToggled,
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,

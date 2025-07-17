@@ -134,7 +134,7 @@ fun ClockPreview(
                     is ClockType.DigitalSegments -> {
                         DigitalSegmentClock(
                             currentTime = localTime,
-                            showSeconds = false,
+                            showSeconds = clockType.showSeconds,
                             activeColor = fontColorOption?.primaryColor ?: Color.White,
                             inactiveColor = (fontColorOption?.primaryColor ?: Color.White).copy(
                                 alpha = 0.1f
@@ -142,25 +142,20 @@ fun ClockPreview(
                         )
                     }
                     is ClockType.Flip -> {
-                        when (clockType.flipStyle) {
-                            FlipStyle.MORPH -> {
-                                MorphFlipClockWidget(
-                                    currentTime = localTime,
-                                    cardColor = Color(0xFFFFA77A).copy(alpha = 0.85f),
-                                    textColor = fontColorOption?.primaryColor ?: Color.Black,
-                                    fontFamily = getFontFamily(clockType.fontFamily)
-                                )
-                            }
-
-                            else -> {
-                                FlipClockWidget(
-                                    currentTime = localTime,
-                                    cardColor = Color.Black.copy(alpha = 0.6f),
-                                    textColor = fontColorOption?.primaryColor ?: Color.White,
-                                    fontFamily = getFontFamily(clockType.fontFamily)
-                                )
-                            }
-                        }
+                        FlipClockWidget(
+                            currentTime = localTime,
+                            cardColor = Color.Black.copy(alpha = 0.6f),
+                            textColor = fontColorOption?.primaryColor ?: Color.White,
+                            fontFamily = getFontFamily(clockType.fontFamily)
+                        )
+                    }
+                    is ClockType.FlipMorph -> {
+                        MorphFlipClockWidget(
+                            currentTime = localTime,
+                            cardColor = Color(0xFFFFA77A).copy(alpha = 0.85f),
+                            textColor = fontColorOption?.primaryColor ?: Color.Black,
+                            fontFamily = getFontFamily(clockType.fontFamily)
+                        )
                     }
                     is ClockType.Analog -> {
                         AnalogClockWidget(
@@ -172,16 +167,10 @@ fun ClockPreview(
                         )
                     }
                     is ClockType.Digital, is ClockType.Minimal -> {
-                        val showSeconds = when (clockType) {
-                            is ClockType.Digital -> clockType.showSeconds
-                            is ClockType.Minimal -> clockType.showSeconds
-                            else -> false
-                        }
-
                         ClockWidget(
                             currentTime = localTime,
-                            showSeconds = showSeconds,
-                            fontFamily = getFontFamily(clockType?.fontFamily ?: "Roboto"),
+                            showSeconds = clockType.showSeconds,
+                            fontFamily = getFontFamily(clockType.fontFamily),
                             textColor = fontColorOption?.primaryColor ?: Color.White
                         )
                     }

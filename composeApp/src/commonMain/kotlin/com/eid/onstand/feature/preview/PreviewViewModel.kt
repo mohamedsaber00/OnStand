@@ -66,15 +66,17 @@ class PreviewViewModel(
 
     fun toggleSeconds(showSeconds: Boolean) {
         val currentClockType = customizationRepository.customizationState.value.selectedClockType
-        val updatedClockType = when (currentClockType) {
-            is ClockType.Digital -> currentClockType.copy(showSeconds = showSeconds)
-            is ClockType.Flip -> currentClockType.copy(showSeconds = showSeconds)
-            is ClockType.Minimal -> currentClockType.copy(showSeconds = showSeconds)
-            else -> currentClockType
-        }
+        if (currentClockType?.isDigital == true) {
+            val updatedClockType = when (currentClockType) {
+                is ClockType.Digital -> currentClockType.copy(showSeconds = showSeconds)
+                is ClockType.DigitalSegments -> currentClockType.copy(showSeconds = showSeconds)
+                is ClockType.Flip -> currentClockType.copy(showSeconds = showSeconds)
+                is ClockType.FlipMorph -> currentClockType.copy(showSeconds = showSeconds)
+                is ClockType.Minimal -> currentClockType.copy(showSeconds = showSeconds)
+                else -> currentClockType
+            }
 
-        updatedClockType?.let {
-            customizationRepository.selectClockType(it)
+            customizationRepository.selectClockType(updatedClockType)
             // Manually update the UI state
             _uiState.value = _uiState.value.copy(
                 customizationState = customizationRepository.customizationState.value

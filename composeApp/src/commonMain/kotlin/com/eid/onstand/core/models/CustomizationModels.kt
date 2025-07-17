@@ -136,6 +136,8 @@ sealed class ClockType {
     abstract val fontFamily: String
     abstract val showDate: Boolean
     abstract val timeFormat: TimeFormat
+    abstract val isDigital: Boolean
+    abstract val showSeconds: Boolean
 
     data class Digital(
         override val id: String,
@@ -143,7 +145,8 @@ sealed class ClockType {
         override val fontFamily: String = "Roboto",
         override val showDate: Boolean = true,
         override val timeFormat: TimeFormat = TimeFormat.TWELVE_HOUR,
-        val showSeconds: Boolean = false
+        override val isDigital: Boolean = true,
+        override val showSeconds: Boolean = false
     ) : ClockType()
 
     data class DigitalSegments(
@@ -152,7 +155,8 @@ sealed class ClockType {
         override val fontFamily: String = "Roboto",
         override val showDate: Boolean = false,
         override val timeFormat: TimeFormat = TimeFormat.TWELVE_HOUR,
-        val segmentStyle: SegmentStyle = SegmentStyle.CLASSIC
+        override val isDigital: Boolean = true,
+        override val showSeconds: Boolean = false
     ) : ClockType()
 
     data class Analog(
@@ -161,8 +165,8 @@ sealed class ClockType {
         override val fontFamily: String = "Serif",
         override val showDate: Boolean = false,
         override val timeFormat: TimeFormat = TimeFormat.TWELVE_HOUR,
-        val handStyle: HandStyle = HandStyle.CLASSIC,
-        val showNumbers: Boolean = true
+        override val isDigital: Boolean = false,
+        override val showSeconds: Boolean = false
     ) : ClockType()
 
     data class Flip(
@@ -171,8 +175,18 @@ sealed class ClockType {
         override val fontFamily: String = "Monospace",
         override val showDate: Boolean = true,
         override val timeFormat: TimeFormat = TimeFormat.TWELVE_HOUR,
-        val showSeconds: Boolean = true,
-        val flipStyle: FlipStyle = FlipStyle.CLASSIC
+        override val isDigital: Boolean = true,
+        override val showSeconds: Boolean = true
+    ) : ClockType()
+
+    data class FlipMorph(
+        override val id: String,
+        override val name: String,
+        override val fontFamily: String = "Roboto",
+        override val showDate: Boolean = true,
+        override val timeFormat: TimeFormat = TimeFormat.TWELVE_HOUR,
+        override val isDigital: Boolean = true,
+        override val showSeconds: Boolean = false
     ) : ClockType()
 
     data class Minimal(
@@ -181,26 +195,9 @@ sealed class ClockType {
         override val fontFamily: String = "Helvetica",
         override val showDate: Boolean = false,
         override val timeFormat: TimeFormat = TimeFormat.TWELVE_HOUR,
-        val showSeconds: Boolean = false
+        override val isDigital: Boolean = true,
+        override val showSeconds: Boolean = false
     ) : ClockType()
-}
-
-enum class SegmentStyle {
-    CLASSIC,
-    MODERN,
-    ROUNDED
-}
-
-enum class HandStyle {
-    CLASSIC,
-    MODERN,
-    ORNATE
-}
-
-enum class FlipStyle {
-    CLASSIC,
-    MODERN,
-    MORPH
 }
 
 enum class TimeFormat {

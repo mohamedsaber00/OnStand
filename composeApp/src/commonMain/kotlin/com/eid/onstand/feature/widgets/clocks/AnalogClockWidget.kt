@@ -1,9 +1,8 @@
 package com.eid.onstand.feature.widgets.clocks
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
 import kotlin.math.cos
 import kotlin.math.sin
@@ -29,15 +27,14 @@ fun AnalogClockWidget(
 ) {
     val timeTriple = Triple(currentTime.hour % 12, currentTime.minute, currentTime.second)
 
-    Box(
+    BoxWithConstraints(
         modifier = modifier
-            .size(300.dp)
             .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val center = Offset(size.width / 2, size.height / 2)
-            val radius = size.minDimension / 2 - 20.dp.toPx()
+            val radius = size.minDimension / 2 - (size.minDimension * 0.05f) // Relative padding
 
             // Draw clock face
             drawCircle(
@@ -51,18 +48,18 @@ fun AnalogClockWidget(
                 color = clockColor.copy(alpha = 0.3f),
                 radius = radius,
                 center = center,
-                style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx())
+                style = androidx.compose.ui.graphics.drawscope.Stroke(width = (size.minDimension * 0.01f))
             )
 
             // Draw hour markers
             repeat(12) { hour ->
                 val angle = (hour * 30f - 90f) * (kotlin.math.PI / 180f)
                 val isMainHour = hour % 3 == 0
-                val markerLength = if (isMainHour) 40.dp.toPx() else 20.dp.toPx()
-                val markerWidth = if (isMainHour) 3.dp.toPx() else 2.dp.toPx()
+                val markerLength = if (isMainHour) radius * 0.15f else radius * 0.08f
+                val markerWidth = if (isMainHour) radius * 0.01f else radius * 0.005f
 
                 val startRadius = radius - markerLength
-                val endRadius = radius - 5.dp.toPx()
+                val endRadius = radius - (radius * 0.02f)
 
                 drawLine(
                     color = numbersColor,
@@ -83,9 +80,9 @@ fun AnalogClockWidget(
             repeat(60) { minute ->
                 if (minute % 5 != 0) {
                     val angle = (minute * 6f - 90f) * (kotlin.math.PI / 180f)
-                    val markerLength = 10.dp.toPx()
+                    val markerLength = radius * 0.04f
                     val startRadius = radius - markerLength
-                    val endRadius = radius - 5.dp.toPx()
+                    val endRadius = radius - (radius * 0.02f)
 
                     drawLine(
                         color = numbersColor.copy(alpha = 0.3f),
@@ -97,7 +94,7 @@ fun AnalogClockWidget(
                             center.x + cos(angle).toFloat() * endRadius,
                             center.y + sin(angle).toFloat() * endRadius
                         ),
-                        strokeWidth = 1.dp.toPx(),
+                        strokeWidth = radius * 0.003f,
                         cap = StrokeCap.Round
                     )
                 }
@@ -116,7 +113,7 @@ fun AnalogClockWidget(
             // Draw center dot
             drawCircle(
                 color = handsColor,
-                radius = 8.dp.toPx(),
+                radius = radius * 0.03f,
                 center = center
             )
         }
@@ -138,7 +135,7 @@ private fun DrawScope.drawHands(
             color = handsColor,
             start = center,
             end = Offset(center.x + radius * 0.5f, center.y),
-            strokeWidth = 6.dp.toPx(),
+            strokeWidth = radius * 0.02f,
             cap = StrokeCap.Round
         )
     }
@@ -150,7 +147,7 @@ private fun DrawScope.drawHands(
             color = handsColor,
             start = center,
             end = Offset(center.x + radius * 0.75f, center.y),
-            strokeWidth = 4.dp.toPx(),
+            strokeWidth = radius * 0.015f,
             cap = StrokeCap.Round
         )
     }
@@ -162,7 +159,7 @@ private fun DrawScope.drawHands(
             color = Color.Red.copy(alpha = 0.8f),
             start = center,
             end = Offset(center.x + radius * 0.9f, center.y),
-            strokeWidth = 2.dp.toPx(),
+            strokeWidth = radius * 0.005f,
             cap = StrokeCap.Round
         )
     }

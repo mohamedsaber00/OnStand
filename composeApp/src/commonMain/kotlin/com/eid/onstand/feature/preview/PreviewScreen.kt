@@ -15,6 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.eid.onstand.core.models.AbstractPatternType
+import com.eid.onstand.core.models.BackgroundOption
+import com.eid.onstand.core.models.BackgroundType
+import com.eid.onstand.core.models.PatternType
 import com.eid.onstand.feature.preview.components.*
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -79,8 +83,8 @@ fun PreviewScreen(
             ) {
                 // Clock Preview
                 ClockPreview(
-                    backgroundOption = customizationState.selectedBackground,
-                    clockStyle = customizationState.selectedClockStyle,
+                    backgroundType = customizationState.selectedBackground,
+                    clockType = customizationState.selectedClockType,
                     fontColorOption = customizationState.selectedFontColor,
                     layoutOption = customizationState.selectedLayout,
                     modifier = Modifier.padding(bottom = 24.dp)
@@ -91,17 +95,17 @@ fun PreviewScreen(
                     backgroundOptions = uiState.backgroundOptions,
                     gradientOptions = uiState.gradientOptions,
                     staticColorOptions = uiState.staticColorOptions,
-                    selectedBackground = customizationState.selectedBackground,
+                    selectedBackground = convertBackgroundTypeToOption(customizationState.selectedBackground),
                     onBackgroundSelected = viewModel::selectBackground,
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
                 // Clock Style Selection
-                if (uiState.clockStyles.isNotEmpty()) {
+                if (uiState.clockTypes.isNotEmpty()) {
                     ClockStyleSelector(
-                        clockStyles = uiState.clockStyles,
-                        selectedClockStyle = customizationState.selectedClockStyle,
+                        clockTypes = uiState.clockTypes,
+                        selectedClockType = customizationState.selectedClockType,
                         selectedFontColor = customizationState.selectedFontColor,
-                        onClockStyleSelected = viewModel::selectClockStyle,
+                        onClockTypeSelected = viewModel::selectClockType,
                         onSecondsToggled = viewModel::toggleSeconds,
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
@@ -174,4 +178,52 @@ fun PreviewScreen(
 @Composable
 fun PreviewScreenContent() {
     PreviewScreen()
+}
+
+// Helper function to convert BackgroundType to BackgroundOption for backward compatibility
+private fun convertBackgroundTypeToOption(backgroundType: BackgroundType?): BackgroundOption? {
+    return when (backgroundType) {
+        is BackgroundType.Solid -> BackgroundOption.SolidColor(
+            id = "solid_${backgroundType.id}",
+            name = backgroundType.name,
+            previewColor = backgroundType.previewColor,
+            color = backgroundType.color
+        )
+
+        is BackgroundType.Gradient -> BackgroundOption.Gradient(
+            id = "gradient_${backgroundType.id}",
+            name = backgroundType.name,
+            previewColor = backgroundType.previewColor,
+            colors = backgroundType.colors,
+            angle = 0f
+        )
+
+        is BackgroundType.Shader -> BackgroundOption.Shader(
+            id = "shader_${backgroundType.id}",
+            name = backgroundType.name,
+            previewColor = backgroundType.previewColor,
+            shaderType = backgroundType.shaderType
+        )
+
+        is BackgroundType.Live -> BackgroundOption.Live(
+            id = "live_${backgroundType.id}",
+            name = backgroundType.name,
+            previewColor = backgroundType.previewColor,
+            animationType = backgroundType.animationType
+        )
+
+        is BackgroundType.Pattern -> BackgroundOption.Abstract(
+            id = backgroundType.id,
+            name = backgroundType.name,
+            previewColor = backgroundType.previewColor,
+            patternType = when (backgroundType.patternType) {
+                PatternType.GEOMETRIC -> AbstractPatternType.GEOMETRIC
+                PatternType.ORGANIC -> AbstractPatternType.ORGANIC
+                PatternType.MINIMAL -> AbstractPatternType.MINIMAL
+                PatternType.ARTISTIC -> AbstractPatternType.ARTISTIC
+            }
+        )
+
+        null -> null
+    }
 }

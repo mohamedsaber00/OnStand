@@ -5,53 +5,37 @@ import com.eid.onstand.core.models.*
 
 class ClockRepository {
 
-    fun getClockStyles(): List<ClockStyle> = listOf(
-        ClockStyle(
+    fun getClockTypes(): List<ClockType> = listOf(
+        ClockType.Digital(
             id = "digital_modern",
-            name = "Digital",
-            fontFamily = "Roboto",
-            isDigital = true,
-            showSeconds = false,
-            showDate = true
+            name = "Digital"
         ),
-        ClockStyle(
+        ClockType.Digital(
             id = "digital_seconds",
             name = "Digital + Seconds",
-            fontFamily = "Roboto",
-            isDigital = true,
-            showSeconds = true,
-            showDate = true
+            showSeconds = true
         ),
-        ClockStyle(
+        ClockType.DigitalSegments(
             id = "digital_segments",
-            name = "Digital Segments",
-            fontFamily = "Roboto",
-            isDigital = true,
-            showSeconds = false,
-            showDate = false
+            name = "Digital Segments"
         ),
-        ClockStyle(
+        ClockType.Analog(
             id = "analog_classic",
-            name = "Analog Classic",
-            fontFamily = "Serif",
-            isDigital = false,
-            showDate = false
+            name = "Analog Classic"
         ),
-        ClockStyle(
+        ClockType.Flip(
             id = "flip_clock",
-            name = "Flip Clock",
-            fontFamily = "Monospace",
-            isDigital = true,
-            showSeconds = true,
-            showDate = true
+            name = "Flip Clock"
         ),
-        ClockStyle(
+        ClockType.Flip(
+            id = "morph_flip_clock",
+            name = "Morph Flip",
+            flipStyle = FlipStyle.MORPH,
+            showSeconds = false
+        ),
+        ClockType.Minimal(
             id = "minimal_digital",
-            name = "Minimal",
-            fontFamily = "Helvetica",
-            isDigital = true,
-            showSeconds = false,
-            showDate = false
+            name = "Minimal"
         )
     )
 

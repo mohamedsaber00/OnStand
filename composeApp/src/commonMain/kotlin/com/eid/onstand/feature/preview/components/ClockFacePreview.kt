@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eid.onstand.core.models.ClockStyle
+import com.eid.onstand.core.models.ClockType
 import com.eid.onstand.core.models.FontColorOption
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
@@ -31,7 +31,7 @@ import kotlin.math.sin
 
 @Composable
 fun ClockFacePreview(
-    clockStyle: ClockStyle,
+    clockType: ClockType,
     fontColorOption: FontColorOption,
     modifier: Modifier = Modifier,
     isSelected: Boolean = false
@@ -53,23 +53,23 @@ fun ClockFacePreview(
         modifier = modifier.size(120.dp, 80.dp),
         contentAlignment = Alignment.Center
     ) {
-        when (clockStyle.id) {
-            "digital_segments" -> {
+        when (clockType) {
+            is ClockType.DigitalSegments -> {
                 DigitalSegmentsPreview(
                     currentTime = currentTime,
-                    showSeconds = clockStyle.showSeconds,
+                    showSeconds = false,
                     activeColor = fontColorOption.primaryColor,
                     inactiveColor = fontColorOption.primaryColor.copy(alpha = 0.1f)
                 )
             }
-            "flip_clock" -> {
+            is ClockType.Flip -> {
                 FlipClockPreview(
                     currentTime = currentTime,
                     textColor = fontColorOption.primaryColor,
-                    fontFamily = getFontFamily(clockStyle.fontFamily)
+                    fontFamily = getFontFamily(clockType.fontFamily)
                 )
             }
-            "analog_classic" -> {
+            is ClockType.Analog -> {
                 AnalogClockPreview(
                     currentTime = currentTime,
                     clockColor = fontColorOption.primaryColor,
@@ -77,13 +77,18 @@ fun ClockFacePreview(
                     numbersColor = fontColorOption.primaryColor.copy(alpha = 0.8f)
                 )
             }
-            else -> {
-                // For other digital clocks
+            is ClockType.Digital, is ClockType.Minimal -> {
+                val showSeconds = when (clockType) {
+                    is ClockType.Digital -> clockType.showSeconds
+                    is ClockType.Minimal -> clockType.showSeconds
+                    else -> false
+                }
+
                 DigitalClockPreview(
                     currentTime = currentTime,
-                    showSeconds = clockStyle.showSeconds,
+                    showSeconds = showSeconds,
                     textColor = fontColorOption.primaryColor,
-                    fontFamily = getFontFamily(clockStyle.fontFamily)
+                    fontFamily = getFontFamily(clockType.fontFamily)
                 )
             }
         }

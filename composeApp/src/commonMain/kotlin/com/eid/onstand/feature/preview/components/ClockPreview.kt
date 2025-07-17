@@ -27,8 +27,8 @@ import kotlinx.datetime.*
 
 @Composable
 fun ClockPreview(
-    backgroundOption: BackgroundOption? = null,
-    clockStyle: ClockStyle? = null,
+    backgroundType: BackgroundType? = null,
+    clockType: ClockType? = null,
     fontColorOption: FontColorOption? = null,
     layoutOption: LayoutOption? = null,
     modifier: Modifier = Modifier
@@ -53,12 +53,12 @@ fun ClockPreview(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize().align(Alignment.CenterHorizontally)
                 .then(
                     // Apply shader background if it's a shader type
-                    when (backgroundOption) {
-                        is BackgroundOption.Shader -> {
-                            when (backgroundOption.shaderType) {
+                    when (backgroundType) {
+                        is BackgroundType.Shader -> {
+                            when (backgroundType.shaderType) {
                                 ShaderType.ETHER -> Modifier.shaderBackground(EtherShader)
                                 ShaderType.GLOWING_RING -> Modifier.shaderBackground(GlowingRing)
                                 ShaderType.MOVING_TRIANGLES -> Modifier.shaderBackground(
@@ -77,14 +77,14 @@ fun ClockPreview(
                             }
                         }
 
-                        else -> Modifier.background(getBackgroundBrush(backgroundOption))
+                        else -> Modifier.background(getBackgroundBrush(backgroundType))
                     }
                 )
         ) {
             // Render animated backgrounds (non-shader)
-            when (backgroundOption) {
-                is BackgroundOption.Live -> {
-                    when (backgroundOption.animationType) {
+            when (backgroundType) {
+                is BackgroundType.Live -> {
+                    when (backgroundType.animationType) {
                         LiveAnimationType.ROTATING_GRADIENT -> {
                             RotatingGradientBackground()
                         }
@@ -110,11 +110,11 @@ fun ClockPreview(
                     }
                 }
 
-                is BackgroundOption.Gradient -> {
+                is BackgroundType.Gradient -> {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(getBackgroundBrush(backgroundOption))
+                            .background(getBackgroundBrush(backgroundType))
                     ) {}
                 }
 
@@ -129,42 +129,40 @@ fun ClockPreview(
                 val timeZone = TimeZone.currentSystemDefault()
                 val localTime = currentTime.toLocalDateTime(timeZone)
 
-                // Previous minutes (if enabled)
-                if (layoutOption?.showPreviousMinutes == true) {
-                    val previousMinute = if (localTime.minute == 0) 59 else localTime.minute - 1
-                    val nextMinute = if (localTime.minute == 59) 0 else localTime.minute + 1
-
-                    Text(
-                        text = "${
-                            previousMinute.toString().padStart(2, '0')
-                        } ${nextMinute.toString().padStart(2, '0')}",
-                        fontSize = 14.sp,
-                        color = (fontColorOption?.secondaryColor ?: Color.Gray).copy(alpha = 0.5f),
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-                // Render the actual clock widget based on style
-                when (clockStyle?.id) {
-                    "digital_segments" -> {
+                // Render the actual clock widget based on type
+                when (clockType) {
+                    is ClockType.DigitalSegments -> {
                         DigitalSegmentClock(
                             currentTime = localTime,
-                            showSeconds = clockStyle.showSeconds,
+                            showSeconds = false,
                             activeColor = fontColorOption?.primaryColor ?: Color.White,
                             inactiveColor = (fontColorOption?.primaryColor ?: Color.White).copy(
                                 alpha = 0.1f
                             )
                         )
                     }
-                    "flip_clock" -> {
-                        FlipClockWidget(
-                            currentTime = localTime,
-                            cardColor = Color.Black.copy(alpha = 0.6f),
-                            textColor = fontColorOption?.primaryColor ?: Color.White,
-                            fontFamily = getFontFamily(clockStyle.fontFamily)
-                        )
+                    is ClockType.Flip -> {
+                        when (clockType.flipStyle) {
+                            FlipStyle.MORPH -> {
+                                MorphFlipClockWidget(
+                                    currentTime = localTime,
+                                    cardColor = Color(0xFFFFA77A).copy(alpha = 0.85f),
+                                    textColor = fontColorOption?.primaryColor ?: Color.Black,
+                                    fontFamily = getFontFamily(clockType.fontFamily)
+                                )
+                            }
+
+                            else -> {
+                                FlipClockWidget(
+                                    currentTime = localTime,
+                                    cardColor = Color.Black.copy(alpha = 0.6f),
+                                    textColor = fontColorOption?.primaryColor ?: Color.White,
+                                    fontFamily = getFontFamily(clockType.fontFamily)
+                                )
+                            }
+                        }
                     }
-                    "analog_classic" -> {
+                    is ClockType.Analog -> {
                         AnalogClockWidget(
                             currentTime = localTime,
                             clockColor = fontColorOption?.primaryColor ?: Color.White,
@@ -173,31 +171,29 @@ fun ClockPreview(
                                 ?: Color.White).copy(alpha = 0.8f)
                         )
                     }
-                    else -> {
-                        // For other digital clocks, use ClockWidget
+                    is ClockType.Digital, is ClockType.Minimal -> {
+                        val showSeconds = when (clockType) {
+                            is ClockType.Digital -> clockType.showSeconds
+                            is ClockType.Minimal -> clockType.showSeconds
+                            else -> false
+                        }
+
                         ClockWidget(
                             currentTime = localTime,
-                            showSeconds = clockStyle?.showSeconds ?: false,
-                            fontFamily = getFontFamily(clockStyle?.fontFamily ?: "Roboto"),
+                            showSeconds = showSeconds,
+                            fontFamily = getFontFamily(clockType?.fontFamily ?: "Roboto"),
                             textColor = fontColorOption?.primaryColor ?: Color.White
                         )
                     }
-                }
-
-                // Date (if enabled)
-                if (clockStyle?.showDate == true) {
-                    val dateFormat = "${
-                        localTime.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
-                    }, ${
-                        localTime.month.name.lowercase().replaceFirstChar { it.uppercase() }
-                    } ${localTime.dayOfMonth}"
-                    Text(
-                        text = dateFormat,
-                        fontSize = 14.sp,
-                        color = fontColorOption?.secondaryColor ?: Color.Gray,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
+                    null -> {
+                        // Default fallback
+                        ClockWidget(
+                            currentTime = localTime,
+                            showSeconds = false,
+                            fontFamily = getFontFamily("Roboto"),
+                            textColor = fontColorOption?.primaryColor ?: Color.White
+                        )
+                    }
                 }
             }
         }
@@ -215,36 +211,56 @@ private fun getFontFamily(fontFamilyName: String): FontFamily {
 }
 
 @Composable
-private fun getBackgroundBrush(backgroundOption: BackgroundOption?): Brush {
-    return when (backgroundOption) {
-        is BackgroundOption.Gradient -> {
-            if (backgroundOption.colors.isNotEmpty()) {
-                Brush.linearGradient(
-                    colors = backgroundOption.colors
-                )
+private fun getBackgroundBrush(backgroundType: BackgroundType?): Brush {
+    return when (backgroundType) {
+        is BackgroundType.Gradient -> {
+            if (backgroundType.colors.isNotEmpty()) {
+                when (backgroundType.direction) {
+                    GradientDirection.VERTICAL -> Brush.verticalGradient(backgroundType.colors)
+                    GradientDirection.HORIZONTAL -> Brush.horizontalGradient(backgroundType.colors)
+                    GradientDirection.DIAGONAL_UP -> Brush.linearGradient(
+                        colors = backgroundType.colors,
+                        start = androidx.compose.ui.geometry.Offset(0f, Float.POSITIVE_INFINITY),
+                        end = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, 0f)
+                    )
+
+                    GradientDirection.DIAGONAL_DOWN -> Brush.linearGradient(
+                        colors = backgroundType.colors,
+                        start = androidx.compose.ui.geometry.Offset(0f, 0f),
+                        end = androidx.compose.ui.geometry.Offset(
+                            Float.POSITIVE_INFINITY,
+                            Float.POSITIVE_INFINITY
+                        )
+                    )
+
+                    GradientDirection.RADIAL -> Brush.radialGradient(backgroundType.colors)
+                }
             } else {
                 Brush.linearGradient(
-                    listOf(backgroundOption.previewColor, backgroundOption.previewColor)
+                    listOf(backgroundType.previewColor, backgroundType.previewColor)
                 )
             }
         }
-        is BackgroundOption.SolidColor -> {
+        is BackgroundType.Solid -> {
             Brush.linearGradient(
-                listOf(backgroundOption.color, backgroundOption.color)
+                listOf(backgroundType.color, backgroundType.color)
             )
         }
-        is BackgroundOption.Abstract -> {
+        is BackgroundType.Pattern -> {
             Brush.linearGradient(
-                listOf(backgroundOption.previewColor, backgroundOption.previewColor)
+                listOf(
+                    backgroundType.primaryColor,
+                    backgroundType.secondaryColor ?: backgroundType.primaryColor
+                )
             )
         }
-        is BackgroundOption.Live -> {
+        is BackgroundType.Live -> {
             // For live backgrounds, use transparent so animation shows through
             Brush.linearGradient(
                 listOf(Color.Transparent, Color.Transparent)
             )
         }
-        is BackgroundOption.Shader -> {
+        is BackgroundType.Shader -> {
             // For shader backgrounds, use transparent since shader is applied via modifier
             Brush.linearGradient(
                 listOf(Color.Transparent, Color.Transparent)

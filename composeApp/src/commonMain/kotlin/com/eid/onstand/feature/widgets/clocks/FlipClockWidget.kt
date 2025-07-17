@@ -10,13 +10,12 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,9 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eid.onstand.data.date.getDayOfWeek
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.format.byUnicodePattern
@@ -55,68 +52,91 @@ fun FlipClockWidget(
     val timeTriple = Triple(hour, minute, second)
     val dateString = "$dayOfWeek, $date"
 
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+    BoxWithConstraints(modifier = modifier) {
+        val padding = (maxWidth.value * 0.05f).dp
+        val cornerRadius = padding
+
+        val cardWidth = (maxWidth.value * 0.18f).dp // Adjust factors based on desired proportions
+        val cardHeight = (maxHeight.value * 0.35f).dp.coerceAtMost((cardWidth.value * 1.2f).dp)
+        val secondsCardWidth = (cardWidth.value * 0.75f).dp
+        val secondsCardHeight = (cardHeight.value * 0.75f).dp
+
+        val fontSize = (cardWidth.value * 0.4f).sp
+        val secondsFontSize = (secondsCardWidth.value * 0.4f).sp
+        val dateFontSize = (maxWidth.value * 0.05f).sp
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .clip(RoundedCornerShape(cornerRadius)),
+            contentAlignment = Alignment.Center
         ) {
-            // Main time display
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(padding * 0.5f)
             ) {
-                FlipCard(
-                    value = timeTriple.first,
-                    cardColor = cardColor,
-                    textColor = textColor,
-                    fontFamily = fontFamily
-                )
+                // Main time display
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(padding * 0.3f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FlipCard(
+                        value = timeTriple.first,
+                        cardColor = cardColor,
+                        textColor = textColor,
+                        fontFamily = fontFamily,
+                        cardWidth = cardWidth,
+                        cardHeight = cardHeight,
+                        fontSize = fontSize
+                    )
 
+                    Text(
+                        text = ":",
+                        color = textColor,
+                        fontSize = fontSize,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = fontFamily
+                    )
+
+                    FlipCard(
+                        value = timeTriple.second,
+                        cardColor = cardColor,
+                        textColor = textColor,
+                        fontFamily = fontFamily,
+                        cardWidth = cardWidth,
+                        cardHeight = cardHeight,
+                        fontSize = fontSize
+                    )
+
+                    Text(
+                        text = ":",
+                        color = textColor,
+                        fontSize = fontSize,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = fontFamily
+                    )
+
+                    FlipCard(
+                        value = timeTriple.third,
+                        cardColor = cardColor,
+                        textColor = textColor,
+                        fontFamily = fontFamily,
+                        cardWidth = secondsCardWidth,
+                        cardHeight = secondsCardHeight,
+                        fontSize = secondsFontSize
+                    )
+                }
+
+                // Date display
                 Text(
-                    text = ":",
-                    color = textColor,
-                    fontSize = 48.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = dateString,
+                    color = textColor.copy(alpha = 0.8f),
+                    fontSize = dateFontSize,
+                    fontWeight = FontWeight.Medium,
                     fontFamily = fontFamily
-                )
-
-                FlipCard(
-                    value = timeTriple.second,
-                    cardColor = cardColor,
-                    textColor = textColor,
-                    fontFamily = fontFamily
-                )
-
-                Text(
-                    text = ":",
-                    color = textColor,
-                    fontSize = 48.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = fontFamily
-                )
-
-                FlipCard(
-                    value = timeTriple.third,
-                    cardColor = cardColor,
-                    textColor = textColor,
-                    fontFamily = fontFamily,
-                    isSeconds = true
                 )
             }
-
-            // Date display
-            Text(
-                text = dateString,
-                color = textColor.copy(alpha = 0.8f),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                fontFamily = fontFamily
-            )
         }
     }
 }
@@ -127,10 +147,11 @@ private fun FlipCard(
     cardColor: Color,
     textColor: Color,
     fontFamily: FontFamily,
-    isSeconds: Boolean = false
+    cardWidth: androidx.compose.ui.unit.Dp,
+    cardHeight: androidx.compose.ui.unit.Dp,
+    fontSize: androidx.compose.ui.unit.TextUnit
 ) {
-    val cardSize = if (isSeconds) 60.dp else 80.dp
-    val fontSize = if (isSeconds) 24.sp else 32.sp
+    val corner = (cardHeight.value / 10f).dp
 
     AnimatedContent(
         targetState = value,
@@ -148,10 +169,10 @@ private fun FlipCard(
     ) { targetValue ->
         Box(
             modifier = Modifier
-                .size(width = cardSize, height = cardSize)
+                .size(cardWidth, cardHeight)
                 .background(
                     color = cardColor,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(corner)
                 ),
             contentAlignment = Alignment.Center
         ) {

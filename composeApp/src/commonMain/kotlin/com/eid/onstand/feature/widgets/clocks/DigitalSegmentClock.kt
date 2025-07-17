@@ -3,9 +3,11 @@ package com.eid.onstand.feature.widgets.clocks
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -56,20 +58,29 @@ fun DigitalSegmentClock(
     val seconds = currentTime.format(LocalDateTime.Format { byUnicodePattern("ss") })
     val timeString = if (showSeconds) "$hour$minute$seconds" else "$hour$minute"
 
-    Column(
-        modifier = modifier.padding(16.dp),
-        horizontalAlignment = Alignment.Start,
-    ) {
+    BoxWithConstraints(modifier = modifier) {
+        val numDigits = if (showSeconds) 6 else 4
+        val numColons = if (showSeconds) 2 else 1
+        val totalParts = numDigits + numColons
+
+        val availableWidth = maxWidth.value * 0.9f // Leave some margin
+        val digitWidth = (availableWidth / (numDigits + numColons * 0.3f) * 0.8f).dp
+        val colonWidth = (digitWidth.value * 0.3f).dp
+
+        val digitHeight = (maxHeight.value * 0.6f).dp.coerceAtMost((digitWidth.value * 1.8f).dp)
+        val padding = (maxWidth.value * 0.03f).dp
+        val cornerRadius = (padding.value * 1.5f).dp
 
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(32.dp))
-                .padding(horizontal = 32.dp, vertical = 24.dp),
+                .fillMaxSize()
+                .padding(padding)
+                .clip(RoundedCornerShape(cornerRadius)),
             contentAlignment = Alignment.Center
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(padding * 0.5f)
             ) {
                 val activeBrush = Brush.verticalGradient(
                     colors = listOf(
@@ -80,35 +91,55 @@ fun DigitalSegmentClock(
 
                 SegmentedDigit(
                     digit = timeString[0],
+                    width = digitWidth,
+                    height = digitHeight,
                     activeBrush = activeBrush,
                     inactiveColor = inactiveColor
                 )
                 SegmentedDigit(
                     digit = timeString[1],
+                    width = digitWidth,
+                    height = digitHeight,
                     activeBrush = activeBrush,
                     inactiveColor = inactiveColor
                 )
-                ColonSeparator(color = activeColor)
+                ColonSeparator(
+                    width = colonWidth,
+                    height = digitHeight,
+                    color = activeColor
+                )
                 SegmentedDigit(
                     digit = timeString[2],
+                    width = digitWidth,
+                    height = digitHeight,
                     activeBrush = activeBrush,
                     inactiveColor = inactiveColor
                 )
                 SegmentedDigit(
                     digit = timeString[3],
+                    width = digitWidth,
+                    height = digitHeight,
                     activeBrush = activeBrush,
                     inactiveColor = inactiveColor
                 )
 
                 if (showSeconds) {
-                    ColonSeparator(color = activeColor)
+                    ColonSeparator(
+                        width = colonWidth,
+                        height = digitHeight,
+                        color = activeColor
+                    )
                     SegmentedDigit(
                         digit = timeString[4],
+                        width = digitWidth,
+                        height = digitHeight,
                         activeBrush = activeBrush,
                         inactiveColor = inactiveColor
                     )
                     SegmentedDigit(
                         digit = timeString[5],
+                        width = digitWidth,
+                        height = digitHeight,
                         activeBrush = activeBrush,
                         inactiveColor = inactiveColor
                     )
@@ -121,12 +152,13 @@ fun DigitalSegmentClock(
 @Composable
 private fun SegmentedDigit(
     digit: Char,
-    modifier: Modifier = Modifier,
+    width: androidx.compose.ui.unit.Dp,
+    height: androidx.compose.ui.unit.Dp,
     activeBrush: Brush,
     inactiveColor: Color
 ) {
     val segmentState = segmentPatterns[digit] ?: List(7) { false }
-    Canvas(modifier = modifier.size(width = 60.dp, height = 120.dp)) {
+    Canvas(modifier = Modifier.size(width, height)) {
         val segmentWidth = size.width / 5f
         val segmentHeight = segmentWidth
         val cornerRadius = CornerRadius(segmentHeight / 2, segmentHeight / 2)
@@ -189,19 +221,21 @@ private fun SegmentedDigit(
 
 @Composable
 private fun ColonSeparator(
-    modifier: Modifier = Modifier,
+    width: androidx.compose.ui.unit.Dp,
+    height: androidx.compose.ui.unit.Dp,
     color: Color
 ) {
     Column(
-        modifier = modifier.height(120.dp),
+        modifier = Modifier.size(width, height),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        val dotSize = 12.dp
+        val dotSize = (width.value * 0.8f).dp
+        val spacerHeight = (height.value * 0.2f).dp
         Canvas(modifier = Modifier.size(dotSize)) {
             drawCircle(color = color, radius = size.minDimension / 2)
         }
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(spacerHeight))
         Canvas(modifier = Modifier.size(dotSize)) {
             drawCircle(color = color, radius = size.minDimension / 2)
         }

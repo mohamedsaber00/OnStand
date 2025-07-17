@@ -333,10 +333,10 @@ private fun StaticColorOptionItem(
 
 @Composable
 fun ClockStyleSelector(
-    clockStyles: List<ClockStyle>,
-    selectedClockStyle: ClockStyle?,
+    clockTypes: List<ClockType>,
+    selectedClockType: ClockType?,
     selectedFontColor: FontColorOption?,
-    onClockStyleSelected: (ClockStyle) -> Unit,
+    onClockTypeSelected: (ClockType) -> Unit,
     onSecondsToggled: (Boolean) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -352,28 +352,38 @@ fun ClockStyleSelector(
         val listState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
 
+        // Supported clock types - add more IDs here to extend in the future
+        val supportedIds = listOf(
+            "digital_modern",
+            "digital_segments",
+            "flip_clock",
+            "analog_classic",
+            "morph_flip_clock"
+        )
+        val displayedTypes = clockTypes.filter { it.id in supportedIds }
+
         LazyRow(
             state = listState,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(horizontal = 4.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(clockStyles) { style ->
-                val isSelected = selectedClockStyle?.id == style.id
+            items(displayedTypes) { type ->
+                val isSelected = selectedClockType?.id == type.id
                 val scale by animateFloatAsState(
                     targetValue = if (isSelected) 1.1f else 1f,
                     animationSpec = tween(300)
                 )
 
                 ClockStyleItem(
-                    style = style,
+                    clockType = type,
                     fontColorOption = selectedFontColor ?: getFallbackFontColor(),
                     isSelected = isSelected,
                     onSelected = {
-                        onClockStyleSelected(style)
+                        onClockTypeSelected(type)
                         // Animate to center the selected item
                         coroutineScope.launch {
-                            val selectedIndex = clockStyles.indexOf(style)
+                            val selectedIndex = displayedTypes.indexOf(type)
                             listState.animateScrollToItem(
                                 index = selectedIndex,
                                 scrollOffset = -200
@@ -385,8 +395,13 @@ fun ClockStyleSelector(
             }
         }
 
-        // Show seconds toggle for digital clocks
-        if (selectedClockStyle?.isDigital == true) {
+        // Show seconds toggle for digital clocks that support it
+        val canShowSeconds = when (selectedClockType) {
+            is ClockType.Digital, is ClockType.Flip, is ClockType.Minimal -> true
+            else -> false
+        }
+
+        if (canShowSeconds) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
@@ -403,8 +418,15 @@ fun ClockStyleSelector(
                     color = Color.White
                 )
 
+                val isSecondsEnabled = when (selectedClockType) {
+                    is ClockType.Digital -> selectedClockType.showSeconds
+                    is ClockType.Flip -> selectedClockType.showSeconds
+                    is ClockType.Minimal -> selectedClockType.showSeconds
+                    else -> false
+                }
+
                 Switch(
-                    checked = selectedClockStyle.showSeconds,
+                    checked = isSecondsEnabled,
                     onCheckedChange = onSecondsToggled,
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
@@ -420,7 +442,7 @@ fun ClockStyleSelector(
 
 @Composable
 private fun ClockStyleItem(
-    style: ClockStyle,
+    clockType: ClockType,
     fontColorOption: FontColorOption,
     isSelected: Boolean,
     onSelected: () -> Unit,
@@ -456,7 +478,7 @@ private fun ClockStyleItem(
         ) {
             // Show actual clock face preview
             ClockFacePreview(
-                clockStyle = style,
+                clockType = clockType,
                 fontColorOption = fontColorOption,
                 isSelected = isSelected
             )
@@ -464,7 +486,7 @@ private fun ClockStyleItem(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = style.name,
+                text = clockType.name,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
                 color = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),

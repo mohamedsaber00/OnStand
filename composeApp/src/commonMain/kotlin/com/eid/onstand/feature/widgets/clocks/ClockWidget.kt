@@ -5,8 +5,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -46,30 +49,40 @@ fun ClockWidget(
     val currentTimeString =
         currentTime.format(LocalDateTime.Format { byUnicodePattern(timePattern) })
 
-    Box(modifier = modifier) {
-        Box(
+    BoxWithConstraints(modifier = modifier) {
+        val numChars = if (showSeconds) 8 else 5
+        val digitWidth = maxWidth / numChars.toFloat()
+        val colonWidth = digitWidth * 0.4f
+        val fontSize = (digitWidth.value * 0.8f).sp // Reduced from 1.2f to prevent overlap
+
+        Row(
             modifier = Modifier
-                .align(Alignment.Center)
-                .height(200.dp).width(550.dp)
-                .padding(horizontal = 48.dp, vertical = 24.dp)
-                .clip(RoundedCornerShape(24.dp)),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .padding(horizontal = maxWidth * 0.02f, vertical = maxHeight * 0.05f)
+                .clip(RoundedCornerShape(maxWidth * 0.02f)),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row {
-                currentTimeString.forEach { char ->
-                    AnimatedContent(targetState = char, transitionSpec = {
+            currentTimeString.forEach { char ->
+                val isColon = char == ':'
+                val width = if (isColon) colonWidth else digitWidth
+
+                AnimatedContent(
+                    targetState = char,
+                    transitionSpec = {
                         slideInVertically { it } togetherWith slideOutVertically { -it }
-                    }) {
-                        Text(
-                            text = it.toString(),
-                            color = textColor,
-                            fontSize = 80.sp,
-                            fontWeight = FontWeight.Medium,
-                            fontFamily = fontFamily,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.width(48.dp)
-                        )
-                    }
+                    },
+                    label = "DigitAnimation"
+                ) { targetChar ->
+                    Text(
+                        text = targetChar.toString(),
+                        color = textColor,
+                        fontSize = fontSize,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = fontFamily,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(width)
+                    )
                 }
             }
         }

@@ -149,7 +149,7 @@ fun ClockPreview(
                             fontFamily = getFontFamily(clockType.fontFamily)
                         )
                     }
-                    is ClockType.FlipMorph -> {
+                    is ClockType.MorphFlip -> {
                         MorphFlipClockWidget(
                             currentTime = localTime,
                             cardColor = Color(0xFFFFA77A).copy(alpha = 0.85f),
@@ -166,7 +166,7 @@ fun ClockPreview(
                                 ?: Color.White).copy(alpha = 0.8f)
                         )
                     }
-                    is ClockType.Digital, is ClockType.Minimal -> {
+                    is ClockType.Digital -> {
                         ClockWidget(
                             currentTime = localTime,
                             showSeconds = clockType.showSeconds,

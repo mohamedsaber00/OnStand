@@ -10,11 +10,6 @@ class ClockRepository {
             id = "digital_modern",
             name = "Digital"
         ),
-        ClockType.Digital(
-            id = "digital_seconds",
-            name = "Digital + Seconds",
-            showSeconds = true
-        ),
         ClockType.DigitalSegments(
             id = "digital_segments",
             name = "Digital Segments"
@@ -27,13 +22,9 @@ class ClockRepository {
             id = "flip_clock",
             name = "Flip Clock"
         ),
-        ClockType.FlipMorph(
+        ClockType.MorphFlip(
             id = "morph_flip_clock",
             name = "Morph Flip"
-        ),
-        ClockType.Minimal(
-            id = "minimal_digital",
-            name = "Minimal"
         )
     )
 

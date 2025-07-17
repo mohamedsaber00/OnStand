@@ -179,21 +179,11 @@ sealed class ClockType {
         override val showSeconds: Boolean = true
     ) : ClockType()
 
-    data class FlipMorph(
+    data class MorphFlip(
         override val id: String,
         override val name: String,
         override val fontFamily: String = "Roboto",
         override val showDate: Boolean = true,
-        override val timeFormat: TimeFormat = TimeFormat.TWELVE_HOUR,
-        override val isDigital: Boolean = true,
-        override val showSeconds: Boolean = false
-    ) : ClockType()
-
-    data class Minimal(
-        override val id: String,
-        override val name: String,
-        override val fontFamily: String = "Helvetica",
-        override val showDate: Boolean = false,
         override val timeFormat: TimeFormat = TimeFormat.TWELVE_HOUR,
         override val isDigital: Boolean = true,
         override val showSeconds: Boolean = false

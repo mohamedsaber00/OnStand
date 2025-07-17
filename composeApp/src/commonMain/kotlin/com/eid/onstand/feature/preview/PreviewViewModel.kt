@@ -71,8 +71,7 @@ class PreviewViewModel(
                 is ClockType.Digital -> currentClockType.copy(showSeconds = showSeconds)
                 is ClockType.DigitalSegments -> currentClockType.copy(showSeconds = showSeconds)
                 is ClockType.Flip -> currentClockType.copy(showSeconds = showSeconds)
-                is ClockType.FlipMorph -> currentClockType.copy(showSeconds = showSeconds)
-                is ClockType.Minimal -> currentClockType.copy(showSeconds = showSeconds)
+                is ClockType.MorphFlip -> currentClockType.copy(showSeconds = showSeconds)
                 else -> currentClockType
             }
 

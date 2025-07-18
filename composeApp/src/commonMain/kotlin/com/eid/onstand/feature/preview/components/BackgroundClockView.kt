@@ -31,7 +31,7 @@ import kotlinx.datetime.*
 
 @OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
-fun ClockPreview(
+fun BackgroundClockView(
     backgroundType: BackgroundType? = null,
     clockType: ClockType? = null,
     fontColorOption: FontColorOption? = null,

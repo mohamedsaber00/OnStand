@@ -1,5 +1,6 @@
 package com.eid.onstand.core.di
 
+import com.eid.onstand.AppViewModel
 import com.eid.onstand.core.data.BackgroundRepository
 import com.eid.onstand.core.data.ClockRepository
 import com.eid.onstand.core.data.CustomizationRepository
@@ -13,5 +14,6 @@ val appModule = module {
     single { ClockRepository() }
     single { UserPreferencesRepository(get(), get()) }
     single { CustomizationRepository(get(), get(), get()) }
+    viewModel { AppViewModel(get()) }
     viewModel { PreviewViewModel(get()) }
 }

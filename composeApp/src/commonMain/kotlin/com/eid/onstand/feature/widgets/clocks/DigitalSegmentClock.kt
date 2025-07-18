@@ -51,7 +51,8 @@ fun DigitalSegmentClock(
     currentTime: LocalDateTime,
     showSeconds: Boolean = true,
     activeColor: Color = Color.White.copy(alpha = 0.9f),
-    inactiveColor: Color = Color.White.copy(alpha = 0.1f)
+    inactiveColor: Color = Color.White.copy(alpha = 0.1f),
+    isPreview: Boolean = false
 ) {
     val hour = currentTime.format(LocalDateTime.Format { byUnicodePattern("HH") })
     val minute = currentTime.format(LocalDateTime.Format { byUnicodePattern("mm") })
@@ -63,12 +64,14 @@ fun DigitalSegmentClock(
         val numColons = if (showSeconds) 2 else 1
         val totalParts = numDigits + numColons
 
-        val availableWidth = maxWidth.value * 0.9f // Leave some margin
+        val scaleFactor = if (isPreview) 0.6f else 1f
+        val availableWidth = maxWidth.value * 0.9f * scaleFactor
         val digitWidth = (availableWidth / (numDigits + numColons * 0.3f) * 0.8f).dp
         val colonWidth = (digitWidth.value * 0.3f).dp
 
-        val digitHeight = (maxHeight.value * 0.6f).dp.coerceAtMost((digitWidth.value * 1.8f).dp)
-        val padding = (maxWidth.value * 0.03f).dp
+        val digitHeight =
+            (maxHeight.value * 0.6f * scaleFactor).dp.coerceAtMost((digitWidth.value * 1.8f).dp)
+        val padding = (maxWidth.value * 0.03f * scaleFactor).dp
         val cornerRadius = (padding.value * 1.5f).dp
 
         Box(

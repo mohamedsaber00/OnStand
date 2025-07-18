@@ -41,7 +41,8 @@ fun FlipClockWidget(
     currentTime: LocalDateTime,
     cardColor: Color = Color.Black.copy(alpha = 0.8f),
     textColor: Color = Color.White,
-    fontFamily: FontFamily = FontFamily.Monospace
+    fontFamily: FontFamily = FontFamily.Monospace,
+    isPreview: Boolean = false
 ) {
     val hour = currentTime.format(LocalDateTime.Format { byUnicodePattern("HH") })
     val minute = currentTime.format(LocalDateTime.Format { byUnicodePattern("mm") })
@@ -53,17 +54,20 @@ fun FlipClockWidget(
     val dateString = "$dayOfWeek, $date"
 
     BoxWithConstraints(modifier = modifier) {
-        val padding = (maxWidth.value * 0.05f).dp
+        val scaleFactor = if (isPreview) 0.5f else 1f
+        val padding = (maxWidth.value * 0.05f * scaleFactor).dp
         val cornerRadius = padding
 
-        val cardWidth = (maxWidth.value * 0.18f).dp // Adjust factors based on desired proportions
-        val cardHeight = (maxHeight.value * 0.35f).dp.coerceAtMost((cardWidth.value * 1.2f).dp)
+        val cardWidth =
+            (maxWidth.value * 0.18f * scaleFactor).dp // Adjust factors based on desired proportions
+        val cardHeight =
+            (maxHeight.value * 0.35f * scaleFactor).dp.coerceAtMost((cardWidth.value * 1.2f).dp)
         val secondsCardWidth = (cardWidth.value * 0.75f).dp
         val secondsCardHeight = (cardHeight.value * 0.75f).dp
 
         val fontSize = (cardWidth.value * 0.4f).sp
         val secondsFontSize = (secondsCardWidth.value * 0.4f).sp
-        val dateFontSize = (maxWidth.value * 0.05f).sp
+        val dateFontSize = (maxWidth.value * 0.05f * scaleFactor).sp
 
         Box(
             modifier = Modifier

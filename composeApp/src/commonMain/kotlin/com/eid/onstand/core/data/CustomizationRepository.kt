@@ -16,11 +16,7 @@ class CustomizationRepository(
 
     // New BackgroundType methods
     fun getBackgroundTypes(): List<BackgroundType> = backgroundRepository.getBackgroundTypes()
-    fun getGradientTypes(): List<BackgroundType> = backgroundRepository.getGradientTypes()
-    fun getSolidTypes(): List<BackgroundType> = backgroundRepository.getSolidTypes()
-    fun getPatternTypes(): List<BackgroundType> = backgroundRepository.getPatternTypes()
 
-    // Legacy BackgroundOption methods for backward compatibility
     fun getBackgroundOptions(): List<BackgroundOption> = backgroundRepository.getBackgroundOptions()
     fun getGradientOptions(): List<BackgroundOption> = backgroundRepository.getGradientOptions()
     fun getStaticColorOptions(): List<BackgroundOption> =
@@ -43,28 +39,6 @@ class CustomizationRepository(
         _customizationState.value = newState
     }
 
-    suspend fun saveCurrentState() {
-        userPreferencesRepository.saveCustomizationState(_customizationState.value)
-    }
-
-    suspend fun applyAndSaveCustomization() {
-        saveCurrentState()
-    }
-
-    suspend fun cancelCustomization() {
-        val savedState = userPreferencesRepository.loadCustomizationState()
-        if (savedState != null) {
-            _customizationState.value = savedState
-        } else {
-            _customizationState.value = userPreferencesRepository.getDefaultCustomizationState()
-        }
-    }
-
-    fun selectBackgroundType(backgroundType: BackgroundType) {
-        _customizationState.value = _customizationState.value.copy(
-            selectedBackground = backgroundType
-        )
-    }
 
     // Legacy method for backward compatibility
     fun selectBackground(background: BackgroundOption) {

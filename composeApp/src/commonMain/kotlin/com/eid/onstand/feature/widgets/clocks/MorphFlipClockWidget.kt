@@ -37,7 +37,8 @@ fun MorphFlipClockWidget(
     currentTime: LocalDateTime,
     cardColor: Color = Color(0xFFFFA77A).copy(alpha = 0.85f),
     textColor: Color = Color.Black,
-    fontFamily: FontFamily = FontFamily.Default
+    fontFamily: FontFamily = FontFamily.Default,
+    isPreview: Boolean = false
 ) {
     val hour = currentTime.format(LocalDateTime.Format { byUnicodePattern("HH") })
     val minute = currentTime.format(LocalDateTime.Format { byUnicodePattern("mm") })
@@ -47,9 +48,10 @@ fun MorphFlipClockWidget(
     val amPm = if (currentTime.hour < 12) "AM" else "PM"
 
     BoxWithConstraints(modifier = modifier) {
-        val padding = (maxWidth.value * 0.04f).dp
-        val cardWidth = (maxWidth.value * 0.3f).dp
-        val cardHeight = (maxHeight.value * 0.55f).dp
+        val scaleFactor = if (isPreview) 0.5f else 1f
+        val padding = (maxWidth.value * 0.04f * scaleFactor).dp
+        val cardWidth = (maxWidth.value * 0.3f * scaleFactor).dp
+        val cardHeight = (maxHeight.value * 0.55f * scaleFactor).dp
         val fontSize = (cardHeight.value * 0.55f).sp
         val sideLabelFont = (cardHeight.value * 0.18f).sp
 

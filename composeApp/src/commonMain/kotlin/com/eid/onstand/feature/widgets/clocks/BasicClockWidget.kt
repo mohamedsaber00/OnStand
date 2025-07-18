@@ -40,21 +40,23 @@ fun BasicClockWidget(
     showSeconds: Boolean = true,
     fontFamily: FontFamily = FontFamily.Default,
     textColor: Color = Color.White,
+    isPreview: Boolean = false
 ) {
     val timePattern = if (showSeconds) "HH:mm:ss" else "HH:mm"
     val currentTimeString =
         currentTime.format(LocalDateTime.Format { byUnicodePattern(timePattern) })
 
     BoxWithConstraints(modifier = modifier) {
+        val scaleFactor = if (isPreview) 0.6f else 1f
         val numChars = if (showSeconds) 8 else 5
-        val digitWidth = maxWidth / (numChars.toFloat() * 1.2f)
+        val digitWidth = maxWidth / (numChars.toFloat() * 1.2f) * scaleFactor
         val colonWidth = digitWidth * 0.6f
         val fontSize = (digitWidth.value * 1.4f).sp
 
         Row(
             modifier = Modifier
-                .padding(vertical = maxHeight * 0.05f)
-                .clip(RoundedCornerShape(maxWidth * 0.02f)),
+                .padding(vertical = maxHeight * 0.05f * scaleFactor)
+                .clip(RoundedCornerShape(maxWidth * 0.02f * scaleFactor)),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {

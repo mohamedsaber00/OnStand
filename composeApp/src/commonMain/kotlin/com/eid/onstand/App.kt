@@ -50,19 +50,6 @@ fun AppContent() {
 
     var showCustomization by remember { mutableStateOf(false) }
 
-
-
-    Box(modifier = Modifier) {
-
-        Text(
-            text = "Hello, World!",
-            modifier = Modifier.hazeEffect(
-                style = HazeMaterials.ultraThin()
-            ).align(Alignment.Center)
-        )
-    }
-
-
        // Load saved customization state on app start
         LaunchedEffect(Unit) {
             customizationRepository.loadCustomizationState()

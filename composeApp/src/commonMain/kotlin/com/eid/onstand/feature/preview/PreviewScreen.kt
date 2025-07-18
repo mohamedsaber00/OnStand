@@ -87,7 +87,10 @@ fun PreviewScreen(
                     clockType = customizationState.selectedClockType,
                     fontColorOption = customizationState.selectedFontColor,
                     layoutOption = customizationState.selectedLayout,
-                    modifier = Modifier.padding(bottom = 24.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2.5f)
+                        .padding(bottom = 24.dp)
                 )
 
                 // Background Selection

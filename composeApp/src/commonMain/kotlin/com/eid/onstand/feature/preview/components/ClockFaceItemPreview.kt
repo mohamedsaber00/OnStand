@@ -77,7 +77,7 @@ fun ClockFaceItemPreview(
                 )
             }
             is ClockType.Digital -> {
-                ClockWidget(
+                BasicClockWidget(
                     currentTime = currentTime,
                     showSeconds = clockType.showSeconds,
                     fontFamily = getFontFamily(clockType.fontFamily),

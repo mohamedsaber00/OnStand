@@ -11,10 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.*
 import com.eid.onstand.core.theme.BlurConstants
 import com.eid.onstand.core.theme.ColorConstants
@@ -28,10 +25,7 @@ import com.mikepenz.hypnoticcanvas.shaderBackground
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
-import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
 import kotlinx.coroutines.delay
 import kotlinx.datetime.*
 
@@ -205,7 +199,7 @@ fun ClockPreview(
                     }
 
                     is ClockType.Digital -> {
-                        ClockWidget(
+                        BasicClockWidget(
                             currentTime = localTime,
                             showSeconds = clockType.showSeconds,
                             fontFamily = getFontFamily(clockType.fontFamily),
@@ -218,7 +212,7 @@ fun ClockPreview(
 
                     null -> {
                         // Default fallback
-                        ClockWidget(
+                        BasicClockWidget(
                             currentTime = localTime,
                             showSeconds = false,
                             fontFamily = getFontFamily("Roboto"),

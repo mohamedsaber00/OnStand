@@ -26,7 +26,7 @@ A beautiful Compose Multiplatform (KMP) live clock app with animated backgrounds
 - **Framework**: Compose Multiplatform with Material 3
 - **Architecture**: Clean separation of concerns
   - `AnimatedBackground.kt` - Gradient animation component
-  - `ClockWidget.kt` - Real-time clock display
+  - `BasicClockWidget.kt` - Real-time clock display
   - `MainScreen.kt` - Main UI that combines both components
 - **Time Handling**: Platform-specific implementations using expect/actual pattern
 - **Font**: Custom Orbitron TTF font bundled in resources
@@ -40,7 +40,7 @@ composeApp/src/
 │   │   ├── App.kt                  # Main app entry point
 │   │   ├── MainScreen.kt          # Main screen combining components
 │   │   ├── AnimatedBackground.kt   # Animated gradient background
-│   │   └── ClockWidget.kt         # Live clock widget
+│   │   └── BasicClockWidget.kt         # Live clock widget
 │   └── composeResources/
 │       └── font/
 │           └── digital_clock.ttf  # Custom font

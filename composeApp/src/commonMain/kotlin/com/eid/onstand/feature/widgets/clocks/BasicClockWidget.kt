@@ -34,7 +34,7 @@ import kotlinx.datetime.format.byUnicodePattern
     FormatStringsInDatetimeFormats::class, ExperimentalAnimationApi::class
 )
 @Composable
-fun ClockWidget(
+fun BasicClockWidget(
     modifier: Modifier = Modifier,
     currentTime: LocalDateTime,
     showSeconds: Boolean = true,
@@ -47,13 +47,13 @@ fun ClockWidget(
 
     BoxWithConstraints(modifier = modifier) {
         val numChars = if (showSeconds) 8 else 5
-        val digitWidth = maxWidth / numChars.toFloat()
-        val colonWidth = digitWidth * 0.4f
-        val fontSize = (digitWidth.value * 0.8f).sp // Reduced from 1.2f to prevent overlap
+        val digitWidth = maxWidth / (numChars.toFloat() * 1.2f)
+        val colonWidth = digitWidth * 0.6f
+        val fontSize = (digitWidth.value * 1.4f).sp
 
         Row(
             modifier = Modifier
-                .padding(horizontal = maxWidth * 0.02f, vertical = maxHeight * 0.05f)
+                .padding(vertical = maxHeight * 0.05f)
                 .clip(RoundedCornerShape(maxWidth * 0.02f)),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically

@@ -23,6 +23,8 @@ import com.eid.onstand.core.data.CustomizationRepository
 import com.eid.onstand.core.di.appModule
 import com.eid.onstand.feature.preview.PreviewScreen
 import com.eid.onstand.feature.preview.components.ClockPreview
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.materials.HazeMaterials
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
@@ -48,41 +50,54 @@ fun AppContent() {
 
     var showCustomization by remember { mutableStateOf(false) }
 
-    // Load saved customization state on app start
-    LaunchedEffect(Unit) {
-        customizationRepository.loadCustomizationState()
+
+
+    Box(modifier = Modifier) {
+
+        Text(
+            text = "Hello, World!",
+            modifier = Modifier.hazeEffect(
+                style = HazeMaterials.ultraThin()
+            ).align(Alignment.Center)
+        )
     }
 
-    if (showCustomization) {
-        PreviewScreen(
-            onBackPressed = { showCustomization = false }
-        )
-    } else {
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Display the chosen background and clock
-            ClockPreview(
-                backgroundType = customizationState.selectedBackground,
-                clockType = customizationState.selectedClockType,
-                fontColorOption = customizationState.selectedFontColor,
-                layoutOption = customizationState.selectedLayout,
-                modifier = Modifier.fillMaxSize()
-            )
 
-            // Floating Action Button to open customization
-            FloatingActionButton(
-                onClick = { showCustomization = true },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
-                containerColor = Color(0xFF7B68EE),
-                shape = CircleShape
-            ) {
-                Text(
-                    text = "⚙️",
-                    fontSize = 24.sp,
-                    color = Color.White
+       // Load saved customization state on app start
+        LaunchedEffect(Unit) {
+            customizationRepository.loadCustomizationState()
+        }
+
+        if (showCustomization) {
+            PreviewScreen(
+                onBackPressed = { showCustomization = false }
+            )
+        } else {
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Display the chosen background and clock
+                ClockPreview(
+                    backgroundType = customizationState.selectedBackground,
+                    clockType = customizationState.selectedClockType,
+                    fontColorOption = customizationState.selectedFontColor,
+                    layoutOption = customizationState.selectedLayout,
+                    modifier = Modifier.fillMaxSize()
                 )
+
+                // Floating Action Button to open customization
+                FloatingActionButton(
+                    onClick = { showCustomization = true },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                    containerColor = Color(0xFF7B68EE),
+                    shape = CircleShape
+                ) {
+                    Text(
+                        text = "⚙️",
+                        fontSize = 24.sp,
+                        color = Color.White
+                    )
+                }
             }
         }
-    }
 }

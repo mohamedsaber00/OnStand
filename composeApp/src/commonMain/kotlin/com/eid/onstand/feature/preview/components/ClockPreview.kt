@@ -16,15 +16,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.*
+import com.eid.onstand.core.theme.BlurConstants
+import com.eid.onstand.core.theme.ColorConstants
+import com.eid.onstand.core.theme.GradientConstants
 import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
 import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
 import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground
 import com.eid.onstand.feature.backgrounds.shader.*
 import com.eid.onstand.feature.widgets.clocks.*
 import com.mikepenz.hypnoticcanvas.shaderBackground
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.chrisbanes.haze.rememberHazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
 import kotlinx.coroutines.delay
 import kotlinx.datetime.*
 
+@OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
 fun ClockPreview(
     backgroundType: BackgroundType? = null,
@@ -35,6 +46,10 @@ fun ClockPreview(
 ) {
     var currentTime by remember { mutableStateOf(Clock.System.now()) }
 
+
+    val hazeState = rememberHazeState()
+
+
     LaunchedEffect(Unit) {
         while (true) {
             currentTime = Clock.System.now()
@@ -42,24 +57,22 @@ fun ClockPreview(
         }
     }
 
-    Card(
+    Box(
         modifier = modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .clip(RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        )
+            .fillMaxSize()
     ) {
+        // Background content - this is the haze source
         Box(
             modifier = Modifier
-                .fillMaxSize().align(Alignment.CenterHorizontally)
+                .fillMaxSize()
+                .hazeSource(hazeState)
                 .then(
                     // Apply shader background if it's a shader type
                     when (backgroundType) {
                         is BackgroundType.Shader -> {
                             when (backgroundType.shaderType) {
                                 ShaderType.ETHER -> Modifier.shaderBackground(EtherShader)
+
                                 ShaderType.GLOWING_RING -> Modifier.shaderBackground(GlowingRing)
                                 ShaderType.MOVING_TRIANGLES -> Modifier.shaderBackground(
                                     MovingTrianglesShader
@@ -73,6 +86,7 @@ fun ClockPreview(
                                 ShaderType.MOVING_WAVES -> Modifier.shaderBackground(
                                     MovingWaveShader
                                 )
+
                                 ShaderType.TURBULENCE -> Modifier.shaderBackground(TurbulenceShader)
                             }
                         }
@@ -98,11 +112,7 @@ fun ClockPreview(
                         LiveAnimationType.ANIMATED_PARTICLES -> {
                             AnimatedBackground(
                                 modifier = Modifier.fillMaxSize(),
-                                colors = listOf(
-                                    Color(0xFF4A90E2),
-                                    Color(0xFF7B68EE),
-                                    Color(0xFF9B59B6)
-                                )
+                                colors = GradientConstants.DEFAULT_GRADIENT_COLORS
                             )
                         }
 
@@ -120,8 +130,27 @@ fun ClockPreview(
 
                 else -> {}
             }
+        }
 
-            // Clock Content
+        // Clock card - this applies the haze effect
+        // Use a custom HazeStyle for minimum blur
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(0.6f)
+                .aspectRatio(2.5f)
+                // Width:Height ratio for a more rectangular card
+                .clip(RoundedCornerShape(16.dp))
+                .hazeEffect(
+                    state = hazeState,
+                    style = BlurConstants.MIN_BLUR_HAZE_STYLE
+                )
+                .padding(16.dp)
+
+                .align(Alignment.Center),
+            colors = CardDefaults.cardColors(
+                containerColor = ColorConstants.TRANSPARENT
+            ),
+        ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -135,53 +164,69 @@ fun ClockPreview(
                         DigitalSegmentClock(
                             currentTime = localTime,
                             showSeconds = clockType.showSeconds,
-                            activeColor = fontColorOption?.primaryColor ?: Color.White,
-                            inactiveColor = (fontColorOption?.primaryColor ?: Color.White).copy(
-                                alpha = 0.1f
+                            activeColor = fontColorOption?.primaryColor
+                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            inactiveColor = (fontColorOption?.primaryColor
+                                ?: ColorConstants.DEFAULT_TEXT_COLOR).copy(
+                                alpha = ColorConstants.DEFAULT_INACTIVE_COLOR_ALPHA
                             )
                         )
                     }
+
                     is ClockType.Flip -> {
                         FlipClockWidget(
                             currentTime = localTime,
-                            cardColor = Color.Black.copy(alpha = 0.6f),
-                            textColor = fontColorOption?.primaryColor ?: Color.White,
+                            cardColor = ColorConstants.DEFAULT_CARD_COLOR,
+                            textColor = fontColorOption?.primaryColor
+                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
                             fontFamily = getFontFamily(clockType.fontFamily)
                         )
                     }
+
                     is ClockType.MorphFlip -> {
                         MorphFlipClockWidget(
                             currentTime = localTime,
-                            cardColor = Color(0xFFFFA77A).copy(alpha = 0.85f),
+                            cardColor = ColorConstants.DEFAULT_MORPH_CARD_COLOR,
                             textColor = fontColorOption?.primaryColor ?: Color.Black,
                             fontFamily = getFontFamily(clockType.fontFamily)
                         )
                     }
+
                     is ClockType.Analog -> {
                         AnalogClockWidget(
                             currentTime = localTime,
-                            clockColor = fontColorOption?.primaryColor ?: Color.White,
-                            handsColor = fontColorOption?.primaryColor ?: Color.White,
+                            clockColor = fontColorOption?.primaryColor
+                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            handsColor = fontColorOption?.primaryColor
+                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
                             numbersColor = (fontColorOption?.primaryColor
-                                ?: Color.White).copy(alpha = 0.8f)
+                                ?: ColorConstants.DEFAULT_TEXT_COLOR).copy(alpha = ColorConstants.DEFAULT_NUMBERS_COLOR_ALPHA)
                         )
                     }
+
                     is ClockType.Digital -> {
                         ClockWidget(
                             currentTime = localTime,
                             showSeconds = clockType.showSeconds,
                             fontFamily = getFontFamily(clockType.fontFamily),
-                            textColor = fontColorOption?.primaryColor ?: Color.White
+                            textColor = fontColorOption?.primaryColor
+                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            modifier = Modifier
+
                         )
                     }
+
                     null -> {
                         // Default fallback
                         ClockWidget(
                             currentTime = localTime,
                             showSeconds = false,
                             fontFamily = getFontFamily("Roboto"),
-                            textColor = fontColorOption?.primaryColor ?: Color.White
+                            textColor = fontColorOption?.primaryColor
+                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            modifier = Modifier
                         )
+
                     }
                 }
             }
@@ -230,11 +275,13 @@ private fun getBackgroundBrush(backgroundType: BackgroundType?): Brush {
                 )
             }
         }
+
         is BackgroundType.Solid -> {
             Brush.linearGradient(
                 listOf(backgroundType.color, backgroundType.color)
             )
         }
+
         is BackgroundType.Pattern -> {
             Brush.linearGradient(
                 listOf(
@@ -243,22 +290,19 @@ private fun getBackgroundBrush(backgroundType: BackgroundType?): Brush {
                 )
             )
         }
+
         is BackgroundType.Live -> {
             // For live backgrounds, use transparent so animation shows through
-            Brush.linearGradient(
-                listOf(Color.Transparent, Color.Transparent)
-            )
+            GradientConstants.TRANSPARENT_GRADIENT
         }
+
         is BackgroundType.Shader -> {
             // For shader backgrounds, use transparent since shader is applied via modifier
-            Brush.linearGradient(
-                listOf(Color.Transparent, Color.Transparent)
-            )
+            GradientConstants.TRANSPARENT_GRADIENT
         }
+
         null -> {
-            Brush.linearGradient(
-                listOf(Color.Black, Color.Black)
-            )
+            GradientConstants.BLACK_GRADIENT
         }
     }
 }

@@ -14,7 +14,9 @@ import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun ClockFaceItemPreview(
     clockType: ClockType,
@@ -24,13 +26,14 @@ fun ClockFaceItemPreview(
 ) {
     var currentTime by remember {
         mutableStateOf(
-            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         )
     }
 
     LaunchedEffect(Unit) {
         while (true) {
-            currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            currentTime =
+                kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             delay(1000)
         }
     }
@@ -49,6 +52,7 @@ fun ClockFaceItemPreview(
                     modifier = Modifier.size(100.dp, 60.dp)
                 )
             }
+
             is ClockType.Flip -> {
                 FlipClockWidget(
                     currentTime = currentTime,
@@ -58,6 +62,7 @@ fun ClockFaceItemPreview(
                     modifier = Modifier.size(100.dp, 60.dp)
                 )
             }
+
             is ClockType.MorphFlip -> {
                 MorphFlipClockWidget(
                     currentTime = currentTime,
@@ -67,6 +72,7 @@ fun ClockFaceItemPreview(
                     modifier = Modifier.size(100.dp, 60.dp)
                 )
             }
+
             is ClockType.Analog -> {
                 AnalogClockWidget(
                     currentTime = currentTime,
@@ -76,6 +82,7 @@ fun ClockFaceItemPreview(
                     modifier = Modifier.size(60.dp)
                 )
             }
+
             is ClockType.Digital -> {
                 BasicClockWidget(
                     currentTime = currentTime,

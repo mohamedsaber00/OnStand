@@ -62,26 +62,4 @@ class ClockRepository {
         )
     )
 
-    fun getLayoutOptions(): List<LayoutOption> = listOf(
-        LayoutOption(
-            name = "Previous Minutes",
-            showPreviousMinutes = true,
-            alignment = TimeAlignment.CENTER
-        ),
-        LayoutOption(
-            name = "Clean Center",
-            showPreviousMinutes = false,
-            alignment = TimeAlignment.CENTER
-        ),
-        LayoutOption(
-            name = "Left Aligned",
-            showPreviousMinutes = true,
-            alignment = TimeAlignment.LEFT
-        ),
-        LayoutOption(
-            name = "Right Aligned",
-            showPreviousMinutes = false,
-            alignment = TimeAlignment.RIGHT
-        )
-    )
 }

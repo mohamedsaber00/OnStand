@@ -35,39 +35,42 @@ class PreviewViewModel(
             staticColorOptions = customizationRepository.getStaticColorOptions(),
             clockTypes = customizationRepository.getClockTypes(),
             fontColorOptions = customizationRepository.getFontColorOptions(),
-            layoutOptions = customizationRepository.getLayoutOptions()
         )
 
         // Set default selections using the new BackgroundType methods
         val defaultBackgroundType = customizationRepository.getBackgroundTypes().first()
         val defaultClockType = customizationRepository.getClockTypes().first()
         val defaultFontColor = customizationRepository.getFontColorOptions().first()
-        val defaultLayout = customizationRepository.getLayoutOptions().first()
 
         customizationRepository.updateCustomizationState(
             CustomizationState(
                 selectedBackground = defaultBackgroundType,
                 selectedClockType = defaultClockType,
                 selectedFontColor = defaultFontColor,
-                selectedLayout = defaultLayout
             )
         )
     }
 
     fun selectBackground(background: BackgroundOption) {
-        customizationRepository.selectBackground(background)
-        // Manually update the UI state
-        _uiState.value = _uiState.value.copy(
-            customizationState = customizationRepository.customizationState.value
-        )
+        viewModelScope.launch {
+            customizationRepository.selectBackground(background)
+            // Manually update the UI state
+            _uiState.value = _uiState.value.copy(
+                customizationState = customizationRepository.customizationState.value
+            )
+        }
     }
 
     fun selectClockType(clockType: ClockType) {
-        customizationRepository.selectClockType(clockType)
-        // Manually update the UI state
-        _uiState.value = _uiState.value.copy(
-            customizationState = customizationRepository.customizationState.value
-        )
+
+        viewModelScope.launch {
+            customizationRepository.selectClockType(clockType)
+            // Manually update the UI state
+            _uiState.value = _uiState.value.copy(
+                customizationState = customizationRepository.customizationState.value
+            )
+        }
+
     }
 
     fun toggleSeconds(showSeconds: Boolean) {
@@ -81,28 +84,27 @@ class PreviewViewModel(
                 else -> currentClockType
             }
 
-            customizationRepository.selectClockType(updatedClockType)
+
+            viewModelScope.launch {
+                customizationRepository.selectClockType(updatedClockType)
+                // Manually update the UI state
+                _uiState.value = _uiState.value.copy(
+                    customizationState = customizationRepository.customizationState.value
+                )
+            }
+        }
+    }
+
+    fun selectFontColor(fontColor: FontColorOption) {
+        viewModelScope.launch {
+            customizationRepository.selectFontColor(fontColor)
             // Manually update the UI state
             _uiState.value = _uiState.value.copy(
                 customizationState = customizationRepository.customizationState.value
             )
         }
-    }
 
-    fun selectFontColor(fontColor: FontColorOption) {
-        customizationRepository.selectFontColor(fontColor)
-        // Manually update the UI state
-        _uiState.value = _uiState.value.copy(
-            customizationState = customizationRepository.customizationState.value
-        )
-    }
 
-    fun selectLayout(layout: LayoutOption) {
-        customizationRepository.selectLayout(layout)
-        // Manually update the UI state
-        _uiState.value = _uiState.value.copy(
-            customizationState = customizationRepository.customizationState.value
-        )
     }
 
     fun applyCustomization() {
@@ -136,7 +138,6 @@ data class PreviewUiState(
     val staticColorOptions: List<BackgroundOption> = emptyList(),
     val clockTypes: List<ClockType> = emptyList(),
     val fontColorOptions: List<FontColorOption> = emptyList(),
-    val layoutOptions: List<LayoutOption> = emptyList(),
     val customizationState: CustomizationState = CustomizationState(),
     val isInCustomizationMode: Boolean = false,
     val isCustomizationApplied: Boolean = false,

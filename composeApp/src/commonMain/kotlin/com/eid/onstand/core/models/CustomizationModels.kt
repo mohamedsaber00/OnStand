@@ -208,7 +208,6 @@ data class CustomizationState(
     val selectedBackground: BackgroundType? = null,
     val selectedClockType: ClockType? = null,
     val selectedFontColor: FontColorOption? = null,
-    val selectedLayout: LayoutOption? = null
 )
 
 @Serializable
@@ -218,5 +217,4 @@ data class SerializableCustomizationState(
     val clockTypeId: String? = null,
     val clockTypeName: String? = null,
     val fontColorId: String? = null,
-    val layoutId: String? = null
 )

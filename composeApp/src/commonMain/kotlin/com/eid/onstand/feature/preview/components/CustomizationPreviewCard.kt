@@ -23,16 +23,17 @@ import com.eid.onstand.feature.backgrounds.shader.*
 import com.eid.onstand.feature.widgets.clocks.*
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import kotlinx.coroutines.delay
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun CustomizationPreviewCard(
     backgroundType: BackgroundType?,
     clockType: ClockType?,
     fontColorOption: FontColorOption?,
-    layoutOption: LayoutOption?,
     modifier: Modifier = Modifier
 ) {
     var currentTime by remember { mutableStateOf(Clock.System.now()) }

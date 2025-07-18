@@ -28,17 +28,18 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
 import kotlinx.datetime.*
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalHazeMaterialsApi::class)
+@OptIn(ExperimentalHazeMaterialsApi::class, ExperimentalTime::class)
 @Composable
 fun BackgroundClockView(
     backgroundType: BackgroundType? = null,
     clockType: ClockType? = null,
     fontColorOption: FontColorOption? = null,
-    layoutOption: LayoutOption? = null,
     modifier: Modifier = Modifier
 ) {
-    var currentTime by remember { mutableStateOf(Clock.System.now()) }
+    var currentTime by remember { mutableStateOf(Clock.System.now() )}
 
 
     val hazeState = rememberHazeState()

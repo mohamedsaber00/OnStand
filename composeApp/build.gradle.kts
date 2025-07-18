@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 repositories {
@@ -76,11 +77,11 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
+            implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.coroutines.core)
-            implementation("androidx.datastore:datastore-core:1.1.1")
-            implementation("androidx.datastore:datastore-preferences:1.1.1")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+            implementation(libs.androidx.datastore.core)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.skiko)
             implementation(libs.haze)
             implementation(libs.haze.materials)
@@ -88,7 +89,7 @@ kotlin {
             implementation(libs.hypnoticcanvas.shaders)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
-            implementation("io.insert-koin:koin-compose-viewmodel:4.0.0")
+            implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -80,7 +80,6 @@ fun PreviewScreen(
                     backgroundType = customizationState.selectedBackground,
                     clockType = customizationState.selectedClockType,
                     fontColorOption = customizationState.selectedFontColor,
-                    layoutOption = customizationState.selectedLayout,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(0.3f)

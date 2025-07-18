@@ -4,11 +4,12 @@ import androidx.compose.ui.graphics.Color
 import com.eid.onstand.core.models.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 
 class CustomizationRepository(
     private val backgroundRepository: BackgroundRepository,
     private val clockRepository: ClockRepository,
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val customizationDataSource: CustomizationDataSource
 ) {
 
     private val _customizationState = MutableStateFlow(CustomizationState())
@@ -24,15 +25,9 @@ class CustomizationRepository(
 
     fun getClockTypes(): List<ClockType> = clockRepository.getClockTypes()
     fun getFontColorOptions(): List<FontColorOption> = clockRepository.getFontColorOptions()
-    fun getLayoutOptions(): List<LayoutOption> = clockRepository.getLayoutOptions()
 
     suspend fun initializeWithSavedState() {
-        val savedState = userPreferencesRepository.loadCustomizationState()
-        if (savedState != null) {
-            _customizationState.value = savedState
-        } else {
-            _customizationState.value = userPreferencesRepository.getDefaultCustomizationState()
-        }
+        loadCustomizationState()
     }
 
     fun updateCustomizationState(newState: CustomizationState) {
@@ -41,43 +36,89 @@ class CustomizationRepository(
 
 
     // Legacy method for backward compatibility
-    fun selectBackground(background: BackgroundOption) {
+    suspend fun selectBackground(background: BackgroundOption) {
         // Convert BackgroundOption to BackgroundType for now
         // This is a temporary solution during migration
         val backgroundType = convertBackgroundOptionToType(background)
         _customizationState.value = _customizationState.value.copy(
             selectedBackground = backgroundType
         )
+        saveCustomizationState()
     }
 
-    fun selectClockType(clockType: ClockType) {
+    suspend fun selectClockType(clockType: ClockType) {
         _customizationState.value = _customizationState.value.copy(
             selectedClockType = clockType
         )
+        saveCustomizationState()
     }
 
-    fun selectFontColor(fontColor: FontColorOption) {
+    suspend fun selectFontColor(fontColor: FontColorOption) {
         _customizationState.value = _customizationState.value.copy(
             selectedFontColor = fontColor
         )
+        saveCustomizationState()
     }
-
-    fun selectLayout(layout: LayoutOption) {
-        _customizationState.value = _customizationState.value.copy(
-            selectedLayout = layout
-        )
-    }
-
     suspend fun saveCustomizationState() {
-        userPreferencesRepository.saveCustomizationState(_customizationState.value)
+        val currentState = _customizationState.value
+        val serializableState = SerializableCustomizationState(
+            backgroundId = currentState.selectedBackground?.name,
+            backgroundType = getBackgroundTypeString(currentState.selectedBackground),
+            clockTypeId = currentState.selectedClockType?.name,
+            clockTypeName = currentState.selectedClockType?.name,
+            fontColorId = currentState.selectedFontColor?.name,
+        )
+        customizationDataSource.saveCustomizationState(serializableState)
     }
 
     suspend fun loadCustomizationState() {
-        val savedState = userPreferencesRepository.loadCustomizationState()
+        val savedState = customizationDataSource.getCustomizationState().firstOrNull()
         if (savedState != null) {
-            _customizationState.value = savedState
+            val customizationState = convertToCustomizationState(savedState)
+            _customizationState.value = customizationState
         }
     }
+
+    private fun getBackgroundTypeString(background: BackgroundType?): String? {
+        return when (background) {
+            is BackgroundType.Solid -> "solid"
+            is BackgroundType.Gradient -> "gradient"
+            is BackgroundType.Shader -> "shader"
+            is BackgroundType.Live -> "live"
+            is BackgroundType.Pattern -> "pattern"
+            null -> null
+        }
+    }
+
+    private fun convertToCustomizationState(savedState: SerializableCustomizationState): CustomizationState {
+        val background =
+            findBackgroundByNameAndType(savedState.backgroundId, savedState.backgroundType)
+        val clockType = findClockTypeByName(savedState.clockTypeId)
+        val fontColor = findFontColorByName(savedState.fontColorId)
+
+        return CustomizationState(
+            selectedBackground = background,
+            selectedClockType = clockType,
+            selectedFontColor = fontColor,
+        )
+    }
+
+    private fun findBackgroundByNameAndType(name: String?, type: String?): BackgroundType? {
+        if (name == null) return null
+        return getBackgroundTypes().find { it.name == name }
+    }
+
+    private fun findClockTypeByName(name: String?): ClockType? {
+        if (name == null) return null
+        return getClockTypes().find { it.name == name }
+    }
+
+    private fun findFontColorByName(name: String?): FontColorOption? {
+        if (name == null) return null
+        return getFontColorOptions().find { it.name == name }
+    }
+
+
 
     // Helper method to convert BackgroundOption to BackgroundType during migration
     private fun convertBackgroundOptionToType(option: BackgroundOption): BackgroundType {

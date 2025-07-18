@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.di.appModule
+import com.eid.onstand.core.di.getPlatformModule
 import com.eid.onstand.feature.preview.PreviewScreen
 import com.eid.onstand.feature.preview.components.BackgroundClockView
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -27,7 +28,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun App() {
     KoinApplication(
         application = {
-            modules(appModule)
+            modules(appModule, getPlatformModule())
         }
     ) {
         MaterialTheme {
@@ -53,7 +54,6 @@ fun AppContent() {
                 backgroundType = customizationState.selectedBackground,
                 clockType = customizationState.selectedClockType,
                 fontColorOption = customizationState.selectedFontColor,
-                layoutOption = customizationState.selectedLayout,
                 modifier = Modifier.fillMaxSize()
             )
 

@@ -32,9 +32,9 @@ import com.eid.onstand.feature.backgrounds.shader.MovingTrianglesShader
 import com.eid.onstand.feature.backgrounds.shader.MovingWaveShader
 import com.eid.onstand.feature.backgrounds.shader.PaletteShader
 import com.eid.onstand.feature.backgrounds.shader.PurpleGradientShader
+import com.eid.onstand.feature.backgrounds.shader.PurpleSmokeShader
 import com.eid.onstand.feature.backgrounds.shader.RedShader
 import com.eid.onstand.feature.backgrounds.shader.SpaceShader
-import com.eid.onstand.feature.backgrounds.shader.TurbulenceShader
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import kotlinx.coroutines.launch
 
@@ -188,7 +188,8 @@ private fun BackgroundOptionItem(
                                 ShaderType.SPACE -> Modifier.shaderBackground(SpaceShader)
                                 ShaderType.PALETTE -> Modifier.shaderBackground(PaletteShader)
                                 ShaderType.RED -> Modifier.shaderBackground(RedShader)
-                                ShaderType.TURBULENCE -> Modifier.shaderBackground(TurbulenceShader)
+                                ShaderType.PURPLE_SMOKE -> Modifier.shaderBackground(
+                                    PurpleSmokeShader)
                             }
                         }
 

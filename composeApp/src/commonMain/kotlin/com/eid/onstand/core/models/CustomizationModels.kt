@@ -60,7 +60,7 @@ enum class ShaderType {
     PALETTE,
     RED,
     MOVING_WAVES,
-    TURBULENCE
+    PURPLE_SMOKE
 }
 
 enum class LiveAnimationType {

@@ -50,7 +50,7 @@ class BackgroundRepository {
         BackgroundType.Shader(
             name = "Turbulence",
             previewColor = Color(0xFF8E44AD),
-            shaderType = ShaderType.TURBULENCE
+            shaderType = ShaderType.PURPLE_SMOKE
         ),
 
         // Live Animated Backgrounds
@@ -118,7 +118,7 @@ class BackgroundRepository {
         BackgroundOption.Shader(
             name = "Turbulence",
             previewColor = Color(0xFF8E44AD),
-            shaderType = ShaderType.TURBULENCE
+            shaderType = ShaderType.PURPLE_SMOKE
         ),
 
         // Live Animated Backgrounds

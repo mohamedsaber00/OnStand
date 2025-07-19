@@ -84,7 +84,7 @@ fun BackgroundClockView(
                                     MovingWaveShader
                                 )
 
-                                ShaderType.TURBULENCE -> Modifier.shaderBackground(TurbulenceShader)
+                                ShaderType.PURPLE_SMOKE -> Modifier.shaderBackground(PurpleSmokeShader)
                             }
                         }
 

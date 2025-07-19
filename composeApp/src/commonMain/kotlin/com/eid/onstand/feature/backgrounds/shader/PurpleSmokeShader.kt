@@ -2,24 +2,24 @@ package com.eid.onstand.feature.backgrounds.shader
 
 import com.mikepenz.hypnoticcanvas.shaders.Shader
 
-object PaletteShader : Shader {
+object PurpleSmokeShader : Shader {
     override val name: String
-        get() = "Palette"
+        get() = "Hell"
 
     override val authorName: String
-        get() = "Unknown (ported by you)"
+        get() = "Inigo Quilez (ported by you)"
 
     override val authorUrl: String
-        get() = ""
+        get() = "https://iquilezles.org/"
 
     override val credit: String
-        get() = "Palette Shader with customizable color schemes"
+        get() = "https://www.shadertoy.com/view/XdfGzH"
 
     override val license: String
         get() = "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License"
 
     override val licenseUrl: String
-        get() = "https://creativecommons.org/licenses/by-nc-sa/3.0/"
+        get() = "https://www.shadertoy.com/terms"
 
     override val speedModifier: Float
         get() = 1.0f

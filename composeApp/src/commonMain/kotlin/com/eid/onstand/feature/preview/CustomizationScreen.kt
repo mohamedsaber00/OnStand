@@ -82,7 +82,7 @@ fun PreviewScreen(
                     fontColorOption = customizationState.selectedFontColor,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.3f)
+                        .weight(0.7f)
                         .padding(bottom = 24.dp)
                 )
 

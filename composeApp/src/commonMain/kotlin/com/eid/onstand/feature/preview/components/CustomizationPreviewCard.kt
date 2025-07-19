@@ -21,6 +21,7 @@ import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
 import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground
 import com.eid.onstand.feature.backgrounds.shader.*
 import com.eid.onstand.feature.backgrounds.shader.PaletteShader
+import com.eid.onstand.feature.backgrounds.shader.RedShader
 import com.eid.onstand.feature.widgets.clocks.*
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import kotlinx.coroutines.delay
@@ -100,6 +101,7 @@ fun CustomizationPreviewCard(
 
                                 ShaderType.SPACE -> Modifier.shaderBackground(SpaceShader)
                                 ShaderType.PALETTE -> Modifier.shaderBackground(PaletteShader)
+                                ShaderType.RED -> Modifier.shaderBackground(RedShader)
                                 ShaderType.MOVING_WAVES -> Modifier.shaderBackground(
                                     MovingWaveShader
                                 )

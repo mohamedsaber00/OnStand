@@ -79,6 +79,7 @@ fun BackgroundClockView(
 
                                 ShaderType.SPACE -> Modifier.shaderBackground(SpaceShader)
                                 ShaderType.PALETTE -> Modifier.shaderBackground(PaletteShader)
+                                ShaderType.RED -> Modifier.shaderBackground(RedShader)
                                 ShaderType.MOVING_WAVES -> Modifier.shaderBackground(
                                     MovingWaveShader
                                 )

@@ -51,7 +51,7 @@ fun DigitalSegmentClock(
     currentTime: LocalDateTime,
     showSeconds: Boolean = true,
     activeColor: Color = Color.White.copy(alpha = 0.9f),
-    inactiveColor: Color = Color.White.copy(alpha = 0.1f),
+    inactiveColor: Color = Color.Transparent,
     isPreview: Boolean = false
 ) {
     val hour = currentTime.format(LocalDateTime.Format { byUnicodePattern("HH") })

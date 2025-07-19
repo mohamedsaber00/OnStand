@@ -38,7 +38,7 @@ object ColorConstants {
     val DEFAULT_CARD_COLOR = Color.Black.copy(alpha = 0.6f)
     val DEFAULT_MORPH_CARD_COLOR = Color(0xFFFFA77A).copy(alpha = 0.85f)
     val DEFAULT_TEXT_COLOR = Color.White
-    val DEFAULT_INACTIVE_COLOR_ALPHA = 0.1f
+    val DEFAULT_INACTIVE_COLOR_ALPHA = 0.011f
     val DEFAULT_NUMBERS_COLOR_ALPHA = 0.8f
 
     // Transparency values

@@ -54,7 +54,8 @@ fun AppContent() {
             BackgroundClockView(
                 backgroundType = customizationState.selectedBackground,
                 clockType = customizationState.selectedClockType,
-                fontColorOption = customizationState.selectedFontColor,
+                fontFamily = customizationState.selectedFont,
+                clockColor = customizationState.selectedColor,
                 modifier = Modifier.fillMaxSize().clickable {
                     viewModel.showCustomization()
                 }

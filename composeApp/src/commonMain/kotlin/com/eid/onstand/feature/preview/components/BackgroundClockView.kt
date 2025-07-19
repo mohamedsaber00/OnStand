@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.eid.onstand.core.models.*
 import com.eid.onstand.core.theme.BlurConstants
@@ -36,7 +35,8 @@ import kotlin.time.ExperimentalTime
 fun BackgroundClockView(
     backgroundType: BackgroundType? = null,
     clockType: ClockType? = null,
-    fontColorOption: FontColorOption? = null,
+    fontFamily: FontFamily? = null,
+    clockColor: ClockColor? = null,
     modifier: Modifier = Modifier
 ) {
     var currentTime by remember { mutableStateOf(Clock.System.now() )}
@@ -158,9 +158,8 @@ fun BackgroundClockView(
                         DigitalSegmentClock(
                             currentTime = localTime,
                             showSeconds = clockType.showSeconds,
-                            activeColor = fontColorOption?.primaryColor
-                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                            inactiveColor = (fontColorOption?.primaryColor
+                            activeColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            inactiveColor = (clockColor?.color
                                 ?: ColorConstants.DEFAULT_TEXT_COLOR).copy(
                                 alpha = ColorConstants.DEFAULT_INACTIVE_COLOR_ALPHA
                             )
@@ -173,19 +172,17 @@ fun BackgroundClockView(
                         MorphFlipClockWidget(
                             currentTime = localTime,
                             cardColor = ColorConstants.DEFAULT_MORPH_CARD_COLOR,
-                            textColor = fontColorOption?.primaryColor ?: Color.Black,
-                            fontFamily = getFontFamily(clockType.fontFamily)
+                            textColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            fontFamily = fontFamily ?: FontFamily.ROBOTO
                         )
                     }
 
                     is ClockType.Analog -> {
                         AnalogClockWidget(
                             currentTime = localTime,
-                            clockColor = fontColorOption?.primaryColor
-                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                            handsColor = fontColorOption?.primaryColor
-                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                            numbersColor = (fontColorOption?.primaryColor
+                            clockColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            handsColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            numbersColor = (clockColor?.color
                                 ?: ColorConstants.DEFAULT_TEXT_COLOR).copy(alpha = ColorConstants.DEFAULT_NUMBERS_COLOR_ALPHA)
                         )
                     }
@@ -194,9 +191,8 @@ fun BackgroundClockView(
                         BasicClockWidget(
                             currentTime = localTime,
                             showSeconds = clockType.showSeconds,
-                            fontFamily = getFontFamily(clockType.fontFamily),
-                            textColor = fontColorOption?.primaryColor
-                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            fontFamily = fontFamily ?: FontFamily.ROBOTO,
+                            textColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
                             modifier = Modifier
 
                         )
@@ -207,9 +203,8 @@ fun BackgroundClockView(
                         BasicClockWidget(
                             currentTime = localTime,
                             showSeconds = false,
-                            fontFamily = getFontFamily("Roboto"),
-                            textColor = fontColorOption?.primaryColor
-                                ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                            fontFamily = FontFamily.ROBOTO,
+                            textColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
                             modifier = Modifier
                         )
 
@@ -217,16 +212,6 @@ fun BackgroundClockView(
                 }
             }
         }
-    }
-}
-
-private fun getFontFamily(fontFamilyName: String): FontFamily {
-    return when (fontFamilyName.lowercase()) {
-        "roboto" -> FontFamily.Default
-        "serif" -> FontFamily.Serif
-        "helvetica" -> FontFamily.SansSerif
-        "monospace" -> FontFamily.Monospace
-        else -> FontFamily.Default
     }
 }
 

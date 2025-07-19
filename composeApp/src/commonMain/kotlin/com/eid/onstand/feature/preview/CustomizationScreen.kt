@@ -79,7 +79,8 @@ fun PreviewScreen(
                 CustomizationPreviewCard(
                     backgroundType = customizationState.selectedBackground,
                     clockType = customizationState.selectedClockType,
-                    fontColorOption = customizationState.selectedFontColor,
+                    fontFamily = customizationState.selectedFont,
+                    clockColor = customizationState.selectedColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(0.7f)
@@ -108,19 +109,28 @@ fun PreviewScreen(
                         ClockStyleSelector(
                             clockTypes = uiState.clockTypes,
                             selectedClockType = customizationState.selectedClockType,
-                            selectedFontColor = customizationState.selectedFontColor,
                             onClockTypeSelected = viewModel::selectClockType,
                             onSecondsToggled = viewModel::toggleSeconds,
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
                     }
 
-                    // Font Color Selection
-                    if (uiState.fontColorOptions.isNotEmpty()) {
-                        FontColorSelector(
-                            fontColorOptions = uiState.fontColorOptions,
-                            selectedFontColor = customizationState.selectedFontColor,
-                            onFontColorSelected = viewModel::selectFontColor,
+                    // Font Selection - only show for digital clocks
+                    if (customizationState.selectedClockType?.isDigital == true && uiState.fontFamilies.isNotEmpty()) {
+                        FontSelector(
+                            fontFamilies = uiState.fontFamilies,
+                            selectedFont = customizationState.selectedFont,
+                            onFontSelected = viewModel::selectFont,
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+                    }
+
+                    // Color Selection - show for all clocks
+                    if (uiState.clockColors.isNotEmpty()) {
+                        ColorSelector(
+                            clockColors = uiState.clockColors,
+                            selectedColor = customizationState.selectedColor,
+                            onColorSelected = viewModel::selectColor,
                             modifier = Modifier.padding(bottom = 100.dp)
                         )
                     }

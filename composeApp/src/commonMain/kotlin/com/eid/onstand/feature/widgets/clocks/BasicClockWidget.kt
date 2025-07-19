@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.eid.onstand.core.models.FontFamily as AppFontFamily
+import com.eid.onstand.core.utils.toComposeFontFamily
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
@@ -41,7 +43,7 @@ fun BasicClockWidget(
     modifier: Modifier = Modifier,
     currentTime: LocalDateTime,
     showSeconds: Boolean = true,
-    fontFamily: FontFamily = FontFamily.Default,
+    fontFamily: AppFontFamily = AppFontFamily.ROBOTO,
     textColor: Color = Color.White,
     isPreview: Boolean = false
 ) {
@@ -83,7 +85,7 @@ fun BasicClockWidget(
                         color = textColor,
                         fontSize = fontSize,
                         fontWeight = FontWeight.Medium,
-                        fontFamily = fontFamily,
+                        fontFamily = fontFamily.toComposeFontFamily(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.width(width)
                     )
@@ -92,5 +94,3 @@ fun BasicClockWidget(
         }
     }
 }
-
-

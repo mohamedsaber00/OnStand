@@ -11,7 +11,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.eid.onstand.core.models.*
 import com.eid.onstand.core.theme.ColorConstants
@@ -35,7 +34,8 @@ import kotlin.time.ExperimentalTime
 fun CustomizationPreviewCard(
     backgroundType: BackgroundType?,
     clockType: ClockType?,
-    fontColorOption: FontColorOption?,
+    fontFamily: FontFamily?,
+    clockColor: ClockColor?,
     modifier: Modifier = Modifier
 ) {
     var currentTime by remember { mutableStateOf(Clock.System.now()) }
@@ -174,16 +174,15 @@ fun CustomizationPreviewCard(
         ) {
             val timeZone = TimeZone.currentSystemDefault()
             val localTime = currentTime.toLocalDateTime(timeZone)
+            val textColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR
 
             when (clockType) {
                 is ClockType.DigitalSegments -> {
                     DigitalSegmentClock(
                         currentTime = localTime,
                         showSeconds = clockType.showSeconds,
-                        activeColor = fontColorOption?.primaryColor
-                            ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                        inactiveColor = (fontColorOption?.primaryColor
-                            ?: ColorConstants.DEFAULT_TEXT_COLOR).copy(
+                        activeColor = textColor,
+                        inactiveColor = textColor.copy(
                             alpha = ColorConstants.DEFAULT_INACTIVE_COLOR_ALPHA
                         ),
                         isPreview = true,
@@ -194,8 +193,8 @@ fun CustomizationPreviewCard(
                     MorphFlipClockWidget(
                         currentTime = localTime,
                         cardColor = ColorConstants.DEFAULT_MORPH_CARD_COLOR,
-                        textColor = fontColorOption?.primaryColor ?: Color.Black,
-                        fontFamily = getFontFamily(clockType.fontFamily),
+                        textColor = textColor,
+                        fontFamily = fontFamily ?: FontFamily.ROBOTO,
                         isPreview = true,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -204,12 +203,9 @@ fun CustomizationPreviewCard(
                 is ClockType.Analog -> {
                     AnalogClockWidget(
                         currentTime = localTime,
-                        clockColor = fontColorOption?.primaryColor
-                            ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                        handsColor = fontColorOption?.primaryColor
-                            ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                        numbersColor = (fontColorOption?.primaryColor
-                            ?: ColorConstants.DEFAULT_TEXT_COLOR).copy(
+                        clockColor = textColor,
+                        handsColor = textColor,
+                        numbersColor = textColor.copy(
                             alpha = ColorConstants.DEFAULT_NUMBERS_COLOR_ALPHA
                         )
                     )
@@ -219,9 +215,8 @@ fun CustomizationPreviewCard(
                     BasicClockWidget(
                         currentTime = localTime,
                         showSeconds = clockType.showSeconds,
-                        fontFamily = getFontFamily(clockType.fontFamily),
-                        textColor = fontColorOption?.primaryColor
-                            ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                        fontFamily = fontFamily ?: FontFamily.ROBOTO,
+                        textColor = textColor,
                         isPreview = true,
                         modifier = Modifier
                     )
@@ -231,24 +226,13 @@ fun CustomizationPreviewCard(
                     BasicClockWidget(
                         currentTime = localTime,
                         showSeconds = false,
-                        fontFamily = getFontFamily("Roboto"),
-                        textColor = fontColorOption?.primaryColor
-                            ?: ColorConstants.DEFAULT_TEXT_COLOR,
+                        fontFamily = FontFamily.ROBOTO,
+                        textColor = textColor,
                         isPreview = true,
                         modifier = Modifier
                     )
                 }
             }
         }
-    }
-}
-
-private fun getFontFamily(fontFamilyName: String): FontFamily {
-    return when (fontFamilyName.lowercase()) {
-        "roboto" -> FontFamily.Default
-        "serif" -> FontFamily.Serif
-        "helvetica" -> FontFamily.SansSerif
-        "monospace" -> FontFamily.Monospace
-        else -> FontFamily.Default
     }
 }

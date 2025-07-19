@@ -24,7 +24,8 @@ class CustomizationRepository(
         backgroundRepository.getStaticColorOptions()
 
     fun getClockTypes(): List<ClockType> = clockRepository.getClockTypes()
-    fun getFontColorOptions(): List<FontColorOption> = clockRepository.getFontColorOptions()
+    fun getFontFamilies(): List<FontFamily> = clockRepository.getFontFamilies()
+    fun getClockColors(): List<ClockColor> = clockRepository.getClockColors()
 
     suspend fun initializeWithSavedState() {
         loadCustomizationState()
@@ -33,7 +34,6 @@ class CustomizationRepository(
     fun updateCustomizationState(newState: CustomizationState) {
         _customizationState.value = newState
     }
-
 
     // Legacy method for backward compatibility
     suspend fun selectBackground(background: BackgroundOption) {
@@ -53,12 +53,20 @@ class CustomizationRepository(
         saveCustomizationState()
     }
 
-    suspend fun selectFontColor(fontColor: FontColorOption) {
+    suspend fun selectFont(font: FontFamily) {
         _customizationState.value = _customizationState.value.copy(
-            selectedFontColor = fontColor
+            selectedFont = font
         )
         saveCustomizationState()
     }
+
+    suspend fun selectColor(color: ClockColor) {
+        _customizationState.value = _customizationState.value.copy(
+            selectedColor = color
+        )
+        saveCustomizationState()
+    }
+
     suspend fun saveCustomizationState() {
         val currentState = _customizationState.value
         val serializableState = SerializableCustomizationState(
@@ -66,7 +74,8 @@ class CustomizationRepository(
             backgroundType = getBackgroundTypeString(currentState.selectedBackground),
             clockTypeId = currentState.selectedClockType?.name,
             clockTypeName = currentState.selectedClockType?.name,
-            fontColorId = currentState.selectedFontColor?.name,
+            selectedFont = currentState.selectedFont?.systemName,
+            selectedColorName = currentState.selectedColor?.name,
         )
         customizationDataSource.saveCustomizationState(serializableState)
     }
@@ -94,12 +103,14 @@ class CustomizationRepository(
         val background =
             findBackgroundByNameAndType(savedState.backgroundId, savedState.backgroundType)
         val clockType = findClockTypeByName(savedState.clockTypeId)
-        val fontColor = findFontColorByName(savedState.fontColorId)
+        val font = findFontBySystemName(savedState.selectedFont)
+        val color = findColorByName(savedState.selectedColorName)
 
         return CustomizationState(
             selectedBackground = background,
             selectedClockType = clockType,
-            selectedFontColor = fontColor,
+            selectedFont = font,
+            selectedColor = color,
         )
     }
 
@@ -113,12 +124,15 @@ class CustomizationRepository(
         return getClockTypes().find { it.name == name }
     }
 
-    private fun findFontColorByName(name: String?): FontColorOption? {
-        if (name == null) return null
-        return getFontColorOptions().find { it.name == name }
+    private fun findFontBySystemName(systemName: String?): FontFamily? {
+        if (systemName == null) return null
+        return getFontFamilies().find { it.systemName == systemName }
     }
 
-
+    private fun findColorByName(name: String?): ClockColor? {
+        if (name == null) return null
+        return getClockColors().find { it.name == name }
+    }
 
     // Helper method to convert BackgroundOption to BackgroundType during migration
     private fun convertBackgroundOptionToType(option: BackgroundOption): BackgroundType {

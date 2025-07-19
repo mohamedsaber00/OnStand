@@ -5,10 +5,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontFamily as ComposeFontFamily
 import androidx.compose.ui.unit.dp
 import com.eid.onstand.core.models.ClockType
-import com.eid.onstand.core.models.FontColorOption
+import com.eid.onstand.core.models.FontFamily
+import com.eid.onstand.core.models.ClockColor
 import com.eid.onstand.feature.widgets.clocks.*
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
@@ -20,7 +21,8 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun ClockFaceItemPreview(
     clockType: ClockType,
-    fontColorOption: FontColorOption,
+    fontFamily: FontFamily = FontFamily.ROBOTO,
+    clockColor: ClockColor = ClockColor("White", Color.White),
     modifier: Modifier = Modifier,
     isSelected: Boolean = false
 ) {
@@ -47,9 +49,9 @@ fun ClockFaceItemPreview(
                 DigitalSegmentClock(
                     currentTime = currentTime,
                     showSeconds = clockType.showSeconds,
-                    activeColor = fontColorOption.primaryColor,
-                    inactiveColor = fontColorOption.primaryColor.copy(alpha = 0.1f),
-                    modifier = Modifier.size(100.dp, 60.dp)
+                    activeColor = clockColor.color,
+                    inactiveColor = clockColor.color.copy(alpha = 0.1f),
+                    isPreview = true
                 )
             }
 
@@ -57,18 +59,18 @@ fun ClockFaceItemPreview(
                 MorphFlipClockWidget(
                     currentTime = currentTime,
                     cardColor = Color(0xFFFFA77A).copy(alpha = 0.85f),
-                    textColor = fontColorOption.primaryColor,
-                    fontFamily = getFontFamily(clockType.fontFamily),
-                    modifier = Modifier.size(100.dp, 60.dp)
+                    textColor = clockColor.color,
+                    fontFamily = fontFamily,
+                    isPreview = true
                 )
             }
 
             is ClockType.Analog -> {
                 AnalogClockWidget(
                     currentTime = currentTime,
-                    clockColor = fontColorOption.primaryColor,
-                    handsColor = fontColorOption.primaryColor,
-                    numbersColor = fontColorOption.primaryColor.copy(alpha = 0.8f),
+                    clockColor = clockColor.color,
+                    handsColor = clockColor.color,
+                    numbersColor = clockColor.color.copy(alpha = 0.8f),
                     modifier = Modifier.size(60.dp)
                 )
             }
@@ -77,21 +79,11 @@ fun ClockFaceItemPreview(
                 BasicClockWidget(
                     currentTime = currentTime,
                     showSeconds = clockType.showSeconds,
-                    fontFamily = getFontFamily(clockType.fontFamily),
-                    textColor = fontColorOption.primaryColor,
-                    modifier = Modifier.size(100.dp, 40.dp)
+                    fontFamily = fontFamily,
+                    textColor = clockColor.color,
+                    isPreview = true
                 )
             }
         }
-    }
-}
-
-private fun getFontFamily(fontFamilyName: String): FontFamily {
-    return when (fontFamilyName.lowercase()) {
-        "roboto" -> FontFamily.Default
-        "serif" -> FontFamily.Serif
-        "helvetica" -> FontFamily.SansSerif
-        "monospace" -> FontFamily.Monospace
-        else -> FontFamily.Default
     }
 }

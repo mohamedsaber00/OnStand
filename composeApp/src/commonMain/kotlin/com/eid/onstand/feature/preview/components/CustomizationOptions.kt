@@ -18,11 +18,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily as ComposeFontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.*
+import com.eid.onstand.core.utils.toComposeFontFamily
 import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
 import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
 import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground
@@ -334,7 +336,6 @@ private fun StaticColorOptionItem(
 fun ClockStyleSelector(
     clockTypes: List<ClockType>,
     selectedClockType: ClockType?,
-    selectedFontColor: FontColorOption?,
     onClockTypeSelected: (ClockType) -> Unit,
     onSecondsToggled: (Boolean) -> Unit = {},
     modifier: Modifier = Modifier
@@ -366,7 +367,6 @@ fun ClockStyleSelector(
 
                 ClockStyleItem(
                     clockType = type,
-                    fontColorOption = selectedFontColor ?: getFallbackFontColor(),
                     isSelected = isSelected,
                     onSelected = {
                         onClockTypeSelected(type)
@@ -422,7 +422,6 @@ fun ClockStyleSelector(
 @Composable
 private fun ClockStyleItem(
     clockType: ClockType,
-    fontColorOption: FontColorOption,
     isSelected: Boolean,
     onSelected: () -> Unit,
     modifier: Modifier = Modifier
@@ -458,7 +457,6 @@ private fun ClockStyleItem(
             // Show actual clock face preview
             ClockFaceItemPreview(
                 clockType = clockType,
-                fontColorOption = fontColorOption,
                 isSelected = isSelected
             )
 
@@ -498,15 +496,15 @@ private fun ClockStyleItem(
 }
 
 @Composable
-fun FontColorSelector(
-    fontColorOptions: List<FontColorOption>,
-    selectedFontColor: FontColorOption?,
-    onFontColorSelected: (FontColorOption) -> Unit,
+fun FontSelector(
+    fontFamilies: List<FontFamily>,
+    selectedFont: FontFamily?,
+    onFontSelected: (FontFamily) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         Text(
-            text = "Font Colors",
+            text = "Fonts",
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium,
             color = Color.White,
@@ -522,21 +520,21 @@ fun FontColorSelector(
             contentPadding = PaddingValues(horizontal = 4.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(fontColorOptions) { option ->
-                val isSelected = selectedFontColor == option
+            items(fontFamilies) { font ->
+                val isSelected = selectedFont == font
                 val scale by animateFloatAsState(
                     targetValue = if (isSelected) 1.1f else 1f,
                     animationSpec = tween(300)
                 )
 
-                FontColorItem(
-                    option = option,
+                FontItem(
+                    font = font,
                     isSelected = isSelected,
                     onSelected = {
-                        onFontColorSelected(option)
+                        onFontSelected(font)
                         // Animate to center the selected item
                         coroutineScope.launch {
-                            val selectedIndex = fontColorOptions.indexOf(option)
+                            val selectedIndex = fontFamilies.indexOf(font)
                             listState.animateScrollToItem(
                                 index = selectedIndex,
                                 scrollOffset = -200
@@ -551,8 +549,8 @@ fun FontColorSelector(
 }
 
 @Composable
-private fun FontColorItem(
-    option: FontColorOption,
+private fun FontItem(
+    font: FontFamily,
     isSelected: Boolean,
     onSelected: () -> Unit,
     modifier: Modifier = Modifier
@@ -585,32 +583,20 @@ private fun FontColorItem(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(option.primaryColor)
-                )
+            Text(
+                text = "Aa",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),
+                fontFamily = font.toComposeFontFamily(),
+                textAlign = TextAlign.Center
+            )
 
-                if (option.secondaryColor != null) {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(option.secondaryColor)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = option.name,
-                fontSize = 12.sp,
+                text = font.displayName,
+                fontSize = 10.sp,
                 fontWeight = FontWeight.Medium,
                 color = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center,
@@ -641,16 +627,118 @@ private fun FontColorItem(
     }
 }
 
-private fun getFallbackFontColor(): FontColorOption {
-    return FontColorOption(
-        name = "White",
-        primaryColor = Color.White,
-        secondaryColor = Color.White.copy(alpha = 0.7f),
-        style = FontStyle.MODERN
-    )
+@Composable
+fun ColorSelector(
+    clockColors: List<ClockColor>,
+    selectedColor: ClockColor?,
+    onColorSelected: (ClockColor) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = "Colors",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.White,
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
+
+        val listState = rememberLazyListState()
+        val coroutineScope = rememberCoroutineScope()
+
+        LazyRow(
+            state = listState,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 4.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(clockColors) { color ->
+                val isSelected = selectedColor == color
+                val scale by animateFloatAsState(
+                    targetValue = if (isSelected) 1.1f else 1f,
+                    animationSpec = tween(300)
+                )
+
+                ColorItem(
+                    color = color,
+                    isSelected = isSelected,
+                    onSelected = {
+                        onColorSelected(color)
+                        // Animate to center the selected item
+                        coroutineScope.launch {
+                            val selectedIndex = clockColors.indexOf(color)
+                            listState.animateScrollToItem(
+                                index = selectedIndex,
+                                scrollOffset = -200
+                            )
+                        }
+                    },
+                    modifier = Modifier.scale(scale)
+                )
+            }
+        }
+    }
 }
 
 @Composable
+private fun ColorItem(
+    color: ClockColor,
+    isSelected: Boolean,
+    onSelected: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .size(60.dp)
+            .clickable { onSelected() }
+            .then(
+                if (isSelected) {
+                    Modifier.border(
+                        width = 2.dp,
+                        color = Color(0xFF7B68EE),
+                        shape = androidx.compose.foundation.shape.CircleShape
+                    )
+                } else {
+                    Modifier
+                }
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
+        shape = androidx.compose.foundation.shape.CircleShape
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = color.color,
+                    shape = androidx.compose.foundation.shape.CircleShape
+                )
+        ) {
+            // Selection indicator
+            if (isSelected) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(20.dp)
+                        .background(
+                            color = Color(0xFF7B68EE),
+                            shape = androidx.compose.foundation.shape.CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "✓",
+                        fontSize = 12.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}
+
 private fun getBackgroundBrush(option: BackgroundOption): Brush {
     return when (option) {
         is BackgroundOption.Gradient -> {

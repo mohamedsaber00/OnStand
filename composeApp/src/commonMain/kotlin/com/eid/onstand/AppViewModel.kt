@@ -18,7 +18,36 @@ class AppViewModel(
 
     init {
         viewModelScope.launch {
-            customizationRepository.initializeWithSavedState()
+            // First load any saved state
+            customizationRepository.loadCustomizationState()
+
+            // Then check if we need to set defaults
+            val currentState = customizationRepository.customizationState.value
+            if (currentState.selectedBackground == null &&
+                currentState.selectedClockType == null &&
+                currentState.selectedFont == null &&
+                currentState.selectedColor == null
+            ) {
+
+                val defaultBackgroundType =
+                    customizationRepository.getBackgroundTypes().firstOrNull()
+                val defaultClockType = customizationRepository.getClockTypes().firstOrNull()
+                val defaultFont = customizationRepository.getFontFamilies().firstOrNull()
+                val defaultColor = customizationRepository.getClockColors().firstOrNull()
+
+                if (defaultBackgroundType != null && defaultClockType != null &&
+                    defaultFont != null && defaultColor != null
+                ) {
+                    customizationRepository.updateCustomizationState(
+                        CustomizationState(
+                            selectedBackground = defaultBackgroundType,
+                            selectedClockType = defaultClockType,
+                            selectedFont = defaultFont,
+                            selectedColor = defaultColor,
+                        )
+                    )
+                }
+            }
         }
     }
 

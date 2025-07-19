@@ -1,4 +1,4 @@
- @file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber")
 
 package com.eid.onstand.feature.widgets.clocks
 
@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.LocalDateTime
 import com.eid.onstand.data.date.getDayOfWeek
+import com.eid.onstand.core.models.FontFamily as AppFontFamily
+import com.eid.onstand.core.utils.toComposeFontFamily
 import kotlinx.datetime.format
 import kotlinx.datetime.format.byUnicodePattern
 
@@ -37,7 +39,7 @@ fun MorphFlipClockWidget(
     currentTime: LocalDateTime,
     cardColor: Color = Color(0xFFFFA77A).copy(alpha = 0.85f),
     textColor: Color = Color.Black,
-    fontFamily: FontFamily = FontFamily.Default,
+    fontFamily: AppFontFamily = AppFontFamily.ROBOTO,
     isPreview: Boolean = false
 ) {
     val hour = currentTime.format(LocalDateTime.Format { byUnicodePattern("HH") })
@@ -77,7 +79,7 @@ fun MorphFlipClockWidget(
                     height = cardHeight,
                     cardColor = cardColor,
                     textColor = textColor,
-                    fontFamily = fontFamily,
+                    fontFamily = fontFamily.toComposeFontFamily(),
                     fontSize = fontSize
                 )
                 MorphFlipCard(
@@ -86,7 +88,7 @@ fun MorphFlipClockWidget(
                     height = cardHeight,
                     cardColor = cardColor,
                     textColor = textColor,
-                    fontFamily = fontFamily,
+                    fontFamily = fontFamily.toComposeFontFamily(),
                     fontSize = fontSize
                 )
 
@@ -100,7 +102,7 @@ fun MorphFlipClockWidget(
                         color = textColor,
                         fontSize = sideLabelFont,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = fontFamily
+                        fontFamily = fontFamily.toComposeFontFamily()
                     )
                     Column(horizontalAlignment = Alignment.Start) {
                         Text(
@@ -108,14 +110,14 @@ fun MorphFlipClockWidget(
                             color = textColor,
                             fontSize = sideLabelFont,
                             fontWeight = FontWeight.Medium,
-                            fontFamily = fontFamily
+                            fontFamily = fontFamily.toComposeFontFamily()
                         )
                         Text(
                             text = monthDay,
                             color = textColor,
                             fontSize = sideLabelFont,
                             fontWeight = FontWeight.Medium,
-                            fontFamily = fontFamily
+                            fontFamily = fontFamily.toComposeFontFamily()
                         )
                     }
                 }

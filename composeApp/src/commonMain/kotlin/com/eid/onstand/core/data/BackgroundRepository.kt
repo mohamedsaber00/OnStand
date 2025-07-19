@@ -18,6 +18,11 @@ class BackgroundRepository {
             shaderType = ShaderType.SPACE
         ),
         BackgroundType.Shader(
+            name = "Palette",
+            previewColor = Color(0xFF5A4FCF),
+            shaderType = ShaderType.PALETTE
+        ),
+        BackgroundType.Shader(
             name = "Glowing Ring",
             previewColor = Color(0xFF7B68EE),
             shaderType = ShaderType.GLOWING_RING
@@ -74,6 +79,11 @@ class BackgroundRepository {
             name = "Space",
             previewColor = Color(0xFF1A0033),
             shaderType = ShaderType.SPACE
+        ),
+        BackgroundOption.Shader(
+            name = "Palette",
+            previewColor = Color(0xFF5A4FCF),
+            shaderType = ShaderType.PALETTE
         ),
         BackgroundOption.Shader(
             name = "Glowing Ring",

@@ -4,5 +4,9 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+    <key>UIStatusBarHidden</key>
+    <true />
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false />
 </dict>
 </plist>

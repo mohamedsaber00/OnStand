@@ -30,6 +30,7 @@ import com.eid.onstand.feature.backgrounds.shader.EtherShader
 import com.eid.onstand.feature.backgrounds.shader.GlowingRing
 import com.eid.onstand.feature.backgrounds.shader.MovingTrianglesShader
 import com.eid.onstand.feature.backgrounds.shader.MovingWaveShader
+import com.eid.onstand.feature.backgrounds.shader.PaletteShader
 import com.eid.onstand.feature.backgrounds.shader.PurpleGradientShader
 import com.eid.onstand.feature.backgrounds.shader.SpaceShader
 import com.eid.onstand.feature.backgrounds.shader.TurbulenceShader
@@ -184,6 +185,7 @@ private fun BackgroundOptionItem(
                                     PurpleGradientShader
                                 )
                                 ShaderType.SPACE -> Modifier.shaderBackground(SpaceShader)
+                                ShaderType.PALETTE -> Modifier.shaderBackground(PaletteShader)
                                 ShaderType.TURBULENCE -> Modifier.shaderBackground(TurbulenceShader)
                             }
                         }

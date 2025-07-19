@@ -57,6 +57,7 @@ enum class ShaderType {
     MOVING_TRIANGLES,
     PURPLE_GRADIENT,
     SPACE,
+    PALETTE,
     MOVING_WAVES,
     TURBULENCE
 }

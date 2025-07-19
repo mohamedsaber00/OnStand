@@ -25,93 +25,168 @@ object PaletteShader : Shader {
         get() = 1.0f
 
     override val sksl = """
-uniform float filmGrainIntensity;
-uniform float uTime;
-uniform vec3  uResolution;
+/*--------------------------------------------------------------
+  Palette Shader (Version A Motion) – Vivid Liquid Glass Colors
+  Distortion fix: ONLY coordinate pre-processing changed.
+--------------------------------------------------------------*/
+uniform float  uTime;
+uniform float3 uResolution;
+uniform int    uPalette;
+uniform float  uSpeed;     // 1.0 original feel, 0.5 slower, 0.25 calm
+uniform float  uSeed;      // phase randomization seed
+uniform float  uVivid;     // palette 0 vividness
+uniform float  uBloom;     // palette 0 bloom
+uniform float  uHueDrift;  // palette 0 hue drift
+uniform float  uWarmBias;  // palette 0 warm/cool bias
 
-// --------------------------------------------------
-// Utility (unchanged)
-// --------------------------------------------------
-mat2 Rot(float a) {
-    float s = sin(a);
-    float c = cos(a);
-    return mat2(c, -s, s, c);
+float hash(float n){ return fract(sin(n)*43758.5453123); }
+
+/* ---------- Original Non-Liquid Palettes (unchanged) ---------- */
+float3 paletteBlackRed(float t){
+    float3 a=float3(0.2,0.0,0.0);
+    float3 b=float3(0.8,0.2,0.1);
+    float3 c=float3(1.0); float3 d=float3(0.0,0.5,0.8);
+    return a + b * cos(6.28318 * (c*t + d));
+}
+float3 paletteNeon(float t){
+    t = clamp(t,0.0,1.0);
+    if(t<0.6) return float3(0.0);
+    else if(t<0.8){
+        float k=(t-0.6)/0.2;
+        return float3(k*2.0,0.0,k*0.6);
+    } else {
+        float k=(t-0.8)/0.2;
+        return float3(0.6*(1.0-k)+k*0.2,
+                      0.0,
+                      1.4*k + 0.6*(1.0-k));
+    }
 }
 
-vec2 hash(vec2 p) {
-    p = vec2(dot(p, vec2(2127.1, 81.17)),
-             dot(p, vec2(1269.5, 283.37)));
-    return fract(sin(p) * 43758.5453);
+/* ---------- Hue rotation helper ---------- */
+float3 hueRotate(float3 c, float a){
+    const float3 w = float3(0.299,0.587,0.114);
+    float Y = dot(c,w);
+    float3 d = c - Y;
+    float cs = cos(a), sn = sin(a);
+    float3 u = normalize(float3( 0.787, -0.615, -0.072));
+    float3 v = normalize(cross(float3(0.0,0.0,1.0), u));
+    float du = dot(d,u), dv = dot(d,v);
+    d = u*(du*cs - dv*sn) + v*(du*sn + dv*cs);
+    return clamp(Y + d, 0.0, 1.0);
 }
 
-float noise(in vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    vec2 u = f*f*(3.0 - 2.0*f);
-
-    float n = mix(
-        mix(dot(-1.0 + 2.0 * hash(i + vec2(0.0, 0.0)), f - vec2(0.0, 0.0)),
-            dot(-1.0 + 2.0 * hash(i + vec2(1.0, 0.0)), f - vec2(1.0, 0.0)), u.x),
-        mix(dot(-1.0 + 2.0 * hash(i + vec2(0.0, 1.0)), f - vec2(0.0, 1.0)),
-            dot(-1.0 + 2.0 * hash(i + vec2(1.0, 1.0)), f - vec2(1.0, 1.0)), u.x), u.y);
-    return 0.5 + 0.5 * n;
+/* ---------- Gradient stops for vivid palette ---------- */
+float3 vividGradient(float x){
+    x = clamp(x,0.0,1.0);
+    const float3 c1 = float3(0.02, 0.05, 0.28);
+    const float3 c2 = float3(0.08, 0.32, 0.90);
+    const float3 c3 = float3(0.48, 0.32, 0.95);
+    const float3 c4 = float3(0.95, 0.30, 0.70);
+    const float3 c5 = float3(1.00, 0.58, 0.30);
+    const float3 c6 = float3(1.00, 0.82, 0.55);
+    if (x < 0.14) return mix(c1,c2,x/0.14);
+    else if (x < 0.30) return mix(c2,c3,(x-0.14)/0.16);
+    else if (x < 0.50) return mix(c3,c4,(x-0.30)/0.20);
+    else if (x < 0.70) return mix(c4,c5,(x-0.50)/0.20);
+    else return mix(c5,c6,(x-0.70)/0.30);
 }
 
-float filmGrainNoise(in vec2 uv) {
-    return length(hash(vec2(uv.x, uv.y)));
+float3 paletteLiquidGlassVivid(float t, float2 uv){
+    float hx = clamp(uv.x * 0.50 + 0.5, 0.0, 1.0);
+    float gCoord = clamp(mix(hx, t, 0.35), 0.0, 1.0);
+    gCoord += sin((t + hx)*6.28318)*0.01;
+    float3 base = vividGradient(gCoord);
+
+    float bloomAmt = smoothstep(0.55,0.85,t) * clamp(uBloom,0.0,1.0);
+    float3 bloomCol = float3(1.0, 0.95, 0.90);
+    base = mix(base, clamp(base + bloomCol * bloomAmt * 0.8, 0.0, 1.0), 0.6);
+
+    float vivid = clamp(uVivid,0.0,1.0);
+    float l = dot(base,float3(0.299,0.587,0.114));
+    base = mix(base, mix(float3(l), base, 1.0 + vivid*0.8), vivid);
+    base = mix(base, (base - 0.5)*(1.0 + vivid*0.6) + 0.5, vivid*0.75);
+
+    float wb = clamp(uWarmBias,-1.0,1.0);
+    if (wb != 0.0){
+        float3 cool = float3(0.10,0.18,0.45);
+        float3 warm = float3(1.05,0.80,0.50);
+        float3 target = (wb > 0.0) ? warm : cool;
+        base = mix(base, target, abs(wb)*0.20);
+    }
+
+    float drift = uHueDrift * 0.8;
+    if (drift > 0.0){
+        float angle = uTime * 0.07 * drift;
+        base = hueRotate(base, angle);
+    }
+
+    base = pow(base, float3(0.92));
+    return clamp(base,0.0,1.0);
 }
 
-// --------------------------------------------------
-// Main
-// --------------------------------------------------
-vec4 main(vec2 fragCoord) {
-    vec2 uv = fragCoord / uResolution.xy;
-    float aspectRatio = uResolution.x / uResolution.y;
+float3 pickPalette(float intensity, float2 uv, int id){
+    if(id==1) return paletteBlackRed(intensity);
+    if(id==2) return paletteNeon(intensity);
+    return paletteLiquidGlassVivid(intensity, uv);
+}
 
-    vec2 tuv = uv - 0.5;
+/* ----------------- MAIN ----------------- */
+vec4 main(vec2 fragCoord){
+    float2 res = uResolution.xy;
+    float  minSide = min(res.x,res.y);
 
-    // Slightly slower rotation (time factor from 0.015 -> 0.010)
-    float degree = noise(vec2(uTime * 0.010, tuv.x * tuv.y));
-    tuv.y *= 1.0 / aspectRatio;
-    tuv *= Rot(radians((degree - 0.5) * 720.0 + 180.0));
-    tuv.y *= aspectRatio;
+    // --- Distortion Fix Block (only change) ---
+    float2 uv = (fragCoord*2.0 - res)/minSide;   // original normalization
+    float aspect = res.x / res.y;
 
-    // Warp (speed from 0.5 -> 0.38)
-    float frequency = 5.0;
-    float amplitude = 30.0;
-    float speed     = uTime * 0.38;
-    tuv.x += sin(tuv.y * frequency + speed) / amplitude;
-    tuv.y += sin(tuv.x * frequency * 1.5 + speed) / (amplitude * 0.5);
+    // Strength of aspect neutralization (1 = full)
+    const float ASPECT_STRENGTH = 0.85;
+    float ax = mix(uv.x, uv.x / aspect, ASPECT_STRENGTH);
 
-    // Purple palette (unchanged colors)
-    vec3 licorice  = vec3(0.0627, 0.0118, 0.0667); // #100311
-    vec3 indigo    = vec3(0.3451, 0.0000, 0.5725); // #580092
-    vec3 wisteria  = vec3(0.8039, 0.6118, 0.9255); // #cd9cec
+    // Soft compression params
+    const float EDGE_START = 0.86;  // start compressing beyond this |x|
+    const float EDGE_PUSH  = 0.55;  // how strongly to push edges inward
 
-    vec3 indigoLift   = mix(indigo, wisteria, 0.30);
-    vec3 deepBlend    = mix(licorice, indigo, 0.55);
-    vec3 wisteriaSoft = mix(wisteria, indigo, 0.20);
+    float absx = abs(ax);
+    float edgeT = smoothstep(EDGE_START, 1.0, absx);
+    // Non-linear ease for softer transition
+    edgeT = edgeT*edgeT*(3.0 - 2.0*edgeT);
+    float compressed = ax * mix(1.0, (EDGE_START + (absx-EDGE_START)*0.4)/absx, edgeT * EDGE_PUSH);
 
-    // Palette breathing speed (0.18 -> 0.13)
-    float cycle = sin(uTime * 0.13);
-    float t = (sign(cycle) * pow(abs(cycle), 0.6) + 1.0) * 0.5;
+    ax = (absx > EDGE_START) ? compressed : ax;
 
-    vec3 color1 = mix(indigoLift, wisteria,    t);
-    vec3 color2 = mix(deepBlend,  indigo,      t);
-    vec3 color3 = mix(licorice,   indigoLift,  t*0.85);
-    vec3 color4 = mix(indigo,     wisteriaSoft,t);
+    // (Optional micro un-warp; enable if you want even calmer edges)
+    // ax -= 0.015 * edgeT * sin(ax * 6.28318);
 
-    vec2 ruv = Rot(radians(-5.0)) * tuv;
-    vec3 layer1 = mix(color3, color2, smoothstep(-0.03, 0.20, ruv.x));
-    vec3 layer2 = mix(color4, color1, smoothstep(-0.02, 0.20, ruv.x));
-    vec3 color  = mix(layer1, layer2, smoothstep(0.05, -0.30, tuv.y));
+    uv.x = ax;
+    // --- End Fix Block ---
 
-    color *= 1.2;
-    color = pow(color, vec3(1.1));
+    float speed = max(uSpeed, 0.0);
+    float tBase = uTime * 0.24 * (speed + 0.2);
+    float tAux  = uTime * 0.17 * (speed + 0.2);
 
-    color -= filmGrainNoise(uv) * filmGrainIntensity;
+    const int ITERATIONS = 8;
+    float d=-tBase, acc=0.0;
+    for(int i=0;i<ITERATIONS;++i){
+        float fi=float(i);
+        float phase = hash(fi + uSeed*13.17)*6.28318;
+        acc += cos(fi - d - acc * uv.x + phase*0.15);
+        d   += sin(uv.y * fi + acc + phase*0.10);
+    }
+    d += tBase;
 
-    return vec4(clamp(color, 0.0, 1.0), 1.0);
+    float2 freq = float2(d + 0.15*sin(tAux),
+                         acc + 0.10*cos(tAux*0.7));
+    float3 rawCol = float3(
+        cos(uv.x * freq.x)*0.6 + 0.4,
+        cos(uv.y * freq.y)*0.6 + 0.4,
+        cos(acc + d + 0.25*sin(tAux))*0.5 + 0.5
+    );
+
+    float intensity = clamp((rawCol.r+rawCol.g+rawCol.b)/3.0, 0.0, 1.0);
+    float3 finalColor = pickPalette(intensity, uv, uPalette);
+    finalColor = pow(finalColor, float3(0.9));
+    return float4(finalColor,1.0);
 }
     """
 }

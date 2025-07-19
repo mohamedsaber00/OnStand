@@ -131,16 +131,14 @@ fun BackgroundClockView(
         // Use a custom HazeStyle for minimum blur
         Card(
             modifier = Modifier
-                .fillMaxWidth(0.6f)
+                .fillMaxWidth(0.3f)
                 .aspectRatio(2.5f)
                 // Width:Height ratio for a more rectangular card
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(32.dp))
                 .hazeEffect(
                     state = hazeState,
                     style = BlurConstants.MIN_BLUR_HAZE_STYLE
                 )
-                .padding(16.dp)
-
                 .align(Alignment.Center),
             colors = CardDefaults.cardColors(
                 containerColor = ColorConstants.TRANSPARENT

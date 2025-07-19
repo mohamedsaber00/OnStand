@@ -53,16 +53,6 @@ fun ClockFaceItemPreview(
                 )
             }
 
-            is ClockType.Flip -> {
-                FlipClockWidget(
-                    currentTime = currentTime,
-                    cardColor = Color.Black.copy(alpha = 0.6f),
-                    textColor = fontColorOption.primaryColor,
-                    fontFamily = getFontFamily(clockType.fontFamily),
-                    modifier = Modifier.size(100.dp, 60.dp)
-                )
-            }
-
             is ClockType.MorphFlip -> {
                 MorphFlipClockWidget(
                     currentTime = currentTime,

@@ -154,15 +154,6 @@ sealed class ClockType {
         override val showSeconds: Boolean = false
     ) : ClockType()
 
-    data class Flip(
-        override val name: String,
-        override val fontFamily: String = "Monospace",
-        override val showDate: Boolean = true,
-        override val timeFormat: TimeFormat = TimeFormat.TWELVE_HOUR,
-        override val isDigital: Boolean = true,
-        override val showSeconds: Boolean = true
-    ) : ClockType()
-
     data class MorphFlip(
         override val name: String,
         override val fontFamily: String = "Roboto",

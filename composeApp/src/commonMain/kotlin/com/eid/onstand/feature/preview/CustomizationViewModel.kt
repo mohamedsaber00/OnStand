@@ -79,7 +79,6 @@ class PreviewViewModel(
             val updatedClockType = when (currentClockType) {
                 is ClockType.Digital -> currentClockType.copy(showSeconds = showSeconds)
                 is ClockType.DigitalSegments -> currentClockType.copy(showSeconds = showSeconds)
-                is ClockType.Flip -> currentClockType.copy(showSeconds = showSeconds)
                 is ClockType.MorphFlip -> currentClockType.copy(showSeconds = showSeconds)
                 else -> currentClockType
             }

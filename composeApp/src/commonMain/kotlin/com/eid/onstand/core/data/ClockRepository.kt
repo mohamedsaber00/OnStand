@@ -15,9 +15,6 @@ class ClockRepository {
         ClockType.Analog(
             name = "Analog Classic"
         ),
-        ClockType.Flip(
-            name = "Flip Clock"
-        ),
         ClockType.MorphFlip(
             name = "Morph Flip"
         )

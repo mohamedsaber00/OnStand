@@ -51,7 +51,12 @@ fun MorphFlipClockWidget(
         val scaleFactor = if (isPreview) 0.5f else 1f
         val padding = (maxWidth.value * 0.04f * scaleFactor).dp
         val cardWidth = (maxWidth.value * 0.3f * scaleFactor).dp
-        val cardHeight = (maxHeight.value * 0.55f * scaleFactor).dp
+
+        // Calculate card height based on both width and height constraints
+        val widthBasedHeight = (cardWidth.value * 1.5f).dp
+        val heightBasedHeight = (maxHeight.value * 0.55f * scaleFactor).dp
+        val cardHeight = minOf(widthBasedHeight.value, heightBasedHeight.value).dp
+
         val fontSize = (cardHeight.value * 0.55f).sp
         val sideLabelFont = (cardHeight.value * 0.18f).sp
 

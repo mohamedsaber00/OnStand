@@ -186,19 +186,6 @@ fun CustomizationPreviewCard(
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-
-                is ClockType.Flip -> {
-                    FlipClockWidget(
-                        currentTime = localTime,
-                        cardColor = ColorConstants.DEFAULT_CARD_COLOR,
-                        textColor = fontColorOption?.primaryColor
-                            ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                        fontFamily = getFontFamily(clockType.fontFamily),
-                        isPreview = true,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-
                 is ClockType.MorphFlip -> {
                     MorphFlipClockWidget(
                         currentTime = localTime,

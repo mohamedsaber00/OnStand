@@ -5,9 +5,12 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,7 +54,11 @@ fun BasicClockWidget(
         val numChars = if (showSeconds) 8 else 5
         val digitWidth = maxWidth / (numChars.toFloat() * 1.2f) * scaleFactor
         val colonWidth = digitWidth * 0.6f
-        val fontSize = (digitWidth.value * 1.4f).sp
+
+        // Calculate font size based on both width and height constraints
+        val widthBasedFontSize = (digitWidth.value * 1.4f).sp
+        val heightBasedFontSize = (maxHeight.value * 0.8f * scaleFactor).sp
+        val fontSize = minOf(widthBasedFontSize.value, heightBasedFontSize.value).sp
 
         Row(
             modifier = Modifier

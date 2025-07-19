@@ -41,7 +41,7 @@ uniform vec3 uResolution;
 
 // --- Configurable Options ---
 const float SPEED = 0.1;
-const float STAR_DENSITY = 0.8;
+const float STAR_DENSITY = 1.5;
 const float STAR_BRIGHTNESS = 8.0;
 const int PALETTE = -1; // -1 = mixed stars, 0–4 = single palette
 

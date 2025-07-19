@@ -1,5 +1,6 @@
 package com.eid.onstand
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -54,24 +55,10 @@ fun AppContent() {
                 backgroundType = customizationState.selectedBackground,
                 clockType = customizationState.selectedClockType,
                 fontColorOption = customizationState.selectedFontColor,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize().clickable {
+                    viewModel.showCustomization()
+                }
             )
-
-            // Floating Action Button to open customization
-            FloatingActionButton(
-                onClick = { viewModel.showCustomization() },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
-                containerColor = Color(0xFF7B68EE),
-                shape = CircleShape
-            ) {
-                Text(
-                    text = "⚙️",
-                    fontSize = 24.sp,
-                    color = Color.White
-                )
-            }
         }
     }
 }

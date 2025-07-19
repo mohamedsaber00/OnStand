@@ -26,16 +26,13 @@ object SpaceShader : Shader {
 
     override val sksl = """
 /**
- * Peaceful 2D Starfield + “Old Style” Cinematic Meteor (Fixed)
+ * Peaceful 2D Starfield + “Old Style” Cinematic Meteor (Slower + Idle Gaps)
  *
- * - Starfield drifts (uvStars) exactly as before.
- * - Meteor uses OLD chord style (two points on a circle) with original
- *   glow/core distances and lingering tail color logic.
- * - Meteor path & timing computed in static space (uvBase) so drift
- *   never knocks it off-screen prematurely.
- * - Visibility window trims the chord to the portion intersecting
- *   the screen rectangle, so the meteor is only drawn while it is
- *   potentially visible.
+ * Starfield identical to your last version.
+ * Meteor:
+ *  - Longer duration (slower crossing)
+ *  - Enforced idle gap before and after
+ *  - Still single chord-based path, trimmed to visible rectangle
  */
 
 uniform float uTime;
@@ -43,26 +40,35 @@ uniform vec3  uResolution;
 
 // -------------------- Starfield Config --------------------
 const float SPEED           = 0.10;
-const float STAR_DENSITY    = 1.5;   // >1 => every cell spawns a star (kept as you had)
+const float STAR_DENSITY    = 1.5;   // >1 => every cell spawns a star (kept)
 const float STAR_BRIGHTNESS = 8.0;
 const int   PALETTE         = -1;    // -1 = mixed palettes, 0..4 fixed
 
-// -------------------- Meteor Timing/Look ------------------
-const float METEOR_EPOCH_LENGTH = 25.0;  // window per meteor opportunity
-const float METEOR_MIN_DELAY    = 0.5;   // earliest start inside epoch
-const float METEOR_MIN_DURATION = 9.0;
-const float METEOR_MAX_DURATION = 12.0;
+// -------------------- Meteor Timing/Look (UPDATED) --------
+// Total epoch length (one meteor OR quiet period fits inside)
+const float METEOR_EPOCH_LENGTH = 42.0;
 
-const float METEOR_RADIUS_MARGIN = 0.99;  // extra radius outside view (old style)
-const float METEOR_DELTA_VARIANCE = 0.35; // angular variance added to PI
+// Required quiet time BEFORE meteor appears in an epoch
+const float METEOR_GAP_BEFORE   = 4.0;
 
-// Old style visual parameters
+// Required quiet time AFTER meteor finishes (still inside epoch)
+const float METEOR_GAP_AFTER    = 6.0;
+
+// Slower (longer) meteor travel
+const float METEOR_MIN_DURATION = 11.0;
+const float METEOR_MAX_DURATION = 16.0;
+
+// Circular chord style parameters
+const float METEOR_RADIUS_MARGIN = 0.99;
+const float METEOR_DELTA_VARIANCE = 0.35;
+
+// Visual look
 const float METEOR_CORE_R   = 0.03;
 const float METEOR_GLOW_R   = 0.30;
 const float METEOR_TRAIL_LEN= 3.0;
 const float METEOR_INTENSITY= 7.0;
-const float METEOR_LINGER   = 0.10;   // fraction of extra glow lingering
-const float METEOR_COLOR_LERP_EXP = 0.35; // tail->head color bias
+const float METEOR_LINGER   = 0.10;
+const float METEOR_COLOR_LERP_EXP = 0.35;
 
 // -------------------- Tonemap / Gamma ---------------------
 const float OUTPUT_GAMMA = 0.8;
@@ -70,7 +76,7 @@ const float OUTPUT_GAMMA = 0.8;
 // -------------------- Math / Helpers ----------------------
 const float PI  = 3.1415926535;
 const float TAU = 6.283185307;
-const float WORLD_SCALE = 10.0; // matches your original uv scaling
+const float WORLD_SCALE = 10.0;
 
 float hash21(vec2 p){
     p = fract(p * vec2(123.34, 456.21));
@@ -96,24 +102,17 @@ vec3 cosPalette(float t, int paletteId){
     else return vec3(1.0);
     return a + b * cos(TAU * (c*t + d));
 }
-
-// Clamp star density to avoid out-of-range logic (kept but optional)
 float effectiveStarDensity() {
     return (STAR_DENSITY < 0.0) ? 0.0 : STAR_DENSITY;
 }
 
-// Compute intersection (parameter t range) of a parametric line segment
-// P(t) = start + dir * t, t in [0, segLen], with axis aligned rectangle.
-// Returns (tMinVisible, tMaxVisible) clamped to [0,segLen]; if no overlap,
-// tMin > tMax.
+// Visible interval of chord line inside rectangle
 vec2 chordVisibleInterval(vec2 start, vec2 dir, float segLen, float halfW, float halfH){
     float tMin = 0.0;
     float tMax = segLen;
 
-    // For each axis: solve start.xy + dir.xy * t inside [-half?, half?]
-    // x limits
     if (abs(dir.x) < 1e-5){
-        if (abs(start.x) > halfW) return vec2(1.0, -1.0); // no intersection
+        if (abs(start.x) > halfW) return vec2(1.0, -1.0);
     } else {
         float tx1 = (-halfW - start.x)/dir.x;
         float tx2 = ( halfW - start.x)/dir.x;
@@ -121,7 +120,6 @@ vec2 chordVisibleInterval(vec2 start, vec2 dir, float segLen, float halfW, float
         tMin = max(tMin, tx1);
         tMax = min(tMax, tx2);
     }
-    // y limits
     if (abs(dir.y) < 1e-5){
         if (abs(start.y) > halfH) return vec2(1.0, -1.0);
     } else {
@@ -132,7 +130,6 @@ vec2 chordVisibleInterval(vec2 start, vec2 dir, float segLen, float halfW, float
         tMax = min(tMax, ty2);
     }
 
-    // Clamp to segment
     tMin = max(tMin, 0.0);
     tMax = min(tMax, segLen);
     return vec2(tMin, tMax);
@@ -140,14 +137,12 @@ vec2 chordVisibleInterval(vec2 start, vec2 dir, float segLen, float halfW, float
 
 // -------------------- Main -------------------------------
 vec4 main(vec2 fragCoord){
-    // Base static UV (for meteor geometry)
     vec2 uvBase  = (fragCoord - uResolution.xy * 0.5) / uResolution.y * WORLD_SCALE;
-    // Drifting UV for the starfield only
     vec2 uvStars = uvBase + vec2(uTime * SPEED, uTime * SPEED * 0.5);
 
     vec3 finalColor = vec3(0.0);
 
-    // --------- Starfield (original behavior) ---------
+    // --------- Starfield ---------
     vec2 grid_id = floor(uvStars);
     vec2 frag_id = fract(uvStars);
     float density = effectiveStarDensity();
@@ -164,12 +159,11 @@ vec4 main(vec2 fragCoord){
 
             float star_glow = smoothstep(0.05, 0.0, dist);
             float star_core = smoothstep(0.01, 0.0, dist);
-
             float twinkle = 0.75 + 0.25 * sin(uTime * 2.0 + cell_hash * 10.0);
 
             int paletteToUse = (PALETTE < 0)
-                ? int(floor(hash21(cell) * 5.0))
-                : PALETTE;
+                              ? int(floor(hash21(cell) * 5.0))
+                              : PALETTE;
 
             vec3 star_color = cosPalette(cell_hash, paletteToUse);
 
@@ -178,29 +172,32 @@ vec4 main(vec2 fragCoord){
         }
     }
 
-    // --------- Old Style Meteor (fixed) ---------------
+    // --------- Slower + Idle Gap Meteor ---------
     {
         float epoch = floor(uTime / METEOR_EPOCH_LENGTH);
         float tIn   = mod(uTime, METEOR_EPOCH_LENGTH);
 
-        // Random duration & start inside epoch
+        // Duration
         float durSeed   = hash21(vec2(epoch, 3.0));
         float meteorDur = mix(METEOR_MIN_DURATION, METEOR_MAX_DURATION, durSeed);
-        float latestStart = METEOR_EPOCH_LENGTH - meteorDur;
-        float startSeed   = hash21(vec2(epoch, 5.0));
-        float startTime   = METEOR_MIN_DELAY
-                          + startSeed * max(0.0, latestStart - METEOR_MIN_DELAY);
+
+        // Available time for placing the meteor (after enforced gaps)
+        float usableWindow = METEOR_EPOCH_LENGTH - METEOR_GAP_BEFORE - METEOR_GAP_AFTER;
+        // Safety clamp in case someone sets crazy constants
+        meteorDur = min(meteorDur, usableWindow - 0.1);
+
+        // Start inside the usable window
+        float startSeed = hash21(vec2(epoch, 5.0));
+        float startTime = METEOR_GAP_BEFORE + startSeed * (usableWindow - meteorDur);
 
         bool active = (tIn >= startTime) && (tIn < startTime + meteorDur);
 
         if (active){
-            float life = (tIn - startTime)/meteorDur; // 0..1 base life
+            float life = (tIn - startTime)/meteorDur;
 
-            // Circular chord endpoints (old style)
             float baseAngle  = hash21(vec2(epoch, 10.0)) * TAU;
             float deltaAngle = PI + (hash21(vec2(epoch, 99.0)) - 0.5) * 2.0 * METEOR_DELTA_VARIANCE;
 
-            // Screen rectangle half extents
             float halfH = WORLD_SCALE * 0.5;
             float aspect = uResolution.x / uResolution.y;
             float halfW = halfH * aspect;
@@ -214,15 +211,12 @@ vec4 main(vec2 fragCoord){
             float chordLen = length(chord);
             vec2 dir = chord / chordLen;
 
-            // Visible interval of chord inside rectangle
             vec2 tInterval = chordVisibleInterval(start_pos, dir, chordLen, halfW, halfH);
             float tMinVis = tInterval.x;
             float tMaxVis = tInterval.y;
 
             if (tMinVis <= tMaxVis){
                 float visibleSpan = max(tMaxVis - tMinVis, 1e-4);
-
-                // Map life (0..1) onto *visible* segment only
                 float tAlong = tMinVis + life * visibleSpan;
                 vec2 head = start_pos + dir * tAlong;
                 vec2 tail = head - dir * METEOR_TRAIL_LEN;
@@ -231,24 +225,19 @@ vec4 main(vec2 fragCoord){
                 float meteor_glow = smoothstep(METEOR_GLOW_R, 0.0, d);
                 float meteor_core = smoothstep(METEOR_CORE_R, 0.0, d);
 
-                // Temporal bell fade
                 float fade = sin(life * PI); fade *= fade;
 
-                // Along-tail fade
                 float along = clamp(dot(uvBase - tail, dir) / length(head - tail), 0.0, 1.0);
                 float trail_fade = smoothstep(0.0, 1.0, along);
 
-                // Color (old style logic, using palettes)
                 int meteorPalette = int(floor(hash21(vec2(epoch, 55.0)) * 5.0));
                 vec3 headColor = cosPalette(life, meteorPalette);
                 vec3 tailColor = cosPalette(life * 0.3 + 0.2, meteorPalette);
                 vec3 meteorColor = mix(headColor, tailColor, pow(along, METEOR_COLOR_LERP_EXP));
 
-                // Main light
                 finalColor += (meteor_glow * 0.2 + meteor_core) *
                               meteorColor * fade * trail_fade * METEOR_INTENSITY;
 
-                // Linger (soft residual)
                 finalColor += meteor_glow * METEOR_LINGER * meteorColor * (1.0 - life);
             }
         }
@@ -257,7 +246,6 @@ vec4 main(vec2 fragCoord){
     // --------- Tonemap & Gamma -----------
     finalColor = 1.0 - exp(-finalColor);
     finalColor = pow(finalColor, vec3(OUTPUT_GAMMA));
-
     return vec4(finalColor, 1.0);
 }
     """

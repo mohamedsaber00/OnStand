@@ -106,8 +106,7 @@ fun BackgroundClockView(
 
                         LiveAnimationType.ANIMATED_PARTICLES -> {
                             AnimatedBackground(
-                                modifier = Modifier.fillMaxSize(),
-                                colors = GradientConstants.DEFAULT_GRADIENT_COLORS
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
 

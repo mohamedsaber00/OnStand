@@ -206,12 +206,7 @@ private fun BackgroundOptionItem(
 
                         LiveAnimationType.ANIMATED_PARTICLES -> {
                             AnimatedBackground(
-                                modifier = Modifier.fillMaxSize(),
-                                colors = listOf(
-                                    Color(0xFF4A90E2),
-                                    Color(0xFF7B68EE),
-                                    Color(0xFF9B59B6)
-                                )
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
 

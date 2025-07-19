@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import com.eid.onstand.core.theme.GradientConstants
 import kotlin.math.PI
 import kotlin.math.sin
 
@@ -29,14 +30,20 @@ import kotlin.math.sin
  * @param colors The list of colors to use for the gradient.
  */
 @Composable
-fun AnimatedBackground(modifier: Modifier = Modifier, colors: List<Color>) {
+fun AnimatedBackground(
+    modifier: Modifier = Modifier,
+    colors: List<Color> = GradientConstants.ANIMATED_BACKGROUND_COLORS
+) {
     val infiniteTransition = rememberInfiniteTransition(label = "infinite color animation")
     val animationProgress by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f, // Animate a full cycle from 0 to 1
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 10000, easing = LinearEasing), // 10-second loop
-            repeatMode = RepeatMode.Restart
+            animation = tween(
+                durationMillis = 20000,
+                easing = LinearEasing
+            ), // 20-second loop for slower movement
+            repeatMode = RepeatMode.Restart // Back to restart for continuous forward motion
         ),
         label = "animation_progress"
     )
@@ -74,14 +81,15 @@ private fun DrawScope.drawWavyGradientPath(animationProgress: Float, colors: Lis
     }
 
     // Animate the gradient by shifting its start and end points horizontally
-    val gradientWidth = size.width
-    val gradientStartOffset = -gradientWidth + (animationProgress * gradientWidth * 2)
+    val gradientWidth = size.width * 2f // Increased width for stretched colors
+    val gradientStartOffset =
+        -gradientWidth + (animationProgress * gradientWidth * 2f) // Full cycle movement
 
     val brush = Brush.linearGradient(
         colors = colors,
         start = Offset(gradientStartOffset, 0f),
         end = Offset(gradientStartOffset + gradientWidth, 0f),
-        tileMode = TileMode.Mirror // Use Mirror for a seamless back-and-forth-style loop
+        tileMode = TileMode.Mirror // Mirror mode for seamless transitions
     )
 
     // Draw the path with a thick stroke using the animated brush

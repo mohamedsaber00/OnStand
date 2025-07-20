@@ -9,9 +9,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.eid.onstand.core.data.initDataStore
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        initDataStore(this)
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 

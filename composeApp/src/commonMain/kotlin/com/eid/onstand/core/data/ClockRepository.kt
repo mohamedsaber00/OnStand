@@ -22,9 +22,9 @@ class ClockRepository {
 
     fun getFontFamilies(): List<FontFamily> = listOf(
         FontFamily.ROBOTO,
-        FontFamily.SANS_SERIF,
         FontFamily.SERIF,
-        FontFamily.MONOSPACE
+        FontFamily.MONOSPACE,
+        FontFamily.CURSIVE
     )
 
     fun getClockColors(): List<ClockColor> = listOf(

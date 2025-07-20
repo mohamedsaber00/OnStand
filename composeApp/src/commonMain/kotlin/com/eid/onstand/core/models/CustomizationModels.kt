@@ -153,9 +153,9 @@ sealed class ClockType {
 
 enum class FontFamily(val displayName: String, val systemName: String) {
     ROBOTO("Roboto", "roboto"),
-    SANS_SERIF("Sans Serif", "sans-serif"),
     SERIF("Serif", "serif"),
-    MONOSPACE("Monospace", "monospace")
+    MONOSPACE("Monospace", "monospace"),
+    CURSIVE("Cursive", "cursive")
 }
 
 data class ClockColor(

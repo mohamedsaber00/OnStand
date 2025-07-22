@@ -1,4 +1,4 @@
-# OnStand
+# OnStand "Under Development"
 
 A beautiful Compose Multiplatform (KMP) live clock app with animated backgrounds.
 

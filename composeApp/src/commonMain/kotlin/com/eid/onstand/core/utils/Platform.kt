@@ -1,6 +1,4 @@
-package com.eid.onstand
-
-import kotlinx.datetime.LocalDateTime
+package com.eid.onstand.core.utils
 
 interface Platform {
     val name: String

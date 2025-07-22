@@ -1,6 +1,6 @@
-# OnStand
+# OnStand "Under Development"
 
-A beautiful Compose Multiplatform (KMP) live clock app with animated backgrounds.
+A Compose Multiplatform (KMP) live clock app with flluid animated backgrounds.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/d8edb6bb-e762-49e1-9c66-3a0c76751145" width="45%">
@@ -83,6 +83,3 @@ composeApp/src/
 - Android SDK (for Android target)
 - Gradle 8.0+
 
-## License
-
-This project is part of the OnStand MVP demonstration.

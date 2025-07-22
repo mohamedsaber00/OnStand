@@ -2,6 +2,18 @@
 
 A beautiful Compose Multiplatform (KMP) live clock app with animated backgrounds.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d8edb6bb-e762-49e1-9c66-3a0c76751145" width="45%">
+  <img src="https://github.com/user-attachments/assets/847f04cf-501a-497d-b7ed-8c2d417ee080" width="45%">
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4349897a-3dc8-4aa7-8f48-dcf1ca8ad6bc" width="45%">
+  <img src="https://github.com/user-attachments/assets/75bdbc71-29b1-48fe-beef-4f456af308e6" width="45%">
+</p>
+
+
+
+
 ## Features
 
 ### Live Clock Widget

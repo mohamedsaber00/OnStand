@@ -81,7 +81,7 @@ fun ClockFaceItemPreview(
                     showSeconds = clockType.showSeconds,
                     fontFamily = fontFamily,
                     textColor = clockColor.color,
-                    isPreview = true
+                    isPreview = true,
                 )
             }
         }

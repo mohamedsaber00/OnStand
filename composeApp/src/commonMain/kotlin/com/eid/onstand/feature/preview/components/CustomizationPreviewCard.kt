@@ -23,6 +23,7 @@ import com.eid.onstand.feature.backgrounds.shader.PaletteShader
 import com.eid.onstand.feature.backgrounds.shader.RedShader
 import com.eid.onstand.feature.widgets.clocks.*
 import com.mikepenz.hypnoticcanvas.shaderBackground
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -39,6 +40,8 @@ fun CustomizationPreviewCard(
     modifier: Modifier = Modifier
 ) {
     var currentTime by remember { mutableStateOf(Clock.System.now()) }
+
+    val hazeState = rememberHazeState()
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -218,7 +221,8 @@ fun CustomizationPreviewCard(
                         fontFamily = fontFamily ?: FontFamily.ROBOTO,
                         textColor = textColor,
                         isPreview = true,
-                        modifier = Modifier
+                        modifier = Modifier,
+                        hazeState = hazeState
                     )
                 }
 
@@ -229,7 +233,8 @@ fun CustomizationPreviewCard(
                         fontFamily = FontFamily.ROBOTO,
                         textColor = textColor,
                         isPreview = true,
-                        modifier = Modifier
+                        modifier = Modifier,
+                        hazeState = hazeState
                     )
                 }
             }

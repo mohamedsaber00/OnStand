@@ -39,7 +39,7 @@ fun BackgroundClockView(
     clockColor: ClockColor? = null,
     modifier: Modifier = Modifier
 ) {
-    var currentTime by remember { mutableStateOf(Clock.System.now() )}
+    var currentTime by remember { mutableStateOf(Clock.System.now()) }
 
 
     val hazeState = rememberHazeState()
@@ -84,7 +84,9 @@ fun BackgroundClockView(
                                     MovingWaveShader
                                 )
 
-                                ShaderType.PURPLE_SMOKE -> Modifier.shaderBackground(PurpleSmokeShader)
+                                ShaderType.PURPLE_SMOKE -> Modifier.shaderBackground(
+                                    PurpleSmokeShader
+                                )
                             }
                         }
 
@@ -127,93 +129,9 @@ fun BackgroundClockView(
                 else -> {}
             }
         }
-
-        // Clock card - this applies the haze effect
-        // Use a custom HazeStyle for minimum blur
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .aspectRatio(2.5f)
-                // Width:Height ratio for a more rectangular card
-                .clip(RoundedCornerShape(32.dp))
-                .hazeEffect(
-                    state = hazeState,
-                    style = BlurConstants.MIN_BLUR_HAZE_STYLE
-                )
-                .align(Alignment.Center),
-            colors = CardDefaults.cardColors(
-                containerColor = ColorConstants.TRANSPARENT
-            ),
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                val timeZone = TimeZone.currentSystemDefault()
-                val localTime = currentTime.toLocalDateTime(timeZone)
-
-                // Render the actual clock widget based on type
-                when (clockType) {
-                    is ClockType.DigitalSegments -> {
-                        DigitalSegmentClock(
-                            currentTime = localTime,
-                            showSeconds = clockType.showSeconds,
-                            activeColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                            inactiveColor = (clockColor?.color
-                                ?: ColorConstants.DEFAULT_TEXT_COLOR).copy(
-                                alpha = ColorConstants.DEFAULT_INACTIVE_COLOR_ALPHA
-                            )
-                        )
-                    }
-
-
-
-                    is ClockType.MorphFlip -> {
-                        MorphFlipClockWidget(
-                            currentTime = localTime,
-                            cardColor = ColorConstants.DEFAULT_MORPH_CARD_COLOR,
-                            textColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                            fontFamily = fontFamily ?: FontFamily.ROBOTO
-                        )
-                    }
-
-                    is ClockType.Analog -> {
-                        AnalogClockWidget(
-                            currentTime = localTime,
-                            clockColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                            handsColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                            numbersColor = (clockColor?.color
-                                ?: ColorConstants.DEFAULT_TEXT_COLOR).copy(alpha = ColorConstants.DEFAULT_NUMBERS_COLOR_ALPHA)
-                        )
-                    }
-
-                    is ClockType.Digital -> {
-                        BasicClockWidget(
-                            currentTime = localTime,
-                            showSeconds = clockType.showSeconds,
-                            fontFamily = fontFamily ?: FontFamily.ROBOTO,
-                            textColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                            modifier = Modifier
-
-                        )
-                    }
-
-                    null -> {
-                        // Default fallback
-                        BasicClockWidget(
-                            currentTime = localTime,
-                            showSeconds = false,
-                            fontFamily = FontFamily.ROBOTO,
-                            textColor = clockColor?.color ?: ColorConstants.DEFAULT_TEXT_COLOR,
-                            modifier = Modifier
-                        )
-
-                    }
-                }
-            }
-        }
     }
 }
+
 
 @Composable
 private fun getBackgroundBrush(backgroundType: BackgroundType?): Brush {

@@ -41,7 +41,7 @@ import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.format.byUnicodePattern
 
 /**
- * A composable function that displays a stylish clock widget.
+ * A composable function for a very basic clock widget.
  * It uses kotlinx-datetime for all date and time operations.
  */
 @OptIn(

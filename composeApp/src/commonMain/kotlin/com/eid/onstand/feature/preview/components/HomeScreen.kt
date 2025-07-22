@@ -2,7 +2,6 @@ package com.eid.onstand.feature.preview.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -13,18 +12,16 @@ import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
 import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
 import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground
 import com.eid.onstand.feature.backgrounds.shader.*
-import com.eid.onstand.feature.widgets.clocks.*
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
-import kotlinx.datetime.*
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalHazeMaterialsApi::class, ExperimentalTime::class)
 @Composable
-fun BackgroundClockView(
+fun HomeScreen(
     backgroundType: BackgroundType? = null,
     clockType: ClockType? = null,
     fontFamily: FontFamily? = null,

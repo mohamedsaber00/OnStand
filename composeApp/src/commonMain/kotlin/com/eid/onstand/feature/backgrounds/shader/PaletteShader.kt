@@ -10,22 +10,20 @@ object PaletteShader : Shader {
 
     override val sksl = """
 /*--------------------------------------------------------------
-  Palette Shader (Version A Motion) – Vivid Liquid Glass Colors
-  Distortion fix: ONLY coordinate pre-processing changed.
+  Palette Shader: Vivid Liquid Glass 
 --------------------------------------------------------------*/
 uniform float  uTime;
 uniform float3 uResolution;
 uniform int    uPalette;
-uniform float  uSpeed;     // 1.0 original feel, 0.5 slower, 0.25 calm
-uniform float  uSeed;      // phase randomization seed
-uniform float  uVivid;     // palette 0 vividness
-uniform float  uBloom;     // palette 0 bloom
-uniform float  uHueDrift;  // palette 0 hue drift
-uniform float  uWarmBias;  // palette 0 warm/cool bias
+uniform float  uSpeed;     
+uniform float  uSeed;      
+uniform float  uVivid;     
+uniform float  uBloom;     
+uniform float  uHueDrift;  
+uniform float  uWarmBias;  
 
 float hash(float n){ return fract(sin(n)*43758.5453123); }
 
-/* ---------- Original Non-Liquid Palettes (unchanged) ---------- */
 float3 paletteBlackRed(float t){
     float3 a=float3(0.2,0.0,0.0);
     float3 b=float3(0.8,0.2,0.1);
@@ -119,31 +117,23 @@ vec4 main(vec2 fragCoord){
     float2 res = uResolution.xy;
     float  minSide = min(res.x,res.y);
 
-    // --- Distortion Fix Block (only change) ---
     float2 uv = (fragCoord*2.0 - res)/minSide;   // original normalization
     float aspect = res.x / res.y;
 
-    // Strength of aspect neutralization (1 = full)
     const float ASPECT_STRENGTH = 0.85;
     float ax = mix(uv.x, uv.x / aspect, ASPECT_STRENGTH);
 
-    // Soft compression params
     const float EDGE_START = 0.86;  // start compressing beyond this |x|
     const float EDGE_PUSH  = 0.55;  // how strongly to push edges inward
 
     float absx = abs(ax);
     float edgeT = smoothstep(EDGE_START, 1.0, absx);
-    // Non-linear ease for softer transition
     edgeT = edgeT*edgeT*(3.0 - 2.0*edgeT);
     float compressed = ax * mix(1.0, (EDGE_START + (absx-EDGE_START)*0.4)/absx, edgeT * EDGE_PUSH);
 
     ax = (absx > EDGE_START) ? compressed : ax;
 
-    // (Optional micro un-warp; enable if you want even calmer edges)
-    // ax -= 0.015 * edgeT * sin(ax * 6.28318);
 
-    uv.x = ax;
-    // --- End Fix Block ---
 
     float speed = max(uSpeed, 0.0);
     float tBase = uTime * 0.24 * (speed + 0.2);

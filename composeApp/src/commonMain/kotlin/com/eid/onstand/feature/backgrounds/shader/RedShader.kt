@@ -10,8 +10,7 @@ object RedShader : Shader {
 
     override val sksl = """
 /*--------------------------------------------------------------
-  Palette Shader (Version A Motion) – Coral/Murrey (palette 0)
-  Distortion fix retained. Palettes 1 & 2 unchanged.
+ Red Shader : Same as Palette but with different colors
 --------------------------------------------------------------*/
 uniform float  uTime;
 uniform float3 uResolution;
@@ -19,10 +18,10 @@ uniform int    uPalette;
 uniform float  uSpeed;
 uniform float  uSeed;
 
-uniform float  uVivid;     // still used for subtle saturation shaping (palette 0)
-uniform float  uBloom;     // highlight bloom amount
-uniform float  uHueDrift;  // (kept; can set to 0 for static)
-uniform float  uWarmBias;  // warm/cool bias
+uniform float  uVivid;     
+uniform float  uBloom;     
+uniform float  uHueDrift;  
+uniform float  uWarmBias;  
 
 float hash(float n){ return fract(sin(n)*43758.5453123); }
 
@@ -47,7 +46,6 @@ float3 paletteNeon(float t){
     }
 }
 
-/* ---------- Hue rotation helper (retained) ---------- */
 float3 hueRotate(float3 c, float a){
     const float3 w = float3(0.299,0.587,0.114);
     float Y = dot(c,w);
@@ -60,7 +58,6 @@ float3 hueRotate(float3 c, float a){
     return clamp(Y + d, 0.0, 1.0);
 }
 
-/* ---------- NEW palette 0 gradient: Black Wash → Murrey → Light Coral ---------- */
 float3 coralMurreyGradient(float g){
     g = clamp(g,0.0,1.0);
     // Source colors (sRGB-ish)
@@ -83,7 +80,6 @@ float3 coralMurreyGradient(float g){
 }
 
 float3 paletteCoralMurrey(float intensity, float2 uv){
-    // Build a spatial coordinate like previous vivid palette:
     float hx = clamp(uv.x * 0.50 + 0.5, 0.0, 1.0);
     float gCoord = clamp(mix(hx, intensity, 0.35), 0.0, 1.0);
     // Slight micro variation (same style)
@@ -91,18 +87,15 @@ float3 paletteCoralMurrey(float intensity, float2 uv){
 
     float3 base = coralMurreyGradient(gCoord);
 
-    // Bloom (reuse existing uniform)
     float bloomAmt = smoothstep(0.55,0.85,intensity) * clamp(uBloom,0.0,1.0);
     float3 bloomCol = float3(1.0,0.92,0.94);
     base = mix(base, clamp(base + bloomCol * bloomAmt * 0.6,0.0,1.0), 0.55);
 
-    // Subtle saturation shaping (reuse uVivid if >0)
     float vivid = clamp(uVivid,0.0,1.0);
     float l = dot(base,float3(0.299,0.587,0.114));
     base = mix(base, mix(float3(l), base, 1.0 + vivid*0.6), vivid*0.85);
     base = mix(base, (base - 0.5)*(1.0 + vivid*0.4) + 0.5, vivid*0.6);
 
-    // Warm/Cool bias (slight; keep range)
     float wb = clamp(uWarmBias,-1.0,1.0);
     if(wb!=0.0){
         float3 cool = float3(0.10,0.16,0.25);
@@ -110,20 +103,17 @@ float3 paletteCoralMurrey(float intensity, float2 uv){
         base = mix(base, wb>0.0 ? warm : cool, abs(wb)*0.15);
     }
 
-    // Optional hue drift (very subtle on this limited scheme)
     float drift = uHueDrift * 0.6;
     if(drift > 0.0){
         float angle = uTime * 0.05 * drift;
         base = hueRotate(base, angle);
     }
 
-    // Gentle gamma for smoothness
     base = pow(base, float3(0.92));
 
     return clamp(base,0.0,1.0);
 }
 
-/* ---------- Palette selector updated ---------- */
 float3 pickPalette(float intensity, float2 uv, int id){
     if(id==1) return paletteBlackRed(intensity);
     if(id==2) return paletteNeon(intensity);
@@ -136,7 +126,6 @@ vec4 main(vec2 fragCoord){
     float2 res = uResolution.xy;
     float  minSide = min(res.x,res.y);
 
-    // Distortion fix block (unchanged)
     float2 uv = (fragCoord*2.0 - res)/minSide;
     float aspect = res.x / res.y;
     const float ASPECT_STRENGTH = 0.85;
@@ -149,10 +138,8 @@ vec4 main(vec2 fragCoord){
     float compressed = ax * mix(1.0, (EDGE_START + (absx-EDGE_START)*0.4)/absx,
                                 edgeT * EDGE_PUSH);
     ax = (absx > EDGE_START) ? compressed : ax;
-    // Optional micro un-warp disabled
     uv.x = ax;
 
-    // Animation logic (unchanged)
     float speed = max(uSpeed, 0.0);
     float tBase = uTime * 0.24 * (speed + 0.2);
     float tAux  = uTime * 0.17 * (speed + 0.2);

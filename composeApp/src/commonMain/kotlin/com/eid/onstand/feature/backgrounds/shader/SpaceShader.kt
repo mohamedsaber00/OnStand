@@ -10,43 +10,30 @@ object SpaceShader : Shader {
 
     override val sksl = """
 /**
- * Peaceful 2D Starfield + “Old Style” Cinematic Meteor (Slower + Idle Gaps)
- *
- * Starfield identical to your last version.
- * Meteor:
- *  - Longer duration (slower crossing)
- *  - Enforced idle gap before and after
- *  - Still single chord-based path, trimmed to visible rectangle
- */
+*  Space shader
+*/
 
 uniform float uTime;
 uniform vec3  uResolution;
 
-// -------------------- Starfield Config --------------------
+// --------------------  Config --------------------
 const float SPEED           = 0.10;
-const float STAR_DENSITY    = 1.5;   // >1 => every cell spawns a star (kept)
+const float STAR_DENSITY    = 1.5;   
 const float STAR_BRIGHTNESS = 8.0;
 const int   PALETTE         = -1;    // -1 = mixed palettes, 0..4 fixed
 
-// -------------------- Meteor Timing/Look (UPDATED) --------
-// Total epoch length (one meteor OR quiet period fits inside)
 const float METEOR_EPOCH_LENGTH = 42.0;
 
-// Required quiet time BEFORE meteor appears in an epoch
 const float METEOR_GAP_BEFORE   = 4.0;
 
-// Required quiet time AFTER meteor finishes (still inside epoch)
 const float METEOR_GAP_AFTER    = 6.0;
 
-// Slower (longer) meteor travel
 const float METEOR_MIN_DURATION = 11.0;
 const float METEOR_MAX_DURATION = 16.0;
 
-// Circular chord style parameters
 const float METEOR_RADIUS_MARGIN = 0.99;
 const float METEOR_DELTA_VARIANCE = 0.35;
 
-// Visual look
 const float METEOR_CORE_R   = 0.03;
 const float METEOR_GLOW_R   = 0.30;
 const float METEOR_TRAIL_LEN= 3.0;
@@ -54,10 +41,8 @@ const float METEOR_INTENSITY= 7.0;
 const float METEOR_LINGER   = 0.10;
 const float METEOR_COLOR_LERP_EXP = 0.35;
 
-// -------------------- Tonemap / Gamma ---------------------
 const float OUTPUT_GAMMA = 0.8;
 
-// -------------------- Math / Helpers ----------------------
 const float PI  = 3.1415926535;
 const float TAU = 6.283185307;
 const float WORLD_SCALE = 10.0;
@@ -90,7 +75,6 @@ float effectiveStarDensity() {
     return (STAR_DENSITY < 0.0) ? 0.0 : STAR_DENSITY;
 }
 
-// Visible interval of chord line inside rectangle
 vec2 chordVisibleInterval(vec2 start, vec2 dir, float segLen, float halfW, float halfH){
     float tMin = 0.0;
     float tMax = segLen;
@@ -156,18 +140,14 @@ vec4 main(vec2 fragCoord){
         }
     }
 
-    // --------- Slower + Idle Gap Meteor ---------
     {
         float epoch = floor(uTime / METEOR_EPOCH_LENGTH);
         float tIn   = mod(uTime, METEOR_EPOCH_LENGTH);
 
-        // Duration
         float durSeed   = hash21(vec2(epoch, 3.0));
         float meteorDur = mix(METEOR_MIN_DURATION, METEOR_MAX_DURATION, durSeed);
 
-        // Available time for placing the meteor (after enforced gaps)
         float usableWindow = METEOR_EPOCH_LENGTH - METEOR_GAP_BEFORE - METEOR_GAP_AFTER;
-        // Safety clamp in case someone sets crazy constants
         meteorDur = min(meteorDur, usableWindow - 0.1);
 
         // Start inside the usable window
@@ -227,7 +207,6 @@ vec4 main(vec2 fragCoord){
         }
     }
 
-    // --------- Tonemap & Gamma -----------
     finalColor = 1.0 - exp(-finalColor);
     finalColor = pow(finalColor, vec3(OUTPUT_GAMMA));
     return vec4(finalColor, 1.0);

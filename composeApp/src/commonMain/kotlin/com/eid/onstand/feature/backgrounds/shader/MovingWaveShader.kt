@@ -22,8 +22,7 @@ uniform vec3 uResolution;
 
 const float PI = 3.1415926535;
 
-// wave function: generates a single layer of sine waves.
-// It takes the UV coordinates, amplitudes, frequencies, and offsets for four sine waves.
+
 float wave(vec2 uv, vec4 amps, vec4 freqs, vec4 offset) {
     // Slow down the animation for a more peaceful feel.
     float time = uTime * 0.2;
@@ -37,9 +36,7 @@ float wave(vec2 uv, vec4 amps, vec4 freqs, vec4 offset) {
 
     float blur = 0.025;
     
-    // Use smoothstep to create a soft, anti-aliased line for the wave.
     float top_wave = smoothstep(y + blur, y, uv.y);
-    // This creates a faded "underside" to the wave, giving it some thickness.
     float bottom_wave = smoothstep(y - 1.0, y, uv.y) * 0.4;
 
     return top_wave * bottom_wave;
@@ -47,17 +44,13 @@ float wave(vec2 uv, vec4 amps, vec4 freqs, vec4 offset) {
 
 // --- MAIN FUNCTION (SkSL) ---
 vec4 main(vec2 fragCoord) {
-    // 1. Normalize and transform coordinates.
-    // This setup centers the coordinates and scales them to be independent of screen ratio.
     vec2 uv = 2.0 * (2.0 * fragCoord.xy - uResolution.xy) / uResolution.y;
     
-    // 2. Set the background color to a more peaceful gradient.
-    // A deep, dark blue fading to a soft, lighter blue.
+
     vec3 background_color = mix(vec3(0.05, 0.0, 0.15), vec3(0.2, 0.3, 0.6), (fragCoord.y / uResolution.y));
     vec4 final_color = vec4(background_color, 1.0);
 
-    // 3. Generate the wave layers.
-    // 'f' will accumulate the brightness of all wave layers.
+
     float f = 0.0;
     // Each call to wave() adds a new, distinct layer of waves.
     // The parameters have been adjusted for a calmer motion.
@@ -65,11 +58,9 @@ vec4 main(vec2 fragCoord) {
     f += wave(uv, vec4(0.1, 0.15, 0.2, 0.1), vec4(0.8, 0.5, 0.4, 0.3), vec4(5.0, 2.0, 1.0, 3.0));
     f += wave(uv, vec4(0.2, 0.1, 0.05, 0.1), vec4(0.9, 0.5, 0.1, 0.1), vec4(1.0, 2.0, 2.0, 3.0));
 
-    // 4. Color the waves and add them to the background.
     // Use a soft, glowing white/light blue for a more ethereal feel.
     vec3 wave_color = vec3(0.8, 0.9, 1.0);
     
-    // The accumulated brightness 'f' is used as an alpha to blend the wave color.
     final_color += vec4(f * wave_color, 1.0);
     
     return final_color;

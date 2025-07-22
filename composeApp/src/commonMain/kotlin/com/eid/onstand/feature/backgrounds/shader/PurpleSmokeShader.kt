@@ -14,7 +14,7 @@ uniform float uTime;
 uniform vec3  uResolution;
 
 // --------------------------------------------------
-// Utility (unchanged)
+// Utility 
 // --------------------------------------------------
 mat2 Rot(float a) {
     float s = sin(a);
@@ -67,7 +67,6 @@ vec4 main(vec2 fragCoord) {
     tuv.x += sin(tuv.y * frequency + speed) / amplitude;
     tuv.y += sin(tuv.x * frequency * 1.5 + speed) / (amplitude * 0.5);
 
-    // Purple palette (unchanged colors)
     vec3 licorice  = vec3(0.0627, 0.0118, 0.0667); // #100311
     vec3 indigo    = vec3(0.3451, 0.0000, 0.5725); // #580092
     vec3 wisteria  = vec3(0.8039, 0.6118, 0.9255); // #cd9cec
@@ -76,7 +75,6 @@ vec4 main(vec2 fragCoord) {
     vec3 deepBlend    = mix(licorice, indigo, 0.55);
     vec3 wisteriaSoft = mix(wisteria, indigo, 0.20);
 
-    // Palette breathing speed (0.18 -> 0.13)
     float cycle = sin(uTime * 0.13);
     float t = (sign(cycle) * pow(abs(cycle), 0.6) + 1.0) * 0.5;
 

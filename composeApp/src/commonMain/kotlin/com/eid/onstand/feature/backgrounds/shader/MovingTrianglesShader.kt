@@ -29,13 +29,10 @@ const float i3 = 0.5773502691896258;
 const mat2 tri2cart = mat2(1.0, 0.0, -0.5, 0.5*s3);
 const mat2 cart2tri = mat2(1.0, 0.0, i3, 2.0*i3);
 
-// GLSL #defines converted to const variables for SkSL
 const float HASHSCALE1 = 0.1031;
 const vec3 HASHSCALE3 = vec3(443.897, 441.423, 437.195);
 
 //////////////////////////////////////////////////////////////////////
-// cosine based palette
-// adapted from https://www.shadertoy.com/view/ll2GD3
 vec3 pal(in float t) {
     const vec3 a = vec3(0.5);
     const vec3 b = vec3(0.5);
@@ -45,7 +42,6 @@ vec3 pal(in float t) {
 }
 
 //////////////////////////////////////////////////////////////////////
-// from https://www.shadertoy.com/view/4djSRW
 float hash12(vec2 p) {
     vec3 p3  = fract(vec3(p.xyx) * HASHSCALE1);
     p3 += dot(p3, p3.yzx + 19.19);
@@ -59,8 +55,6 @@ vec2 hash23(vec3 p3) {
 }
 
 //////////////////////////////////////////////////////////////////////
-// compute barycentric coordinates from point differences
-// adapted from https://www.shadertoy.com/view/lslXDf
 vec3 bary(vec2 v0, vec2 v1, vec2 v2) {
     float inv_denom = 1.0 / (v0.x * v1.y - v1.x * v0.y);
     float v = (v2.x * v1.y - v1.x * v2.y) * inv_denom;
@@ -70,13 +64,11 @@ vec3 bary(vec2 v0, vec2 v1, vec2 v2) {
 }
 
 //////////////////////////////////////////////////////////////////////
-// distance to line segment from point differences
 float dseg(vec2 xa, vec2 ba) {
     return length(xa - ba*clamp(dot(xa, ba)/dot(ba, ba), 0.0, 1.0));
 }
 
 //////////////////////////////////////////////////////////////////////
-// generate a random point on a circle from 3 integer coords (x, y, t)
 vec2 randCircle(vec3 p) {
     vec2 rt = hash23(p);
     float r = sqrt(rt.x);
@@ -85,8 +77,6 @@ vec2 randCircle(vec3 p) {
 }
 
 //////////////////////////////////////////////////////////////////////
-// make a time-varying cubic spline at integer coords p that stays
-// inside a unit circle
 vec2 randCircleSpline(vec2 p, float t) {
     // standard catmull-rom spline implementation
     float t1 = floor(t);
@@ -109,14 +99,12 @@ vec2 randCircleSpline(vec2 p, float t) {
 }
 
 //////////////////////////////////////////////////////////////////////
-// perturbed point from index
 vec2 triPoint(vec2 p) {
     float t0 = hash12(p);
     return tri2cart*p + 0.45*randCircleSpline(p, 0.15*uTime + t0);
 }
 
 //////////////////////////////////////////////////////////////////////
-// main shading function.
 void tri_color(in vec2 p,
                in vec4 t0, in vec4 t1, in vec4 t2,
                in float scl,
@@ -162,7 +150,6 @@ void tri_color(in vec2 p,
     }
 }
 
-//////////////////////////////////////////////////////////////////////
 // Main entry point for SkSL
 vec4 main(vec2 fragCoord) {
     float scl = 4.1 / uResolution.y;

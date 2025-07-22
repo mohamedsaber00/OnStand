@@ -10,7 +10,7 @@ object PurpleGradientShader : Shader {
 
     override val sksl = """
 /**
- * Mesh Gradient Variation 2 - Deeper Flow
+ * Mesh Gradient Variation - Deeper Flow
  * SkSL conversion of a GLSL shader.
  *
  * This shader generates a complex, animated mesh gradient with
@@ -50,25 +50,21 @@ uniform vec3 uResolution;
 
 // === SHADER CODE ===
 
-// Simple 2D rotation matrix
 mat2 rotate(float angle) {
     float c = cos(angle);
     float s = sin(angle);
     return mat2(c, -s, s, c);
 }
 
-// Original hash function for noise generation
 vec2 hash22(vec2 p) {
     p = vec2(dot(p, vec2(157.13, 113.47)), dot(p, vec2(271.19, 419.23)));
     return fract(sin(p) * 19371.5813);
 }
 
-// Custom noise implementation
 float customNoise(vec2 p) {
     vec2 i = floor(p);
     vec2 f = fract(p);
     
-    // Cubic interpolation
     vec2 u = f * f * (3.0 - 2.0 * f);
     
     float a = dot(hash22(i) - 0.5, f);
@@ -79,7 +75,6 @@ float customNoise(vec2 p) {
     return 0.5 + mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
 }
 
-// Smooth blending function (smoothstep)
 float blend(float edge0, float edge1, float x) {
     float t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
     return t * t * (3.0 - 2.0 * t);
@@ -90,7 +85,6 @@ vec3 palette(float t, vec3 a, vec3 b, vec3 c, vec3 d) {
     return a + b * cos(6.28318 * (c * t + d));
 }
 
-// Main entry point for the shader
 vec4 main(vec2 fragCoord) {
     vec2 uv = fragCoord / uResolution.xy;
     vec2 coord = uv - 0.5;
@@ -112,14 +106,13 @@ vec4 main(vec2 fragCoord) {
     coord.x += sin(coord.y * freq2 * 0.6 + waveTime * 0.7) * 0.08 * WAVE_INTENSITY;
     coord.y += cos(coord.x * freq1 * 1.8 + waveTime * 1.1) * 0.06 * WAVE_INTENSITY;
     
-    // Use user-defined palette parameters
     vec3 a = PALETTE_A.rgb;
     vec3 b = PALETTE_B.rgb;
     vec3 c = PALETTE_C.rgb;
     vec3 d = PALETTE_D.rgb;
     
     // Generate colors based on NUM_STOPS
-    vec3 colors[8]; // Maximum 8 colors
+    vec3 colors[8];
     for(int i = 0; i < 8; i++) {
         if(i < NUM_STOPS) {
             float t = (NUM_STOPS > 1) ? float(i) / float(NUM_STOPS - 1) : 0.0;
@@ -151,7 +144,6 @@ vec4 main(vec2 fragCoord) {
     float texture2 = customNoise(coord * 12.0 * TEXTURE_SCALE - uTime * 0.02 * ANIMATION_SPEED) * 0.02 * TEXTURE_INTENSITY;
     finalColor += texture1 + texture2;
     
-    // Color processing
     finalColor = pow(finalColor, vec3(0.85));
     finalColor = clamp(finalColor, 0.0, 1.0);
     

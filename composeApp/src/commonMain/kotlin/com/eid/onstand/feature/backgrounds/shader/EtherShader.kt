@@ -11,9 +11,7 @@ object EtherShader : Shader {
     override val sksl = """
 /**
  * Ether Shader (Centered & Slowed Down)
- *
- * ✅ Centered properly on any screen resolution.
- * ✅ Slower, smoother evolution with adjustable timeSpeed.
+ *  * SkSL conversion of a GLSL shader
  */
 
 uniform float uTime;

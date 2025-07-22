@@ -83,6 +83,3 @@ composeApp/src/
 - Android SDK (for Android target)
 - Gradle 8.0+
 
-## License
-
-This project is part of the OnStand MVP demonstration.

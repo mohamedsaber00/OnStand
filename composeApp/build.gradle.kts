@@ -85,8 +85,6 @@ kotlin {
             implementation(libs.skiko)
             implementation(libs.haze)
             implementation(libs.haze.materials)
-            implementation(libs.hypnoticcanvas)
-            implementation(libs.hypnoticcanvas.shaders)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)

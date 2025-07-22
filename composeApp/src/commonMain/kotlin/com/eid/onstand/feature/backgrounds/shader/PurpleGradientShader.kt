@@ -1,25 +1,9 @@
 package com.eid.onstand.feature.backgrounds.shader
 
-import com.mikepenz.hypnoticcanvas.shaders.Shader
+import com.eid.onstand.core.shaders.Shader
+
 
 object PurpleGradientShader : Shader {
-    override val name: String
-        get() = "Hell"
-
-    override val authorName: String
-        get() = "Inigo Quilez (ported by you)"
-
-    override val authorUrl: String
-        get() = "https://iquilezles.org/"
-
-    override val credit: String
-        get() = "https://www.shadertoy.com/view/XdfGzH"
-
-    override val license: String
-        get() = "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License"
-
-    override val licenseUrl: String
-        get() = "https://www.shadertoy.com/terms"
 
     override val speedModifier: Float
         get() = 1.0f

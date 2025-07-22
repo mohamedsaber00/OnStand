@@ -2,26 +2,18 @@ package com.eid.onstand.feature.preview.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.eid.onstand.core.models.*
-import com.eid.onstand.core.theme.BlurConstants
-import com.eid.onstand.core.theme.ColorConstants
+import com.eid.onstand.core.shaders.shaderBackground
 import com.eid.onstand.core.theme.GradientConstants
 import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
 import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
 import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground
 import com.eid.onstand.feature.backgrounds.shader.*
 import com.eid.onstand.feature.widgets.clocks.*
-import com.mikepenz.hypnoticcanvas.shaderBackground
-import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.rememberHazeState

@@ -1,25 +1,9 @@
 package com.eid.onstand.feature.backgrounds.shader
 
-import com.mikepenz.hypnoticcanvas.shaders.Shader
+import com.eid.onstand.core.shaders.Shader
+
 
 object RedShader : Shader {
-    override val name: String
-        get() = "Red"
-
-    override val authorName: String
-        get() = "Unknown (ported by you)"
-
-    override val authorUrl: String
-        get() = ""
-
-    override val credit: String
-        get() = "Coral/Murrey Palette Shader with warm color transitions"
-
-    override val license: String
-        get() = "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License"
-
-    override val licenseUrl: String
-        get() = "https://creativecommons.org/licenses/by-nc-sa/3.0/"
 
     override val speedModifier: Float
         get() = 1.0f

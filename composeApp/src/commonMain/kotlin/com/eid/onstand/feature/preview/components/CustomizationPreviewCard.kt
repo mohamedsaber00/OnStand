@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import com.eid.onstand.core.models.*
+import com.eid.onstand.core.shaders.shaderBackground
 import com.eid.onstand.core.theme.ColorConstants
 import com.eid.onstand.core.theme.GradientConstants
 import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
@@ -22,7 +23,6 @@ import com.eid.onstand.feature.backgrounds.shader.*
 import com.eid.onstand.feature.backgrounds.shader.PaletteShader
 import com.eid.onstand.feature.backgrounds.shader.RedShader
 import com.eid.onstand.feature.widgets.clocks.*
-import com.mikepenz.hypnoticcanvas.shaderBackground
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone

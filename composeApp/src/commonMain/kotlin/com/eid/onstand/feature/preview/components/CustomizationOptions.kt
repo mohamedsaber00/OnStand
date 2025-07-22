@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.*
+import com.eid.onstand.core.shaders.shaderBackground
 import com.eid.onstand.core.utils.toComposeFontFamily
 import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
 import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
@@ -37,7 +38,6 @@ import com.eid.onstand.feature.backgrounds.shader.PurpleGradientShader
 import com.eid.onstand.feature.backgrounds.shader.PurpleSmokeShader
 import com.eid.onstand.feature.backgrounds.shader.RedShader
 import com.eid.onstand.feature.backgrounds.shader.SpaceShader
-import com.mikepenz.hypnoticcanvas.shaderBackground
 import kotlinx.coroutines.launch
 
 @Composable

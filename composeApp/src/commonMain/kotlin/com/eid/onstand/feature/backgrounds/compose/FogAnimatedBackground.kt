@@ -24,9 +24,7 @@ import kotlin.math.sin
  */
 @Composable
 fun FoggyBackground(modifier: Modifier = Modifier) {
-    // Use rememberInfiniteTransition for a smooth, endless animation loop.
     val infiniteTransition = rememberInfiniteTransition(label = "infinite fog animation")
-    // Animate multiple values at different durations for complex, non-repeating movement.
     val progress1 by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
@@ -59,12 +57,9 @@ fun FoggyBackground(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            // A dark, muted teal background color from the image.
             .background(Color(0xFF2C3E40))
-            // Clip the contents to the rounded rectangle shape for the outer border.
             .clip(RoundedCornerShape(32.dp))
     ) {
-        // The animated fog is drawn on a Canvas that fills the entire widget.
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawFogAnimation(progress1, progress2, progress3)
         }
@@ -79,7 +74,6 @@ fun FoggyBackground(modifier: Modifier = Modifier) {
  * @param progress3 The third animation progress value (0.0 to 1.0).
  */
 private fun DrawScope.drawFogAnimation(progress1: Float, progress2: Float, progress3: Float) {
-    // --- Fog Puff 1 ---
     val angle1A = progress1 * 2 * PI.toFloat()
     val angle1B = progress2 * 2 * PI.toFloat()
     val center1 = Offset(
@@ -88,7 +82,6 @@ private fun DrawScope.drawFogAnimation(progress1: Float, progress2: Float, progr
     )
     val radius1 = size.width * (0.6f + 0.1f * sin(angle1B))
 
-    // --- Fog Puff 2 ---
     val angle2A = progress2 * 2 * PI.toFloat()
     val angle2B = progress3 * 2 * PI.toFloat()
     val center2 = Offset(
@@ -97,7 +90,6 @@ private fun DrawScope.drawFogAnimation(progress1: Float, progress2: Float, progr
     )
     val radius2 = size.width * (0.7f + 0.1f * cos(angle2A))
 
-    // --- Fog Puff 3 (a larger, slower base layer) ---
     val angle3A = progress3 * 2 * PI.toFloat()
     val angle3B = progress1 * 2 * PI.toFloat()
     val center3 = Offset(
@@ -106,10 +98,8 @@ private fun DrawScope.drawFogAnimation(progress1: Float, progress2: Float, progr
     )
     val radius3 = size.width * (0.9f + 0.2f * sin(angle3B))
 
-    // A very soft, semi-transparent white color for the fog.
     val fogColor = Color.White.copy(alpha = 0.15f)
 
-    // Draw each fog puff. They will blend together to create a layered effect.
     drawRect(
         brush = Brush.radialGradient(
             colors = listOf(fogColor, Color.Transparent),

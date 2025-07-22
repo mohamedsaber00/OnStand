@@ -1,6 +1,8 @@
-# OnStand "Under Development"
+# OnStand - Elegant Dock Clock
 
-A Compose Multiplatform (KMP) live clock app with flluid animated backgrounds.
+A beautiful, customizable dock clock application built with Compose Multiplatform, supporting
+Android, iOS, and Desktop platforms. Transform your screen into an elegant timepiece with fluid
+animations, stunning visual effects, and extensive customization options.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/d8edb6bb-e762-49e1-9c66-3a0c76751145" width="45%">
@@ -12,74 +14,166 @@ A Compose Multiplatform (KMP) live clock app with flluid animated backgrounds.
 </p>
 
 
+## ✨ Features
 
+### 🕐 Multiple Clock Styles
 
-## Features
+- **Digital Clock** - Clean, modern digital display
+- **Analog Clock** - Classic circular clock with smooth hour/minute hands
+- **Digital Segments** - Retro-style 7-segment LCD display
+- **Morph Flip Clock** - Elegant flip animation between numbers
 
-### Live Clock Widget
+### 🎨 Rich Background Options
 
-- Displays the current time in real-time
-- Updates automatically every second
-- Clean digital format: "HH:mm:ss"
-- Uses custom Orbitron font for aesthetic appeal
-- Large, centered, readable display
+#### Shader Effects
 
-### Animated Background
+- **Space Shader** - Cosmic nebula with twinkling stars
+- **Purple Gradient** - Smooth flowing purple gradients
+- **Glowing Ring** - Pulsating ethereal ring effects
+- **Moving Triangles** - Geometric patterns in motion
+- **Purple Smoke** - Mystical smoke-like effects
+- **Palette Shader** - Dynamic color transitions
+- **Ether Shader** - Abstract energy flows
+- **Moving Waves** - Fluid wave animations
 
-- Smooth, continuous animated gradient background
-- Slowly shifting colors with diagonal movement
-- Calm, modern, non-distracting ambient feel
-- Built with Jetpack Compose's Canvas API
-- Uses `rememberInfiniteTransition` for smooth animations
+#### Live Animations
 
-## Technical Details
+- **Rotating Gradient** - Slowly rotating color gradients
+- **Fog Effect** - Atmospheric fog with particle effects
+- **Wave Background** - Wave movements
 
-- **Platforms**: Desktop (JVM) and Android
-- **Framework**: Compose Multiplatform with Material 3
-- **Architecture**: Clean separation of concerns
-  - `AnimatedBackground.kt` - Gradient animation component
-  - `BasicClockWidget.kt` - Real-time clock display
-  - `MainScreen.kt` - Main UI that combines both components
-- **Time Handling**: Platform-specific implementations using expect/actual pattern
-- **Font**: Custom Orbitron TTF font bundled in resources
+### 🎛️ Customization System
 
-## Project Structure
+- **Interactive Preview** - Real-time customization with live preview
+- **Font Options** - Multiple typography choices (Roboto, Serif, Monospace, Cursive)
+- **Color Themes** - Extensive color palette for clock elements
+- **Background Selection** - Easy switching between visual effects
+- **Persistent Settings** - Preferences saved using DataStore
+
+### 📱 Cross-Platform Support
+
+- **Android** - Native Android application
+- **iOS** - Native iOS application
+- **Desktop** - macOS, Windows, and Linux support
+
+## 🏗️ Architecture
+
+A simple architecture, No navigation library
 
 ```
-composeApp/src/
-├── commonMain/
-│   ├── kotlin/com/eid/onstand/
-│   │   ├── App.kt                  # Main app entry point
-│   │   ├── MainScreen.kt          # Main screen combining components
-│   │   ├── AnimatedBackground.kt   # Animated gradient background
-│   │   └── BasicClockWidget.kt         # Live clock widget
-│   └── composeResources/
-│       └── font/
-│           └── digital_clock.ttf  # Custom font
-├── androidMain/kotlin/com/eid/onstand/
-│   └── Platform.android.kt        # Android time implementation
-└── desktopMain/kotlin/com/eid/onstand/
-    ├── Platform.desktop.kt        # Desktop time implementation
-    └── main.kt                    # Desktop app launcher
+composeApp/src/commonMain/kotlin/com/eid/onstand/
+├── core/
+│   ├── di/              # Dependency injection with Koin
+│   ├── models/          # Data models and customization types
+│   ├── shaders/         # Shader utilities and effects
+│   ├── theme/           # Material 3 theming
+│   └── utils/           # Common utilities
+├── data/
+│   └── date/            # Platform-specific time handling
+├── feature/
+│   ├── backgrounds/     # Background effects and shaders
+│   │   ├── compose/     # Compose-based animations
+│   │   └── shader/      # Custom shader effects
+│   ├── preview/         # Customization screen and preview
+│   │   └── components/  # Reusable preview components
+│   └── widgets/
+│       └── clocks/      # Clock widget implementations
+├── App.kt               # Main application entry point
+└── AppViewModel.kt      # Main app state management
 ```
 
-## How to Run
+## 🛠️ Technical Stack
 
-### Desktop
+- **Framework**: Compose Multiplatform
+- **State Management**: ViewModel + StateFlow
+- **Dependency Injection**: Koin
+- **Animations**: Compose Animation APIs + Custom SKSL Shaders 
+- **Time Handling**: kotlinx-datetime with platform-specific implementations
+- **Persistence**: DataStore for settings
+- **UI Effects**: Haze for blur/frosting effects
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- JDK 11 or higher
+- Android SDK (for Android builds)
+- Xcode (for iOS builds)
+- Gradle 8.0+
+
+### Running the App
+
+#### Desktop
 
 ```bash
 ./gradlew :composeApp:runDesktop
 ```
 
-### Android
+#### Android
 
 ```bash
 ./gradlew :composeApp:installDebug
 ```
 
-## Requirements
+#### iOS
 
-- JDK 11 or higher
-- Android SDK (for Android target)
-- Gradle 8.0+
+Open `iosApp/iosApp.xcodeproj` in Xcode and run the project.
 
+### Building for Distribution
+
+#### Desktop Package
+
+```bash
+./gradlew :composeApp:createDistributable
+```
+
+#### Android APK
+
+```bash
+./gradlew :composeApp:assembleRelease
+```
+
+## 🔧 Development
+
+### Adding New Clock Types
+
+1. Create clock composable in `feature/widgets/clocks/`
+2. Add `ClockType` case in `CustomizationModels.kt`
+3. Update `BackgroundClockView.kt` and preview components
+4. Add to `ClockRepository.getClockTypes()`
+
+### Adding New Backgrounds
+
+1. Create shader/animation in appropriate `feature/backgrounds/` subdirectory
+2. Add `ShaderType` enum value in `CustomizationModels.kt`
+3. Update preview cards and background view components
+4. Add entries to `BackgroundRepository` methods
+
+### Project Structure
+
+The project uses a clean architecture approach with:
+
+- **Core**: Shared utilities, DI, and models
+- **Data**: Repository pattern for data access
+- **Feature**: Feature-based organization with UI and business logic
+- **Platform-specific**: Actual implementations for platform differences
+
+## 📦 Dependencies
+
+Key libraries used in the project:
+
+- **Compose Multiplatform** - UI framework
+- **Material 3** - Design system
+- **Koin** - Dependency injection
+- **kotlinx-datetime** - Date/time handling
+- **DataStore** - Preferences storage
+- **Haze** - Blur and frosting effects
+- **kotlinx-serialization** - Data serialization
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and
+feature requests.
+
+
+---

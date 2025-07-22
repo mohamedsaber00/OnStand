@@ -82,7 +82,6 @@ kotlin {
             implementation(libs.androidx.datastore.core)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.skiko)
             implementation(libs.haze)
             implementation(libs.haze.materials)
             implementation(libs.koin.core)

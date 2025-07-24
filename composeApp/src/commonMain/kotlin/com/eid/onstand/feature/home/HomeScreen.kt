@@ -1,4 +1,4 @@
-package com.eid.onstand.feature.preview.components
+package com.eid.onstand.feature.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -19,12 +19,12 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 /**
- * HomeScreen that uses the new registry system directly.
- * This shows how to render backgrounds and clocks from the registries.
+ * HomeScreen that displays the selected background and clock.
+ * Shows the main view with background effect and clock widget.
  */
 @OptIn(ExperimentalHazeMaterialsApi::class, ExperimentalTime::class)
 @Composable
-fun HomeScreenWithRegistry(
+fun HomeScreen(
     selectedBackground: BackgroundEffect? = null,
     selectedClock: ClockWidget? = null,
     modifier: Modifier = Modifier
@@ -79,42 +79,5 @@ fun HomeScreenWithRegistry(
                 modifier = Modifier
             )
         }
-    }
-}
-
-/**
- * Example of how to use the registry in a ViewModel or state management
- */
-class RegistryBasedCustomizationState {
-    var selectedBackground by mutableStateOf<BackgroundEffect?>(null)
-    var selectedClock by mutableStateOf<ClockWidget?>(null)
-    
-    fun selectBackground(background: BackgroundEffect) {
-        selectedBackground = background
-    }
-    
-    fun selectClock(clock: ClockWidget) {
-        selectedClock = clock
-    }
-    
-    fun getAllBackgrounds(): List<BackgroundEffect> {
-        return BackgroundRegistry.getAll()
-    }
-    
-    fun getAllClocks(): List<ClockWidget> {
-        return ClockRegistry.getAll()
-    }
-    
-    fun getBackgroundsByCategory(): Map<BackgroundCategory, List<BackgroundEffect>> {
-        return BackgroundRegistry.getByCategory()
-    }
-    
-    // Type-safe access to specific backgrounds
-    fun getSpaceBackground(): BackgroundEffect? {
-        return BackgroundRegistry.getByTypeId("SpaceBackground")
-    }
-    
-    fun getBasicDigitalClock(): ClockWidget? {
-        return ClockRegistry.getByTypeId("BasicDigitalClock")
     }
 }

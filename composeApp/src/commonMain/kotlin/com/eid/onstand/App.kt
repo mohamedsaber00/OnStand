@@ -13,8 +13,8 @@ import com.eid.onstand.core.models.BackgroundEffect
 import com.eid.onstand.core.models.BackgroundRegistry
 import com.eid.onstand.core.models.ClockRegistry
 import com.eid.onstand.core.models.ClockWidget
-import com.eid.onstand.feature.preview.components.HomeScreenWithRegistry
-import com.eid.onstand.feature.preview.components.RegistryBasedCustomizationScreen
+import com.eid.onstand.feature.home.HomeScreen
+import com.eid.onstand.feature.customization.CustomizationScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 
@@ -51,7 +51,7 @@ fun AppContent() {
     }
 
     if (showCustomization) {
-        RegistryBasedCustomizationScreen(
+        CustomizationScreen(
             selectedBackground = selectedBackground,
             selectedClock = selectedClock,
             onBackgroundSelected = { background ->
@@ -64,7 +64,7 @@ fun AppContent() {
         )
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
-            HomeScreenWithRegistry(
+            HomeScreen(
                 selectedBackground = selectedBackground,
                 selectedClock = selectedClock,
                 modifier = Modifier

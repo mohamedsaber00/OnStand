@@ -1,0 +1,11 @@
+{
+  "rules": [
+    "Project is a dock clock app using compose multiplatform for android, iOS and desktop",
+    "Don't hardcode strings",
+    "Always do a clean solution not just make it works",
+    "Don't write multiple unrelated composable function in the same file",
+    "Don't add dependencies to build.gradle directly, add them in libs.versions.toml first",
+    "When adding a new shader: 1) Create shader object in shader/ directory 2) Add ShaderType enum value in CustomizationModels.kt 3) Add cases in CustomizationPreviewCard.kt, BackgroundClockView.kt, and CustomizationOptions.kt 4) Add entries in BackgroundRepository.kt for both getBackgroundTypes() and getBackgroundOptions() methods",
+    "When adding a new clock: 1) Create clock widget composable in feature/widgets/clocks/ directory 2) Add ClockType sealed class case in CustomizationModels.kt 3) Add clock handling in BackgroundClockView.kt and CustomizationPreviewCard.kt components 4) Add clock type to ClockRepository.getClockTypes() method 5) Update ClockFaceItemPreview.kt to handle the new clock type"
+  ]
+}

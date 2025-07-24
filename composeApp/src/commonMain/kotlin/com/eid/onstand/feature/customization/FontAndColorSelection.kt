@@ -1,4 +1,4 @@
-package com.eid.onstand.feature.preview.components
+package com.eid.onstand.feature.customization
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

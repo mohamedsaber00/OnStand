@@ -1,4 +1,4 @@
-package com.eid.onstand.feature.preview.components
+package com.eid.onstand.feature.customization
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,12 +33,12 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 /**
- * Customization screen that uses the new registry system directly.
- * Shows how to display all registered backgrounds and clocks from the registries.
+ * Customization screen for selecting backgrounds, clocks, fonts, and colors.
+ * Provides horizontal scrolling interface with live previews.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
-fun RegistryBasedCustomizationScreen(
+fun CustomizationScreen(
     selectedBackground: BackgroundEffect? = null,
     selectedClock: ClockWidget? = null,
     onBackgroundSelected: (BackgroundEffect) -> Unit = {},

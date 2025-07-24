@@ -8,7 +8,7 @@ import com.eid.onstand.core.models.AnimatedBackgroundEffect
 import com.eid.onstand.core.models.LiveAnimationType
 import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
 import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground
-import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground as WaveAnimatedBackground
+import com.eid.onstand.feature.backgrounds.compose.WaveBackground
 
 // Type-safe animated background implementations
 
@@ -34,17 +34,6 @@ class FogEffectAnimated : AnimatedBackgroundEffect() {
     }
 }
 
-class ParticleAnimated : AnimatedBackgroundEffect() {
-    override val displayName = "Particles"
-    override val previewColor = Color(0xFF4A90E2)
-    override val animationType = LiveAnimationType.ANIMATED_PARTICLES
-    
-    @Composable
-    override fun Render(modifier: Modifier) {
-        // Use the wave animation for particles too (they're similar visual effects)
-        WaveAnimatedBackground(modifier = modifier)
-    }
-}
 
 class WavesAnimated : AnimatedBackgroundEffect() {
     override val displayName = "Waves"
@@ -53,6 +42,6 @@ class WavesAnimated : AnimatedBackgroundEffect() {
     
     @Composable
     override fun Render(modifier: Modifier) {
-        WaveAnimatedBackground(modifier = modifier)
+        WaveBackground(modifier = modifier)
     }
 }

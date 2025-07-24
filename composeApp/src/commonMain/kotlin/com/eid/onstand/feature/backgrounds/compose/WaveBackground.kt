@@ -30,7 +30,7 @@ import kotlin.math.sin
  * @param colors The list of colors to use for the gradient.
  */
 @Composable
-fun AnimatedBackground(
+fun WaveBackground(
     modifier: Modifier = Modifier,
     colors: List<Color> = GradientConstants.ANIMATED_BACKGROUND_COLORS
 ) {

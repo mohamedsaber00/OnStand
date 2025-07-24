@@ -31,7 +31,6 @@ class CoreModule : FeatureModule {
         registry.registerAll(listOf(
             RotatingGradientAnimated(),
             FogEffectAnimated(),
-            ParticleAnimated(),
             WavesAnimated()
         ))
         

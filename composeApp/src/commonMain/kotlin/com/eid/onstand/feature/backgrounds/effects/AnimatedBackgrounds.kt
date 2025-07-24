@@ -6,9 +6,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.eid.onstand.core.models.AnimatedBackgroundEffect
 import com.eid.onstand.core.models.LiveAnimationType
-import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
 import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
 import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground
+import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground as WaveAnimatedBackground
 
 // Type-safe animated background implementations
 
@@ -41,7 +41,8 @@ class ParticleAnimated : AnimatedBackgroundEffect() {
     
     @Composable
     override fun Render(modifier: Modifier) {
-        AnimatedBackground()
+        // Use the wave animation for particles too (they're similar visual effects)
+        WaveAnimatedBackground(modifier = modifier)
     }
 }
 
@@ -52,7 +53,6 @@ class WavesAnimated : AnimatedBackgroundEffect() {
     
     @Composable
     override fun Render(modifier: Modifier) {
-        // For now, use the same as particles - we can implement actual waves later
-        AnimatedBackground()
+        WaveAnimatedBackground(modifier = modifier)
     }
 }

@@ -1,4 +1,4 @@
-package com.eid.onstand.core.shaders
+package com.eid.onstand.core.ui.shaders
 
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.runtime.Composable

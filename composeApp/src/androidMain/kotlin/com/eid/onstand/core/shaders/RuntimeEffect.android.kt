@@ -6,6 +6,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
+import com.eid.onstand.core.ui.shaders.RuntimeEffect
+import com.eid.onstand.core.ui.shaders.Shader
 
 internal class FallbackAndroidRuntimeEffect : RuntimeEffect {
     override val supported: Boolean = false

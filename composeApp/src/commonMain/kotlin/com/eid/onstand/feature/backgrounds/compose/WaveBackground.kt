@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.eid.onstand.core.theme.GradientConstants
+import com.eid.onstand.core.ui.theme.GradientConstants
 import kotlin.math.PI
 import kotlin.math.sin
 

@@ -1,4 +1,4 @@
-package com.eid.onstand.core.shaders
+package com.eid.onstand.core.ui.shaders
 
 import androidx.compose.ui.graphics.Brush
 

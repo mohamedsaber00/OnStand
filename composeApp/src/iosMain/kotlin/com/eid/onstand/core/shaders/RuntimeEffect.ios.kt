@@ -2,6 +2,8 @@ package com.eid.onstand.core.shaders
 
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ShaderBrush
+import com.eid.onstand.core.ui.shaders.RuntimeEffect
+import com.eid.onstand.core.ui.shaders.Shader
 import org.jetbrains.skia.RuntimeShaderBuilder
 
 class NonAndroidRuntimeEffect(shader: Shader) : RuntimeEffect {

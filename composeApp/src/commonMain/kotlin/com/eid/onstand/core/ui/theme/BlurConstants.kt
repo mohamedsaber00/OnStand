@@ -1,4 +1,4 @@
-package com.eid.onstand.core.theme
+package com.eid.onstand.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp

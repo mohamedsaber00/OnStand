@@ -6,8 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import com.eid.onstand.core.models.*
-import com.eid.onstand.core.shaders.shaderBackground
-import com.eid.onstand.core.theme.GradientConstants
+import com.eid.onstand.core.ui.shaders.shaderBackground
+import com.eid.onstand.core.ui.theme.GradientConstants
 import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
 import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
 import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground

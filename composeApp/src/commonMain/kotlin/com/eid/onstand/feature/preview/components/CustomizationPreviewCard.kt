@@ -13,9 +13,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import com.eid.onstand.core.models.*
-import com.eid.onstand.core.shaders.shaderBackground
-import com.eid.onstand.core.theme.ColorConstants
-import com.eid.onstand.core.theme.GradientConstants
+import com.eid.onstand.core.ui.shaders.shaderBackground
+import com.eid.onstand.core.ui.theme.ColorConstants
+import com.eid.onstand.core.ui.theme.GradientConstants
 import com.eid.onstand.feature.backgrounds.compose.AnimatedBackground
 import com.eid.onstand.feature.backgrounds.compose.FoggyBackground
 import com.eid.onstand.feature.backgrounds.compose.RotatingGradientBackground

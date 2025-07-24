@@ -1,6 +1,6 @@
 package com.eid.onstand.feature.backgrounds.shader
 
-import com.eid.onstand.core.shaders.Shader
+import com.eid.onstand.core.ui.shaders.Shader
 
 
 object PurpleGradientShader : Shader {

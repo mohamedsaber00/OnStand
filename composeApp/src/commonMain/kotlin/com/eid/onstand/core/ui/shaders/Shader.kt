@@ -1,4 +1,4 @@
-package com.eid.onstand.core.shaders
+package com.eid.onstand.core.ui.shaders
 
 interface Shader {
     val speedModifier: Float get() = 0.5f

@@ -27,6 +27,8 @@ import kotlin.time.ExperimentalTime
 fun HomeScreen(
     selectedBackground: BackgroundEffect? = null,
     selectedClock: ClockWidget? = null,
+    selectedFont: FontFamily = FontFamily.ROBOTO,
+    selectedColor: Color = Color.White,
     modifier: Modifier = Modifier
 ) {
     var currentTime by remember { 
@@ -72,8 +74,8 @@ fun HomeScreen(
             clockToRender?.Render(
                 currentTime = currentTime,
                 showSeconds = true,
-                fontFamily = FontFamily.ROBOTO,
-                textColor = Color.White,
+                fontFamily = selectedFont,
+                textColor = selectedColor,
                 isPreview = false,
                 hazeState = hazeState,
                 modifier = Modifier

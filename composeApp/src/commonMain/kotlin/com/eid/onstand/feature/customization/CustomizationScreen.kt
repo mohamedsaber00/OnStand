@@ -41,8 +41,12 @@ import kotlin.time.ExperimentalTime
 fun CustomizationScreen(
     selectedBackground: BackgroundEffect? = null,
     selectedClock: ClockWidget? = null,
+    selectedFont: FontFamily = FontFamily.ROBOTO,
+    selectedColor: Color = Color.White,
     onBackgroundSelected: (BackgroundEffect) -> Unit = {},
     onClockSelected: (ClockWidget) -> Unit = {},
+    onFontSelected: (FontFamily) -> Unit = {},
+    onColorSelected: (Color) -> Unit = {},
     onBackPressed: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -103,6 +107,8 @@ fun CustomizationScreen(
                     background = selectedBackground,
                     clock = selectedClock,
                     currentTime = currentTime,
+                    fontFamily = selectedFont,
+                    textColor = selectedColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(0.3f)
@@ -159,8 +165,8 @@ fun CustomizationScreen(
                         )
                         
                         FontSelectionRow(
-                            selectedFont = FontFamily.ROBOTO,
-                            onFontSelected = { /* TODO: Handle font selection */ }
+                            selectedFont = selectedFont,
+                            onFontSelected = onFontSelected
                         )
                     }
                     
@@ -174,8 +180,8 @@ fun CustomizationScreen(
                     )
                     
                     ColorSelectionRow(
-                        selectedColor = Color.White,
-                        onColorSelected = { /* TODO: Handle color selection */ },
+                        selectedColor = selectedColor,
+                        onColorSelected = onColorSelected,
                         modifier = Modifier.padding(bottom = 100.dp)
                     )
                 }
@@ -236,6 +242,8 @@ private fun PreviewCard(
     background: BackgroundEffect?,
     clock: ClockWidget?,
     currentTime: kotlinx.datetime.LocalDateTime,
+    fontFamily: FontFamily = FontFamily.ROBOTO,
+    textColor: Color = Color.White,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -254,8 +262,8 @@ private fun PreviewCard(
                 clock?.Render(
                     currentTime = currentTime,
                     showSeconds = true,
-                    fontFamily = FontFamily.ROBOTO,
-                    textColor = Color.White,
+                    fontFamily = fontFamily,
+                    textColor = textColor,
                     isPreview = true,
                     hazeState = rememberHazeState()
                 )

@@ -4,17 +4,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.eid.onstand.core.AppInitializer
 import com.eid.onstand.core.di.appModule
 import com.eid.onstand.core.di.getPlatformModule
-import com.eid.onstand.feature.preview.PreviewScreen
-import com.eid.onstand.feature.preview.components.HomeScreen
+import com.eid.onstand.core.models.BackgroundEffect
+import com.eid.onstand.core.models.BackgroundRegistry
+import com.eid.onstand.core.models.ClockRegistry
+import com.eid.onstand.core.models.ClockWidget
+import com.eid.onstand.feature.preview.components.HomeScreenWithRegistry
+import com.eid.onstand.feature.preview.components.RegistryBasedCustomizationScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @Preview
@@ -22,6 +24,8 @@ fun App() {
     KoinApplication(
         application = {
             modules(appModule, getPlatformModule())
+            // Initialize the app modules after Koin is set up
+            AppInitializer.initialize()
         }
     ) {
         MaterialTheme {
@@ -32,25 +36,40 @@ fun App() {
 
 @Composable
 fun AppContent() {
-    val viewModel: AppViewModel = koinViewModel()
-    val uiState by viewModel.uiState.collectAsState()
-    val customizationState by viewModel.customizationState.collectAsState()
+    var showCustomization by remember { mutableStateOf(false) }
+    var selectedBackground by remember { mutableStateOf<BackgroundEffect?>(null) }
+    var selectedClock by remember { mutableStateOf<ClockWidget?>(null) }
+    
+    // Initialize with defaults from registry
+    LaunchedEffect(Unit) {
+        if (selectedBackground == null) {
+            selectedBackground = BackgroundRegistry.getAll().firstOrNull()
+        }
+        if (selectedClock == null) {
+            selectedClock = ClockRegistry.getAll().firstOrNull()
+        }
+    }
 
-    if (uiState.showCustomization) {
-        PreviewScreen(
-            onBackPressed = { viewModel.hideCustomization() }
+    if (showCustomization) {
+        RegistryBasedCustomizationScreen(
+            selectedBackground = selectedBackground,
+            selectedClock = selectedClock,
+            onBackgroundSelected = { background ->
+                selectedBackground = background
+            },
+            onClockSelected = { clock ->
+                selectedClock = clock
+            },
+            onBackPressed = { showCustomization = false }
         )
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Display the chosen background and clock
-            HomeScreen(
-                backgroundType = customizationState.selectedBackground,
-                clockType = customizationState.selectedClockType,
-                fontFamily = customizationState.selectedFont,
-                clockColor = customizationState.selectedColor,
-                modifier = Modifier.fillMaxSize().clickable {
-                    viewModel.showCustomization()
-                }
+            HomeScreenWithRegistry(
+                selectedBackground = selectedBackground,
+                selectedClock = selectedClock,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { showCustomization = true }
             )
         }
     }

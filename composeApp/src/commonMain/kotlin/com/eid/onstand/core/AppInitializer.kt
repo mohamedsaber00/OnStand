@@ -27,9 +27,6 @@ object AppInitializer {
             module.registerClocks(ClockRegistry)
             module.initialize()
         }
-        
-        // Verify registrations
-        println("Initialized ${BackgroundRegistry.getAll().size} backgrounds")
-        println("Initialized ${ClockRegistry.getAll().size} clocks")
+
     }
 }

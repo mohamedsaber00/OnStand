@@ -27,6 +27,9 @@ import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.*
 import com.eid.onstand.core.ui.theme.Colors
 import com.eid.onstand.core.ui.theme.GradientColors
+import com.eid.onstand.core.data.SettingsRepository
+import org.koin.compose.koinInject
+import kotlinx.coroutines.launch
 import dev.chrisbanes.haze.rememberHazeState
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
@@ -60,6 +63,8 @@ fun CustomizationScreen(
     onBackPressed: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val settingsRepository: SettingsRepository = koinInject()
+    val coroutineScope = rememberCoroutineScope()
     var currentTime by remember {
         mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
     }
@@ -227,8 +232,15 @@ fun CustomizationScreen(
             // Apply Button
             Button(
                 onClick = {
-                    // TODO: Save selections
-                    onBackPressed()
+                    coroutineScope.launch {
+                        settingsRepository.saveSettings(
+                            background = selectedBackground,
+                            clock = selectedClock,
+                            font = selectedFont,
+                            color = selectedColor
+                        )
+                        onBackPressed()
+                    }
                 },
                 modifier = Modifier
                     .weight(1f),

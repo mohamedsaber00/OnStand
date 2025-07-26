@@ -18,8 +18,12 @@ import com.eid.onstand.core.models.ClockWidget
 import com.eid.onstand.core.models.FontFamily
 import com.eid.onstand.feature.home.HomeScreen
 import com.eid.onstand.feature.customization.CustomizationScreen
+import com.eid.onstand.core.data.SettingsRepository
+import com.eid.onstand.core.ui.theme.Colors
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
+import org.koin.compose.koinInject
+import kotlinx.coroutines.flow.first
 
 @Composable
 @Preview
@@ -39,23 +43,46 @@ fun App() {
 
 @Composable
 fun AppContent() {
+    val settingsRepository: SettingsRepository = koinInject()
+    
     var showCustomization by remember { mutableStateOf(false) }
     var selectedBackground by remember { mutableStateOf<BackgroundEffect?>(null) }
     var selectedClock by remember { mutableStateOf<ClockWidget?>(null) }
     var selectedFont by remember { mutableStateOf(FontFamily.ROBOTO) }
-    var selectedColor by remember { mutableStateOf(Color.White) }
+    var selectedColor by remember { mutableStateOf(Colors.ClockWhite) }
+    var isLoading by remember { mutableStateOf(true) }
     
-    // Initialize with defaults from registry
+    // Load saved settings or use defaults
     LaunchedEffect(Unit) {
-        if (selectedBackground == null) {
+        try {
+            val settings = settingsRepository.getSettings().first()
+            
+            // Find background by ID
+            selectedBackground = BackgroundRegistry.getAll().find { it.typeId == settings.backgroundId }
+                ?: BackgroundRegistry.getAll().firstOrNull { it.typeId == SettingsRepository.DEFAULT_BACKGROUND }
+                ?: BackgroundRegistry.getAll().firstOrNull()
+            
+            // Find clock by ID
+            selectedClock = ClockRegistry.getAll().find { it.typeId == settings.clockId }
+                ?: ClockRegistry.getAll().firstOrNull { it.typeId == SettingsRepository.DEFAULT_CLOCK }
+                ?: ClockRegistry.getAll().firstOrNull()
+            
+            selectedFont = settings.fontFamily
+            selectedColor = settings.textColor
+        } catch (e: Exception) {
+            // Fall back to defaults if loading fails
             selectedBackground = BackgroundRegistry.getAll().firstOrNull()
-        }
-        if (selectedClock == null) {
             selectedClock = ClockRegistry.getAll().firstOrNull()
+        } finally {
+            isLoading = false
         }
     }
 
-    if (showCustomization) {
+    // Don't show content until settings are loaded
+    if (isLoading) {
+        // You can add a loading indicator here if desired
+        Box(modifier = Modifier.fillMaxSize())
+    } else if (showCustomization) {
         CustomizationScreen(
             selectedBackground = selectedBackground,
             selectedClock = selectedClock,

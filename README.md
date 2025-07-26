@@ -2,6 +2,14 @@
 
 A customizable dock clock application built with Compose Multiplatform for Android, iOS, and Desktop platforms. Transform your device into an elegant timepiece with smooth animations and visual effects.
 
+<p align="center">
+  <a href="https://github.com/Subfly/onstand">
+    <img src="https://img.shields.io/github/stars/Subfly/onstand?style=social" alt="GitHub stars">
+  </a>
+</p>
+
+> ⭐ **If you find this project useful, please consider giving it a star!**
+
 ## Android
 
 <p align="center">
@@ -107,47 +115,33 @@ Open `iosApp/iosApp.xcodeproj` in Xcode and run the project.
 ./gradlew :composeApp:assembleRelease
 ```
 
-## 🔧 Development
+## Development
 
-### Adding New Clock Types
+### Adding New Features
 
-1. Create clock composable in `feature/widgets/clocks/`
-2. Add `ClockType` case in `CustomizationModels.kt`
-3. Update `BackgroundClockView.kt` and preview components
-4. Add to `ClockRepository.getClockTypes()`
+**Clock Widgets**
+1. Extend `ClockWidget` in `feature/widgets/clocks/`
+2. Register in `ClockRegistry`
+3. Implement the `Render()` composable
 
-### Adding New Backgrounds
+**Background Effects**
+1. Extend `BackgroundEffect` in `feature/backgrounds/`
+2. Register in `BackgroundRegistry`
+3. For shaders, add SKSL files to `composeResources/files/`
 
-1. Create shader/animation in appropriate `feature/backgrounds/` subdirectory
-2. Add `ShaderType` enum value in `CustomizationModels.kt`
-3. Update preview cards and background view components
-4. Add entries to `BackgroundRepository` methods
+## Key Dependencies
 
-### Project Structure
+- Compose Multiplatform
+- Koin (DI)
+- DataStore (Persistence)
+- Haze (UI Effects)
+- kotlinx-datetime
+- kotlinx-serialization
 
-The project uses a clean architecture approach with:
+## Contributing
 
-- **Core**: Shared utilities, DI, and models
-- **Data**: Repository pattern for data access
-- **Feature**: Feature-based organization with UI and business logic
-- **Platform-specific**: Actual implementations for platform differences
+Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
 
-## 📦 Dependencies
+## License
 
-Key libraries used in the project:
-
-- **Compose Multiplatform** - UI framework
-- **Material 3** - Design system
-- **Koin** - Dependency injection
-- **kotlinx-datetime** - Date/time handling
-- **DataStore** - Preferences storage
-- **Haze** - Blur and frosting effects
-- **kotlinx-serialization** - Data serialization
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and
-feature requests.
-
-
----
+This project is currently under development. License details will be added soon.

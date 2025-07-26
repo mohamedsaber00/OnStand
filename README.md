@@ -1,8 +1,6 @@
-# OnStand - "Under development"
+# OnStand
 
-A beautiful, customizable dock clock application built with Compose Multiplatform, supporting
-Android, iOS, and Desktop platforms. Transform your screen into an elegant timepiece with fluid
-animations, stunning visual effects, and extensive customization options.
+A customizable dock clock application built with Compose Multiplatform for Android, iOS, and Desktop platforms. Transform your device into an elegant timepiece with smooth animations and visual effects.
 
 ## Android
 
@@ -24,90 +22,62 @@ animations, stunning visual effects, and extensive customization options.
 
 ## ✨ Features
 
-### 🕐 Multiple Clock Styles
+### Clock Styles
 
-- **Digital Clock** - Clean, modern digital display
-- **Analog Clock** - Classic circular clock with smooth hour/minute hands
-- **Digital Segments** - Retro-style 7-segment LCD display
-- **Morph Flip Clock** - Elegant flip animation between numbers
+- **Digital Clock** - Modern digital display with customizable fonts
+- **Analog Clock** - Classic circular clock face
+- Additional styles in development
 
-### 🎨 Rich Background Options
+### Background Options
 
-#### Shader Effects
+- **Dynamic Shaders** - Real-time visual effects using SKSL
+- **Gradient Backgrounds** - Smooth color transitions
+- **Animated Effects** - Rotating gradients, fog, and wave animations
+- **Solid Colors** - Simple, elegant color options
 
-- **Space Shader** - Cosmic nebula with twinkling stars
-- **Purple Gradient** - Smooth flowing purple gradients
-- **Glowing Ring** - Pulsating ethereal ring effects
-- **Moving Triangles** - Geometric patterns in motion
-- **Purple Smoke** - Mystical smoke-like effects
-- **Palette Shader** - Dynamic color transitions
-- **Ether Shader** - Abstract energy flows
-- **Moving Waves** - Fluid wave animations
+### Customization
 
-#### Live Animations
+- **Live Preview** - See changes in real-time
+- **Font Selection** - Choose from multiple typography options
+- **Color Palette** - Sophisticated colors optimized for clock displays
+- **Persistent Settings** - Your preferences are saved automatically
 
-- **Rotating Gradient** - Slowly rotating color gradients
-- **Fog Effect** - Atmospheric fog with particle effects
-- **Wave Background** - Wave movements
-
-### 🎛️ Customization System
-
-- **Interactive Preview** - Real-time customization with live preview
-- **Font Options** - Multiple typography choices (Roboto, Serif, Monospace, Cursive)
-- **Color Themes** - Extensive color palette for clock elements
-- **Background Selection** - Easy switching between visual effects
-- **Persistent Settings** - Preferences saved using DataStore
-
-### 📱 Cross-Platform Support
+### Platform Support
 
 - **Android** - Native Android application
-- **iOS** - Native iOS application
-- **Desktop** - macOS, Windows, and Linux support
+- **iOS** - Native iOS application  
+- **Desktop** - macOS, Windows, and Linux
 
-## 🏗️ Architecture
+## Architecture
 
-A simple architecture, No navigation library
+Built with clean architecture principles using a feature-based module structure.
 
 ```
-composeApp/src/commonMain/kotlin/com/eid/onstand/
-├── core/
-│   ├── di/              # Dependency injection with Koin
-│   ├── models/          # Data models and customization types
-│   ├── shaders/         # Shader utilities and effects
-│   ├── theme/           # Material 3 theming
-│   └── utils/           # Common utilities
-├── data/
-│   └── date/            # Platform-specific time handling
-├── feature/
-│   ├── backgrounds/     # Background effects and shaders
-│   │   ├── compose/     # Compose-based animations
-│   │   └── shader/      # Custom shader effects
-│   ├── preview/         # Customization screen and preview
-│   │   └── components/  # Reusable preview components
-│   └── widgets/
-│       └── clocks/      # Clock widget implementations
-├── App.kt               # Main application entry point
-└── AppViewModel.kt      # Main app state management
+composeApp/
+├── core/           # Core utilities, DI, models, and theme
+├── data/           # Data persistence layer
+└── feature/        # UI features
+    ├── backgrounds/    # Background effects
+    ├── customization/  # Settings UI
+    ├── home/          # Main clock display
+    └── widgets/       # Clock implementations
 ```
 
-## 🛠️ Technical Stack
+## Technical Stack
 
-- **Framework**: Compose Multiplatform
-- **State Management**: ViewModel + StateFlow
-- **Dependency Injection**: Koin
-- **Animations**: Compose Animation APIs + Custom SKSL Shaders 
-- **Time Handling**: kotlinx-datetime with platform-specific implementations
-- **Persistence**: DataStore for settings
-- **UI Effects**: Haze for blur/frosting effects
+- **Compose Multiplatform** - Cross-platform UI framework
+- **Koin** - Dependency injection
+- **DataStore** - Settings persistence
+- **SKSL Shaders** - Custom visual effects
+- **Haze** - Glass morphism effects
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- JDK 11 or higher
-- Android SDK (for Android builds)
-- Xcode (for iOS builds)
-- Gradle 8.0+
+- JDK 11+
+- Android Studio or IntelliJ IDEA
+- Xcode 14+ (for iOS)
 
 ### Running the App
 
@@ -127,17 +97,13 @@ composeApp/src/commonMain/kotlin/com/eid/onstand/
 
 Open `iosApp/iosApp.xcodeproj` in Xcode and run the project.
 
-### Building for Distribution
-
-#### Desktop Package
+### Building
 
 ```bash
+# Desktop distributable
 ./gradlew :composeApp:createDistributable
-```
 
-#### Android APK
-
-```bash
+# Android release APK
 ./gradlew :composeApp:assembleRelease
 ```
 

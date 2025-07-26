@@ -26,6 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.*
 import dev.chrisbanes.haze.rememberHazeState
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -36,7 +41,10 @@ import kotlin.time.ExperimentalTime
  * Customization screen for selecting backgrounds, clocks, fonts, and colors.
  * Provides horizontal scrolling interface with live previews.
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalTime::class,
+    ExperimentalHazeMaterialsApi::class
+)
 @Composable
 fun CustomizationScreen(
     selectedBackground: BackgroundEffect? = null,
@@ -50,17 +58,19 @@ fun CustomizationScreen(
     onBackPressed: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var currentTime by remember { 
-        mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())) 
+    var currentTime by remember {
+        mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
     }
-    
+
+    val hazeState = rememberHazeState()
+
     LaunchedEffect(Unit) {
         while (true) {
             currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             delay(1000)
         }
     }
-    
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -95,7 +105,7 @@ fun CustomizationScreen(
                     containerColor = Color.Transparent
                 )
             )
-            
+
             // Content
             Column(
                 modifier = Modifier
@@ -114,16 +124,17 @@ fun CustomizationScreen(
                         .height(200.dp)
                         .padding(bottom = 24.dp)
                 )
-                
+
                 // Scrollable content - remaining space
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight()
-                        .verticalScroll(rememberScrollState()),
+                        .verticalScroll(rememberScrollState())
+                        .haze(hazeState),
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-            
+
                     // All Backgrounds in one row
                     Text(
                         text = "Backgrounds",
@@ -132,13 +143,13 @@ fun CustomizationScreen(
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
-                    
+
                     BackgroundSelectionRow(
                         backgrounds = BackgroundRegistry.getAll(),
                         selectedBackground = selectedBackground,
                         onBackgroundSelected = onBackgroundSelected
                     )
-            
+
                     // Clock Selection from Registry
                     Text(
                         text = "Clock Styles",
@@ -147,13 +158,13 @@ fun CustomizationScreen(
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
-                    
+
                     ClockSelectionRow(
                         clocks = ClockRegistry.getAll(),
                         selectedClock = selectedClock,
                         onClockSelected = onClockSelected
                     )
-                    
+
                     // Font Selection - only show for digital clocks
                     if (selectedClock?.isDigital == true) {
                         Text(
@@ -163,13 +174,13 @@ fun CustomizationScreen(
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
-                        
+
                         FontSelectionRow(
                             selectedFont = selectedFont,
                             onFontSelected = onFontSelected
                         )
                     }
-                    
+
                     // Color Selection
                     Text(
                         text = "Colors",
@@ -178,7 +189,7 @@ fun CustomizationScreen(
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
-                    
+
                     ColorSelectionRow(
                         selectedColor = selectedColor,
                         onColorSelected = onColorSelected,
@@ -187,21 +198,24 @@ fun CustomizationScreen(
                 }
             }
         }
-        
+
         // Bottom Action Buttons
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
+                .hazeEffect(hazeState, style = HazeMaterials.regular(containerColor = Color.Black))
                 .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Cancel Button
             OutlinedButton(
                 onClick = onBackPressed,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color.White
+                    contentColor = Color.White,
+                    containerColor = Color.Black.copy(alpha = 0.3f)
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -212,16 +226,17 @@ fun CustomizationScreen(
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
-            
+
             // Apply Button
             Button(
                 onClick = {
                     // TODO: Save selections
                     onBackPressed()
                 },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF7B68EE)
+                    containerColor = Color(0xFF7B68EE).copy(alpha = 0.8f)
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -259,7 +274,7 @@ private fun PreviewCard(
         ) {
             // Render selected background
             background?.Render(modifier = Modifier.fillMaxSize())
-            
+
             // Render selected clock with proper preview sizing
             clock?.Render(
                 currentTime = currentTime,
@@ -291,7 +306,7 @@ private fun BackgroundSelectionRow(
                 targetValue = if (isSelected) 1.1f else 1f,
                 animationSpec = tween(300)
             )
-            
+
             BackgroundPreviewCard(
                 background = background,
                 isSelected = isSelected,
@@ -337,7 +352,7 @@ private fun BackgroundPreviewCard(
         ) {
             // Background preview
             background.Render(modifier = Modifier.fillMaxSize())
-            
+
             // Overlay with name
             Box(
                 modifier = Modifier
@@ -351,7 +366,7 @@ private fun BackgroundPreviewCard(
                         )
                     )
             )
-            
+
             Text(
                 text = background.displayName,
                 fontSize = 12.sp,
@@ -361,7 +376,7 @@ private fun BackgroundPreviewCard(
                     .align(Alignment.BottomStart)
                     .padding(8.dp)
             )
-            
+
             // Selection indicator
             if (isSelected) {
                 Box(
@@ -404,7 +419,7 @@ private fun ClockSelectionRow(
                 targetValue = if (isSelected) 1.1f else 1f,
                 animationSpec = tween(300)
             )
-            
+
             ClockPreviewCard(
                 clock = clock,
                 isSelected = isSelected,
@@ -460,17 +475,20 @@ private fun ClockPreviewCard(
                 contentAlignment = Alignment.Center
             ) {
                 // Mini clock preview
-                var previewTime by remember { 
-                    mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())) 
+                var previewTime by remember {
+                    mutableStateOf(
+                        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                    )
                 }
-                
+
                 LaunchedEffect(Unit) {
                     while (true) {
-                        previewTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                        previewTime =
+                            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
                         delay(1000)
                     }
                 }
-                
+
                 // Simplified preview without container for small cards
                 clock.Render(
                     currentTime = previewTime,
@@ -482,9 +500,9 @@ private fun ClockPreviewCard(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
                 text = clock.displayName,
                 fontSize = 12.sp,
@@ -493,69 +511,6 @@ private fun ClockPreviewCard(
                 textAlign = TextAlign.Center,
                 maxLines = 1
             )
-        }
-    }
-}
-
-/**
- * Alternative simple version - just shows backgrounds in a list
- */
-@Composable
-fun SimpleBackgroundList(
-    onBackgroundSelected: (BackgroundEffect) -> Unit
-) {
-    LazyColumn {
-        items(BackgroundRegistry.getAll()) { background ->
-            Card(
-                onClick = { onBackgroundSelected(background) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF3C3C3C)
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = background.displayName,
-                            color = Color.White,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Text(
-                            text = background.category.displayName,
-                            color = Color.Gray,
-                            fontSize = 12.sp
-                        )
-                    }
-                    
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .then(
-                                // Show preview color or mini background
-                                Modifier
-                            )
-                    ) {
-                        // You could render a mini version of the background here
-                        // or just use the preview color
-                        Card(
-                            colors = CardDefaults.cardColors(
-                                containerColor = background.previewColor
-                            ),
-                            shape = RoundedCornerShape(4.dp)
-                        ) {
-                            Spacer(modifier = Modifier.fillMaxSize())
-                        }
-                    }
-                }
-            }
         }
     }
 }

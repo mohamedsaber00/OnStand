@@ -61,8 +61,6 @@ class CoreModule : FeatureModule {
         // Register digital clocks
         registry.registerAll(listOf(
             BasicDigitalClock(),
-            SegmentDisplayClock(),
-            FlipClock()
         ))
         
         // Register analog clocks

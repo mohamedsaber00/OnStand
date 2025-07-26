@@ -29,7 +29,9 @@ class ClassicAnalogClock : AnalogClockWidget() {
             currentTime = currentTime,
             clockColor = textColor,
             handsColor = textColor,
-            numbersColor = textColor.copy(alpha = 0.8f)
+            numbersColor = textColor.copy(alpha = 0.8f),
+            isPreview = isPreview,
+            hazeState = hazeState,
         )
     }
 }

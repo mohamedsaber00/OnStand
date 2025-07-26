@@ -13,28 +13,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
+import com.eid.onstand.core.ui.utils.ClockSizingUtils
+import dev.chrisbanes.haze.HazeState
 import kotlinx.datetime.LocalDateTime
 import kotlin.math.cos
 import kotlin.math.sin
 
 @Composable
-fun AnalogClockWidget(
+internal fun AnalogClockWidget(
     modifier: Modifier = Modifier,
     currentTime: LocalDateTime,
     clockColor: Color = Color.White,
     handsColor: Color = Color.White,
-    numbersColor: Color = Color.White.copy(alpha = 0.8f)
+    numbersColor: Color = Color.White.copy(alpha = 0.8f),
+    isPreview: Boolean = false,
+    hazeState: HazeState? = null,
 ) {
     val timeTriple = Triple(currentTime.hour % 12, currentTime.minute, currentTime.second)
 
+
     BoxWithConstraints(
-        modifier = modifier
+        modifier = Modifier
+            .fillMaxSize()
             .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
+        val padding = ClockSizingUtils.calculateAdaptivePadding(
+            maxWidth, maxHeight, isPreview
+        )
+
         Canvas(modifier = Modifier.fillMaxSize()) {
             val center = Offset(size.width / 2, size.height / 2)
-            val radius = size.minDimension / 2 - (size.minDimension * 0.05f) // Relative padding
+            val radius = size.minDimension / 2 - padding.toPx()
 
             // Draw clock face
             drawCircle(
@@ -94,7 +104,7 @@ fun AnalogClockWidget(
                             center.x + cos(angle).toFloat() * endRadius,
                             center.y + sin(angle).toFloat() * endRadius
                         ),
-                        strokeWidth = radius * 0.003f,
+                        strokeWidth = (radius * 0.003f).coerceAtLeast(1f),
                         cap = StrokeCap.Round
                     )
                 }
@@ -118,6 +128,7 @@ fun AnalogClockWidget(
             )
         }
     }
+
 }
 
 private fun DrawScope.drawHands(

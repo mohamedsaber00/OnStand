@@ -102,7 +102,7 @@ fun CustomizationScreen(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
-                // Preview at the top - 30% of space
+                // Preview at the top - fixed height for consistency
                 PreviewCard(
                     background = selectedBackground,
                     clock = selectedClock,
@@ -111,15 +111,15 @@ fun CustomizationScreen(
                     textColor = selectedColor,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.3f)
+                        .height(200.dp)
                         .padding(bottom = 24.dp)
                 )
                 
-                // Scrollable content - 70% of space
+                // Scrollable content - remaining space
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.7f)
+                        .fillMaxHeight()
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
@@ -248,26 +248,28 @@ private fun PreviewCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1A1A1A)
+        )
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             // Render selected background
             background?.Render(modifier = Modifier.fillMaxSize())
             
-            // Render selected clock on top
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                clock?.Render(
-                    currentTime = currentTime,
-                    showSeconds = true,
-                    fontFamily = fontFamily,
-                    textColor = textColor,
-                    isPreview = true,
-                    hazeState = rememberHazeState()
-                )
-            }
+            // Render selected clock with proper preview sizing
+            clock?.Render(
+                currentTime = currentTime,
+                showSeconds = true,
+                fontFamily = fontFamily,
+                textColor = textColor,
+                isPreview = true,
+                hazeState = null, // No haze in preview for better visibility
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
@@ -423,8 +425,8 @@ private fun ClockPreviewCard(
 ) {
     Card(
         modifier = modifier
-            .width(120.dp)
-            .height(100.dp)
+            .width(110.dp)
+            .height(90.dp)
             .clickable { onSelected() }
             .then(
                 if (isSelected) {
@@ -453,7 +455,8 @@ private fun ClockPreviewCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .padding(horizontal = 4.dp, vertical = 2.dp),
                 contentAlignment = Alignment.Center
             ) {
                 // Mini clock preview
@@ -468,6 +471,7 @@ private fun ClockPreviewCard(
                     }
                 }
                 
+                // Simplified preview without container for small cards
                 clock.Render(
                     currentTime = previewTime,
                     showSeconds = false,
@@ -475,7 +479,7 @@ private fun ClockPreviewCard(
                     textColor = Color.White,
                     isPreview = true,
                     hazeState = null,
-                    modifier = Modifier.size(80.dp, 40.dp)
+                    modifier = Modifier.fillMaxSize()
                 )
             }
             
@@ -489,27 +493,6 @@ private fun ClockPreviewCard(
                 textAlign = TextAlign.Center,
                 maxLines = 1
             )
-            
-            // Selection indicator
-            if (isSelected) {
-                Box(
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .size(16.dp)
-                        .background(
-                            color = Color(0xFF7B68EE),
-                            shape = androidx.compose.foundation.shape.CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "✓",
-                        fontSize = 10.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
         }
     }
 }

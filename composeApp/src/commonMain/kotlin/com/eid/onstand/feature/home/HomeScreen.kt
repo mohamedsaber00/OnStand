@@ -62,9 +62,7 @@ fun HomeScreen(
         
         // Clock layer - render the selected clock widget
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             // Use default clock if none selected
@@ -78,7 +76,7 @@ fun HomeScreen(
                 textColor = selectedColor,
                 isPreview = false,
                 hazeState = hazeState,
-                modifier = Modifier
+                modifier = Modifier.fillMaxSize()
             )
         }
     }

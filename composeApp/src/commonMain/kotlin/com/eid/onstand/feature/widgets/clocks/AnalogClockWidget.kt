@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
-import com.eid.onstand.core.ui.utils.ClockSizingUtils
+import com.eid.onstand.core.utils.ClockSizingUtils
 import dev.chrisbanes.haze.HazeState
 import kotlinx.datetime.LocalDateTime
 import kotlin.math.cos

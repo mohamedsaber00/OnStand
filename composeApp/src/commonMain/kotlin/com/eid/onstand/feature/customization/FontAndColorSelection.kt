@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.FontFamily
+import com.eid.onstand.core.ui.theme.Colors
 
 @Composable
 fun FontSelectionRow(
@@ -71,7 +72,7 @@ private fun FontPreviewCard(
                 if (isSelected) {
                     Modifier.border(
                         width = 2.dp,
-                        color = Color(0xFF7B68EE),
+                        color = Colors.SelectionBorder,
                         shape = RoundedCornerShape(12.dp)
                     )
                 } else {
@@ -79,7 +80,7 @@ private fun FontPreviewCard(
                 }
             ),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF2A2A2A)
+            containerColor = Colors.BackgroundCard
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -94,7 +95,7 @@ private fun FontPreviewCard(
                 text = "Aa",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Medium,
-                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),
+                color = if (isSelected) Colors.TextPrimary else Colors.TextSecondary,
                 textAlign = TextAlign.Center
             )
             
@@ -104,7 +105,7 @@ private fun FontPreviewCard(
                 text = font.displayName,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Medium,
-                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),
+                color = if (isSelected) Colors.TextPrimary else Colors.TextSecondary,
                 textAlign = TextAlign.Center,
                 maxLines = 1
             )
@@ -116,7 +117,7 @@ private fun FontPreviewCard(
                         .padding(top = 4.dp)
                         .size(16.dp)
                         .background(
-                            color = Color(0xFF7B68EE),
+                            color = Colors.SelectionBorder,
                             shape = androidx.compose.foundation.shape.CircleShape
                         ),
                     contentAlignment = Alignment.Center
@@ -124,7 +125,7 @@ private fun FontPreviewCard(
                     Text(
                         text = "✓",
                         fontSize = 10.sp,
-                        color = Color.White,
+                        color = Colors.TextPrimary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -140,15 +141,15 @@ fun ColorSelectionRow(
     modifier: Modifier = Modifier
 ) {
     val colors = listOf(
-        Color.White,
-        Color.Red,
-        Color.Green,
-        Color.Blue,
-        Color.Yellow,
-        Color.Magenta,
-        Color.Cyan,
-        Color(0xFFFF9500),
-        Color(0xFF7B68EE)
+        Colors.White,
+        Colors.Red,
+        Colors.Green,
+        Colors.Blue,
+        Colors.Yellow,
+        Colors.Magenta,
+        Colors.Cyan,
+        Colors.AccentOrange,
+        Colors.Primary
     )
     
     LazyRow(
@@ -188,7 +189,7 @@ private fun ColorPreviewCard(
                 if (isSelected) {
                     Modifier.border(
                         width = 2.dp,
-                        color = Color(0xFF7B68EE),
+                        color = Colors.SelectionBorder,
                         shape = androidx.compose.foundation.shape.CircleShape
                     )
                 } else {
@@ -196,7 +197,7 @@ private fun ColorPreviewCard(
                 }
             ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
+            containerColor = Colors.Transparent
         ),
         shape = androidx.compose.foundation.shape.CircleShape
     ) {
@@ -215,7 +216,7 @@ private fun ColorPreviewCard(
                         .align(Alignment.Center)
                         .size(20.dp)
                         .background(
-                            color = Color(0xFF7B68EE),
+                            color = Colors.SelectionBorder,
                             shape = androidx.compose.foundation.shape.CircleShape
                         ),
                     contentAlignment = Alignment.Center
@@ -223,7 +224,7 @@ private fun ColorPreviewCard(
                     Text(
                         text = "✓",
                         fontSize = 12.sp,
-                        color = Color.White,
+                        color = Colors.TextPrimary,
                         fontWeight = FontWeight.Bold
                     )
                 }

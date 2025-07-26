@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.eid.onstand.core.ui.theme.GradientConstants
+import com.eid.onstand.core.ui.theme.GradientColors.ANIMATED_BACKGROUND_COLORS
 import kotlin.math.PI
 import kotlin.math.sin
 
@@ -32,7 +32,7 @@ import kotlin.math.sin
 @Composable
 fun WaveBackground(
     modifier: Modifier = Modifier,
-    colors: List<Color> = GradientConstants.ANIMATED_BACKGROUND_COLORS
+    colors: List<Color> = ANIMATED_BACKGROUND_COLORS
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "infinite color animation")
     val animationProgress by infiniteTransition.animateFloat(

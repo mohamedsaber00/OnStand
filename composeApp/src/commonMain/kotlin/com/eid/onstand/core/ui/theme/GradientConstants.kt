@@ -3,7 +3,7 @@ package com.eid.onstand.core.ui.theme
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-object GradientConstants {
+object GradientColors {
 
     // Default gradient colors
     val DEFAULT_GRADIENT_COLORS = listOf(
@@ -21,6 +21,49 @@ object GradientConstants {
         Color(0xFF64D2FF).copy(alpha = 0.8f), // Light blue
         Color(0xFFBF5AF2).copy(alpha = 0.6f)  // Light purple
     )
+    
+    // Screen Background Gradients
+    val SCREEN_BACKGROUND = listOf(
+        Color(0xFF2C2C2C),
+        Color(0xFF1A1A1A)
+    )
+    
+    // Overlay Gradients
+    val BACKGROUND_OVERLAY = listOf(
+        Color.Transparent,
+        Color.Black.copy(alpha = 0.6f)
+    )
+    
+    // Gradient Background Effects
+    val PURPLE_BLUE = listOf(
+        Color(0xFF8B5CF6),
+        Color(0xFF3B82F6)
+    )
+    
+    val PINK_ORANGE = listOf(
+        Color(0xFFEC4899),
+        Color(0xFFF97316)
+    )
+    
+    val GREEN_BLUE = listOf(
+        Color(0xFF10B981),
+        Color(0xFF3B82F6)
+    )
+    
+    val YELLOW_RED = listOf(
+        Color(0xFFFBBF24),
+        Color(0xFFEF4444)
+    )
+    
+    val INDIGO_PURPLE = listOf(
+        Color(0xFF6366F1),
+        Color(0xFF8B5CF6)
+    )
+    
+    val TEAL_CYAN = listOf(
+        Color(0xFF14B8A6),
+        Color(0xFF06B6D4)
+    )
 
     // Common gradients
     val TRANSPARENT_GRADIENT = Brush.linearGradient(
@@ -32,15 +75,16 @@ object GradientConstants {
     )
 }
 
+@Deprecated("Use Colors object instead", ReplaceWith("Colors"))
 object ColorConstants {
 
-    // Default colors
-    val DEFAULT_CARD_COLOR = Color.Black.copy(alpha = 0.6f)
-    val DEFAULT_MORPH_CARD_COLOR = Color(0xFFFFA77A).copy(alpha = 0.85f)
-    val DEFAULT_TEXT_COLOR = Color.White
+    // Default colors - moved to Colors object
+    val DEFAULT_CARD_COLOR = Colors.OverlayBlack
+    val DEFAULT_MORPH_CARD_COLOR = Colors.MorphCardDefault
+    val DEFAULT_TEXT_COLOR = Colors.TextPrimary
     val DEFAULT_INACTIVE_COLOR_ALPHA = 0.011f
     val DEFAULT_NUMBERS_COLOR_ALPHA = 0.8f
 
     // Transparency values
-    val TRANSPARENT = Color.Transparent
+    val TRANSPARENT = Colors.Transparent
 }

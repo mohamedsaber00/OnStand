@@ -1,4 +1,4 @@
-package com.eid.onstand.core.ui.utils
+package com.eid.onstand.core.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
@@ -12,7 +12,7 @@ import kotlin.math.min
  * Utilities for consistent clock sizing across different widgets and screen sizes
  */
 object ClockSizingUtils {
-    
+
     /**
      * Calculate optimal time font size based on container dimensions
      */
@@ -24,20 +24,20 @@ object ClockSizingUtils {
         isPreview: Boolean = false
     ): TextUnit {
         val density = LocalDensity.current
-        
+
         // Calculate based on width (characters should fit comfortably)
         val widthBasedSize = with(density) {
             (containerWidth.toPx() / characterCount * 0.75f).toSp()
         }
-        
+
         // Calculate based on height (leave room for date/day)
         val heightBasedSize = with(density) {
             (containerHeight.toPx() * 0.45f).toSp()
         }
-        
+
         // Use the smaller to ensure it fits
         val baseSize = min(widthBasedSize.value, heightBasedSize.value).sp
-        
+
         // Apply limits
         return when {
             isPreview -> {
@@ -50,7 +50,7 @@ object ClockSizingUtils {
             }
         }
     }
-    
+
     /**
      * Calculate date/day font size as a proportion of time font size
      */
@@ -58,7 +58,7 @@ object ClockSizingUtils {
         val size = (timeFontSize.value * 0.25f).coerceAtLeast(12f)
         return size.sp
     }
-    
+
     /**
      * Calculate adaptive padding based on container size
      */
@@ -70,7 +70,7 @@ object ClockSizingUtils {
     ): Dp {
         val minDimension = min(containerWidth.value, containerHeight.value)
         val basePadding = (minDimension * 0.08f).dp
-        
+
         return when {
             isPreview -> {
                 val limited = basePadding.value.coerceIn(8f, 16f)
@@ -82,13 +82,13 @@ object ClockSizingUtils {
             }
         }
     }
-    
+
     /**
      * Calculate spacing between elements
      */
     fun calculateSpacing(containerHeight: Dp, isPreview: Boolean = false): Dp {
         val baseSpacing = (containerHeight.value * 0.05f).dp
-        
+
         return when {
             isPreview -> {
                 val limited = baseSpacing.value.coerceIn(4f, 8f)
@@ -100,26 +100,26 @@ object ClockSizingUtils {
             }
         }
     }
-    
+
     /**
      * Get size category based on container dimensions
      */
     fun getSizeCategory(containerWidth: Dp, containerHeight: Dp): SizeCategory {
         val minDimension = min(containerWidth.value, containerHeight.value)
-        
+
         return when {
             minDimension < 360 -> SizeCategory.COMPACT
             minDimension < 600 -> SizeCategory.NORMAL
             else -> SizeCategory.EXPANDED
         }
     }
-    
+
     enum class SizeCategory {
         COMPACT,
         NORMAL,
         EXPANDED
     }
-    
+
     /**
      * Get responsive scale factor for preview mode
      */

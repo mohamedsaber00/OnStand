@@ -7,13 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.eid.onstand.core.models.SolidBackgroundEffect
+import com.eid.onstand.core.ui.theme.Colors
 
 // Type-safe solid color background implementations
 
 class BlackBackground : SolidBackgroundEffect() {
     override val displayName = "Black"
-    override val previewColor = Color.Black
-    override val color = Color.Black
+    override val previewColor = Colors.SolidBlack
+    override val color = Colors.SolidBlack
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -27,8 +28,8 @@ class BlackBackground : SolidBackgroundEffect() {
 
 class WhiteBackground : SolidBackgroundEffect() {
     override val displayName = "White"
-    override val previewColor = Color.White
-    override val color = Color.White
+    override val previewColor = Colors.SolidWhite
+    override val color = Colors.SolidWhite
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -72,8 +73,8 @@ class DarkGrayBackground : SolidBackgroundEffect() {
 
 class BlueBackground : SolidBackgroundEffect() {
     override val displayName = "Blue"
-    override val previewColor = Color(0xFF2196F3)
-    override val color = Color(0xFF2196F3)
+    override val previewColor = Colors.SolidBlue
+    override val color = Colors.SolidBlue
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -87,8 +88,8 @@ class BlueBackground : SolidBackgroundEffect() {
 
 class GreenBackground : SolidBackgroundEffect() {
     override val displayName = "Green"
-    override val previewColor = Color(0xFF4CAF50)
-    override val color = Color(0xFF4CAF50)
+    override val previewColor = Colors.SolidGreen
+    override val color = Colors.SolidGreen
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -102,8 +103,8 @@ class GreenBackground : SolidBackgroundEffect() {
 
 class PurpleSolidBackground : SolidBackgroundEffect() {
     override val displayName = "Purple"
-    override val previewColor = Color(0xFF9C27B0)
-    override val color = Color(0xFF9C27B0)
+    override val previewColor = Colors.SolidPurple
+    override val color = Colors.SolidPurple
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -117,8 +118,8 @@ class PurpleSolidBackground : SolidBackgroundEffect() {
 
 class RedSolidBackground : SolidBackgroundEffect() {
     override val displayName = "Red"
-    override val previewColor = Color(0xFFF44336)
-    override val color = Color(0xFFF44336)
+    override val previewColor = Colors.SolidRed
+    override val color = Colors.SolidRed
     
     @Composable
     override fun Render(modifier: Modifier) {

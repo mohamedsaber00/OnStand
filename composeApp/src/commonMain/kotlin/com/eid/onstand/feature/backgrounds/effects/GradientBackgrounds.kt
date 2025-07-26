@@ -8,17 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import com.eid.onstand.core.models.GradientBackgroundEffect
+import com.eid.onstand.core.ui.theme.Colors
+import com.eid.onstand.core.ui.theme.GradientColors
 
 // Type-safe gradient background implementations
 
 class SunsetGradient : GradientBackgroundEffect() {
     override val displayName = "Sunset"
-    override val previewColor = Color(0xFFFF6B6B)
-    override val colors = listOf(
-        Color(0xFF4A90E2),
-        Color(0xFF7B68EE),
-        Color(0xFFFF6B6B)
-    )
+    override val previewColor = Colors.SolidRed
+    override val colors = GradientColors.DEFAULT_GRADIENT_COLORS
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -32,11 +30,8 @@ class SunsetGradient : GradientBackgroundEffect() {
 
 class OceanGradient : GradientBackgroundEffect() {
     override val displayName = "Ocean"
-    override val previewColor = Color(0xFF4A90E2)
-    override val colors = listOf(
-        Color(0xFF000428),
-        Color(0xFF004e92)
-    )
+    override val previewColor = Colors.AccentBlue
+    override val colors = GradientColors.GREEN_BLUE
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -50,11 +45,8 @@ class OceanGradient : GradientBackgroundEffect() {
 
 class ForestGradient : GradientBackgroundEffect() {
     override val displayName = "Forest"
-    override val previewColor = Color(0xFF134E5E)
-    override val colors = listOf(
-        Color(0xFF134E5E),
-        Color(0xFF71B280)
-    )
+    override val previewColor = Colors.AccentGreen
+    override val colors = GradientColors.GREEN_BLUE
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -68,11 +60,8 @@ class ForestGradient : GradientBackgroundEffect() {
 
 class PurpleGradient : GradientBackgroundEffect() {
     override val displayName = "Purple"
-    override val previewColor = Color(0xFF667eea)
-    override val colors = listOf(
-        Color(0xFF667eea),
-        Color(0xFF764ba2)
-    )
+    override val previewColor = Colors.AccentPurple
+    override val colors = GradientColors.PURPLE_BLUE
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -86,11 +75,8 @@ class PurpleGradient : GradientBackgroundEffect() {
 
 class FireGradient : GradientBackgroundEffect() {
     override val displayName = "Fire"
-    override val previewColor = Color(0xFFf12711)
-    override val colors = listOf(
-        Color(0xFFf12711),
-        Color(0xFFf5af19)
-    )
+    override val previewColor = Colors.AccentOrange
+    override val colors = GradientColors.YELLOW_RED
     
     @Composable
     override fun Render(modifier: Modifier) {
@@ -104,11 +90,8 @@ class FireGradient : GradientBackgroundEffect() {
 
 class MintGradient : GradientBackgroundEffect() {
     override val displayName = "Mint"
-    override val previewColor = Color(0xFF00b4db)
-    override val colors = listOf(
-        Color(0xFF00b4db),
-        Color(0xFF0083b0)
-    )
+    override val previewColor = Colors.AccentTeal
+    override val colors = GradientColors.TEAL_CYAN
     
     @Composable
     override fun Render(modifier: Modifier) {

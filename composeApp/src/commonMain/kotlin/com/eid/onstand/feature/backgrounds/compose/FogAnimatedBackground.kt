@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import com.eid.onstand.core.ui.theme.Colors
 import androidx.compose.ui.unit.dp
 import kotlin.math.PI
 import kotlin.math.cos
@@ -57,7 +58,7 @@ fun FoggyBackground(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFF2C3E40))
+            .background(Colors.BackgroundPrimary)
             .clip(RoundedCornerShape(32.dp))
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -98,25 +99,25 @@ private fun DrawScope.drawFogAnimation(progress1: Float, progress2: Float, progr
     )
     val radius3 = size.width * (0.9f + 0.2f * sin(angle3B))
 
-    val fogColor = Color.White.copy(alpha = 0.15f)
+    val fogColor = Colors.White.copy(alpha = 0.15f)
 
     drawRect(
         brush = Brush.radialGradient(
-            colors = listOf(fogColor, Color.Transparent),
+            colors = listOf(fogColor, Colors.Transparent),
             center = center1,
             radius = radius1
         )
     )
     drawRect(
         brush = Brush.radialGradient(
-            colors = listOf(fogColor, Color.Transparent),
+            colors = listOf(fogColor, Colors.Transparent),
             center = center2,
             radius = radius2
         )
     )
     drawRect(
         brush = Brush.radialGradient(
-            colors = listOf(fogColor, Color.Transparent),
+            colors = listOf(fogColor, Colors.Transparent),
             center = center3,
             radius = radius3
         )

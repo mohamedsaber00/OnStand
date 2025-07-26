@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.eid.onstand.core.models.ShaderBackgroundEffect
+import com.eid.onstand.core.ui.theme.Colors
 import com.eid.onstand.core.models.ShaderType
 import com.eid.onstand.core.ui.shaders.shaderBackground
 import com.eid.onstand.feature.backgrounds.shader.*
@@ -15,7 +16,7 @@ import com.eid.onstand.feature.backgrounds.shader.*
 
 class EtherBackground : ShaderBackgroundEffect() {
     override val displayName = "Ether"
-    override val previewColor = Color(0xFF4A90E2)
+    override val previewColor = Colors.AccentBlue
     override val shaderType = ShaderType.ETHER
     
     @Composable
@@ -30,7 +31,7 @@ class EtherBackground : ShaderBackgroundEffect() {
 
 class SpaceBackground : ShaderBackgroundEffect() {
     override val displayName = "Space"
-    override val previewColor = Color(0xFF1A0033)
+    override val previewColor = Colors.BackgroundSecondary
     override val shaderType = ShaderType.SPACE
     
     @Composable
@@ -45,7 +46,7 @@ class SpaceBackground : ShaderBackgroundEffect() {
 
 class PaletteBackground : ShaderBackgroundEffect() {
     override val displayName = "Palette"
-    override val previewColor = Color(0xFF5A4FCF)
+    override val previewColor = Colors.PrimaryVariant
     override val shaderType = ShaderType.PALETTE
     
     @Composable
@@ -60,7 +61,7 @@ class PaletteBackground : ShaderBackgroundEffect() {
 
 class RedShaderBackground : ShaderBackgroundEffect() {
     override val displayName = "Red"
-    override val previewColor = Color(0xFFB83C5E)
+    override val previewColor = Colors.SolidRed
     override val shaderType = ShaderType.RED
     
     @Composable
@@ -75,7 +76,7 @@ class RedShaderBackground : ShaderBackgroundEffect() {
 
 class GlowingRingBackground : ShaderBackgroundEffect() {
     override val displayName = "Glowing Ring"
-    override val previewColor = Color(0xFF7B68EE)
+    override val previewColor = Colors.Primary
     override val shaderType = ShaderType.GLOWING_RING
     
     @Composable
@@ -90,7 +91,7 @@ class GlowingRingBackground : ShaderBackgroundEffect() {
 
 class PurpleFlowBackground : ShaderBackgroundEffect() {
     override val displayName = "Purple Flow"
-    override val previewColor = Color(0xFF9B59B6)
+    override val previewColor = Colors.AccentPurple
     override val shaderType = ShaderType.PURPLE_GRADIENT
     
     @Composable
@@ -105,7 +106,7 @@ class PurpleFlowBackground : ShaderBackgroundEffect() {
 
 class TrianglesBackground : ShaderBackgroundEffect() {
     override val displayName = "Triangles"
-    override val previewColor = Color(0xFF2C3E50)
+    override val previewColor = Colors.BackgroundPrimary
     override val shaderType = ShaderType.MOVING_TRIANGLES
     
     @Composable
@@ -120,7 +121,7 @@ class TrianglesBackground : ShaderBackgroundEffect() {
 
 class MovingWavesBackground : ShaderBackgroundEffect() {
     override val displayName = "Moving Waves"
-    override val previewColor = Color(0xFF4A90E2)
+    override val previewColor = Colors.AccentBlue
     override val shaderType = ShaderType.MOVING_WAVES
     
     @Composable
@@ -135,7 +136,7 @@ class MovingWavesBackground : ShaderBackgroundEffect() {
 
 class TurbulenceBackground : ShaderBackgroundEffect() {
     override val displayName = "Turbulence"
-    override val previewColor = Color(0xFF8E44AD)
+    override val previewColor = Colors.AccentPurple
     override val shaderType = ShaderType.PURPLE_SMOKE
     
     @Composable

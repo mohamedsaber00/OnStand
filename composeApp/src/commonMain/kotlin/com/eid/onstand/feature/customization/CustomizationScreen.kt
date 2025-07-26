@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.*
+import com.eid.onstand.core.ui.theme.Colors
+import com.eid.onstand.core.ui.theme.GradientColors
 import dev.chrisbanes.haze.rememberHazeState
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
@@ -75,12 +77,7 @@ fun CustomizationScreen(
         modifier = modifier
             .fillMaxSize()
             .background(
-                Brush.linearGradient(
-                    listOf(
-                        Color(0xFF2C2C2C),
-                        Color(0xFF1A1A1A)
-                    )
-                )
+                Brush.linearGradient(GradientColors.SCREEN_BACKGROUND)
             )
     ) {
         Column(
@@ -91,18 +88,18 @@ fun CustomizationScreen(
                 title = {
                     Text(
                         text = "Customize",
-                        color = Color.White,
+                        color = Colors.TextPrimary,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium
                     )
                 },
                 navigationIcon = {
                     TextButton(onClick = onBackPressed) {
-                        Text("←", color = Color.White, fontSize = 24.sp)
+                        Text("←", color = Colors.TextPrimary, fontSize = 24.sp)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = Colors.Transparent
                 )
             )
 
@@ -138,7 +135,7 @@ fun CustomizationScreen(
                     // All Backgrounds in one row
                     Text(
                         text = "Backgrounds",
-                        color = Color.White,
+                        color = Colors.TextPrimary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(bottom = 12.dp)
@@ -153,7 +150,7 @@ fun CustomizationScreen(
                     // Clock Selection from Registry
                     Text(
                         text = "Clock Styles",
-                        color = Color.White,
+                        color = Colors.TextPrimary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(bottom = 12.dp)
@@ -169,7 +166,7 @@ fun CustomizationScreen(
                     if (selectedClock?.isDigital == true) {
                         Text(
                             text = "Fonts",
-                            color = Color.White,
+                            color = Colors.TextPrimary,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.padding(bottom = 12.dp)
@@ -184,7 +181,7 @@ fun CustomizationScreen(
                     // Color Selection
                     Text(
                         text = "Colors",
-                        color = Color.White,
+                        color = Colors.TextPrimary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(bottom = 12.dp)
@@ -204,7 +201,7 @@ fun CustomizationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .hazeEffect(hazeState, style = HazeMaterials.regular(containerColor = Color.Black))
+                .hazeEffect(hazeState, style = HazeMaterials.regular(containerColor = Colors.Black))
                 .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -214,8 +211,8 @@ fun CustomizationScreen(
                 modifier = Modifier
                     .weight(1f),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color.White,
-                    containerColor = Color.Black.copy(alpha = 0.3f)
+                    contentColor = Colors.TextPrimary,
+                    containerColor = Colors.ButtonBackground
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -236,7 +233,7 @@ fun CustomizationScreen(
                 modifier = Modifier
                     .weight(1f),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF7B68EE).copy(alpha = 0.8f)
+                    containerColor = Colors.ButtonPrimaryTransparent
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -244,7 +241,7 @@ fun CustomizationScreen(
                     text = "Apply",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.White,
+                    color = Colors.TextPrimary,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
@@ -265,7 +262,7 @@ private fun PreviewCard(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF1A1A1A)
+            containerColor = Colors.BackgroundCardTransparent
         )
     ) {
         Box(
@@ -333,7 +330,7 @@ private fun BackgroundPreviewCard(
                 if (isSelected) {
                     Modifier.border(
                         width = 2.dp,
-                        color = Color(0xFF7B68EE),
+                        color = Colors.SelectionBorder,
                         shape = RoundedCornerShape(12.dp)
                     )
                 } else {
@@ -341,7 +338,7 @@ private fun BackgroundPreviewCard(
                 }
             ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
+            containerColor = Colors.Transparent
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -358,12 +355,7 @@ private fun BackgroundPreviewCard(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        Brush.verticalGradient(
-                            listOf(
-                                Color.Transparent,
-                                Color.Black.copy(alpha = 0.6f)
-                            )
-                        )
+                        Brush.verticalGradient(GradientColors.BACKGROUND_OVERLAY)
                     )
             )
 
@@ -371,7 +363,7 @@ private fun BackgroundPreviewCard(
                 text = background.displayName,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.White,
+                color = Colors.TextPrimary,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(8.dp)
@@ -385,7 +377,7 @@ private fun BackgroundPreviewCard(
                         .padding(6.dp)
                         .size(20.dp)
                         .background(
-                            color = Color(0xFF7B68EE),
+                            color = Colors.SelectionIndicator,
                             shape = androidx.compose.foundation.shape.CircleShape
                         ),
                     contentAlignment = Alignment.Center
@@ -393,7 +385,7 @@ private fun BackgroundPreviewCard(
                     Text(
                         text = "✓",
                         fontSize = 12.sp,
-                        color = Color.White,
+                        color = Colors.TextPrimary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -447,7 +439,7 @@ private fun ClockPreviewCard(
                 if (isSelected) {
                     Modifier.border(
                         width = 2.dp,
-                        color = Color(0xFF7B68EE),
+                        color = Colors.SelectionBorder,
                         shape = RoundedCornerShape(12.dp)
                     )
                 } else {
@@ -455,7 +447,7 @@ private fun ClockPreviewCard(
                 }
             ),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF2A2A2A)
+            containerColor = Colors.BackgroundCard
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -494,7 +486,7 @@ private fun ClockPreviewCard(
                     currentTime = previewTime,
                     showSeconds = false,
                     fontFamily = FontFamily.ROBOTO,
-                    textColor = Color.White,
+                    textColor = Colors.ClockDefault,
                     isPreview = true,
                     hazeState = null,
                     modifier = Modifier.fillMaxSize()
@@ -507,7 +499,7 @@ private fun ClockPreviewCard(
                 text = clock.displayName,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
-                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),
+                color = if (isSelected) Colors.TextPrimary else Colors.TextSecondary,
                 textAlign = TextAlign.Center,
                 maxLines = 1
             )

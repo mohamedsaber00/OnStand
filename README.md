@@ -2,13 +2,7 @@
 
 A customizable dock clock application built with Compose Multiplatform for Android, iOS, and Desktop platforms. Transform your device into an elegant timepiece with smooth animations and visual effects.
 
-<p align="center">
-  <a href="https://github.com/Subfly/onstand">
-    <img src="https://img.shields.io/github/stars/Subfly/onstand?style=social" alt="GitHub stars">
-  </a>
-</p>
-
-> ⭐ **If you find this project useful, please consider giving it a star!**
+> ## ⭐ **If you find this project useful, please consider giving it a star!**
 
 ## Android
 

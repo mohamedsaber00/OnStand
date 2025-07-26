@@ -141,15 +141,15 @@ fun ColorSelectionRow(
     modifier: Modifier = Modifier
 ) {
     val colors = listOf(
-        Colors.White,
-        Colors.Red,
-        Colors.Green,
-        Colors.Blue,
-        Colors.Yellow,
-        Colors.Magenta,
-        Colors.Cyan,
-        Colors.AccentOrange,
-        Colors.Primary
+        Colors.ClockWhite,
+        Colors.ClockWarm,
+        Colors.ClockBlush,
+        Colors.ClockSage,
+        Colors.ClockLavender,
+        Colors.ClockDusk,
+        Colors.ClockAmber,
+        Colors.ClockMist,
+        Colors.ClockRose
     )
     
     LazyRow(

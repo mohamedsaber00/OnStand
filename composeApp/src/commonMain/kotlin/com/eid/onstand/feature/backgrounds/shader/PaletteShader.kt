@@ -10,7 +10,7 @@ object PaletteShader : Shader {
 
     override val sksl = """
 /*--------------------------------------------------------------
-  Palette Shader: Vivid Liquid Glass 
+  Palette Shader: Vivid Liquid Glass  (FIXED: apply ax -> uv.x)
 --------------------------------------------------------------*/
 uniform float  uTime;
 uniform float3 uResolution;
@@ -130,10 +130,10 @@ vec4 main(vec2 fragCoord){
     float edgeT = smoothstep(EDGE_START, 1.0, absx);
     edgeT = edgeT*edgeT*(3.0 - 2.0*edgeT);
     float compressed = ax * mix(1.0, (EDGE_START + (absx-EDGE_START)*0.4)/absx, edgeT * EDGE_PUSH);
-
     ax = (absx > EDGE_START) ? compressed : ax;
 
-
+    // *** FIX: actually use the corrected x ***
+    uv.x = ax;
 
     float speed = max(uSpeed, 0.0);
     float tBase = uTime * 0.24 * (speed + 0.2);

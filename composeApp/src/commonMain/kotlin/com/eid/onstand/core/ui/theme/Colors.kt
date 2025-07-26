@@ -42,6 +42,17 @@ object Colors {
     val TextSecondary = Color.White.copy(alpha = 0.7f)
     val TextDisabled = Color.White.copy(alpha = 0.5f)
     
+    // Clock Text Colors - Sophisticated and elegant
+    val ClockWhite = Color(0xFFF8F9FA)           // Soft white
+    val ClockWarm = Color(0xFFF5E6D3)            // Warm cream
+    val ClockBlush = Color(0xFFE8D5C7)           // Subtle blush
+    val ClockSage = Color(0xFFB8C5B8)            // Muted sage green  
+    val ClockLavender = Color(0xFFD4C5E8)        // Soft lavender
+    val ClockDusk = Color(0xFFC7B8D4)            // Twilight purple
+    val ClockAmber = Color(0xFFE8C07D)           // Warm amber
+    val ClockMist = Color(0xFFB8D4E8)            // Soft blue-gray
+    val ClockRose = Color(0xFFE8B8C7)            // Muted rose
+    
     // Button Colors
     val ButtonBackground = Color.Black.copy(alpha = 0.3f)
     val ButtonPrimary = Color(0xFF7B68EE)

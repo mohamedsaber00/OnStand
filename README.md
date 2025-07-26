@@ -4,13 +4,21 @@ A beautiful, customizable dock clock application built with Compose Multiplatfor
 Android, iOS, and Desktop platforms. Transform your screen into an elegant timepiece with fluid
 animations, stunning visual effects, and extensive customization options.
 
+## Android
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/d8edb6bb-e762-49e1-9c66-3a0c76751145" width="45%">
-  <img src="https://github.com/user-attachments/assets/847f04cf-501a-497d-b7ed-8c2d417ee080" width="45%">
+  <img width="2531" height="1198" alt="Screenshot_20250726_202220" src="https://github.com/user-attachments/assets/35f7bcfb-e0a9-44fc-840e-5e5309fc1a32"  width="45%" />
+<img width="2531" height="1198" alt="Screenshot_20250726_202404" src="https://github.com/user-attachments/assets/431c556a-f8b8-4020-a9ce-3d1254eef462" width="45%"/>
 </p>
+
+
+
+## IOS
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/4349897a-3dc8-4aa7-8f48-dcf1ca8ad6bc" width="45%">
-  <img src="https://github.com/user-attachments/assets/75bdbc71-29b1-48fe-beef-4f456af308e6" width="45%">
+  <img width="2752" height="2064" alt="image" src="https://github.com/user-attachments/assets/748ef113-9c0a-4c19-ac32-63a336a93d23" width="45%"/>
+<img width="2752" height="2064" alt="image" src="https://github.com/user-attachments/assets/97f9f5c8-0ee8-4c3d-8d92-7bd013c29eee"  width="45%"/>
+
 </p>
 
 

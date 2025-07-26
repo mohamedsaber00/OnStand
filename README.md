@@ -1,4 +1,4 @@
-# OnStand
+# OnStand (Under development)
 
 A customizable dock clock application built with Compose Multiplatform for Android, iOS, and Desktop platforms. Transform your device into an elegant timepiece with smooth animations and visual effects.
 

@@ -49,7 +49,7 @@ internal fun BasicClockWidget(
     val currentTimeString =
         currentTime.format(LocalDateTime.Format { byUnicodePattern(timePattern) })
 
-    // Format date and day using manual formatting to avoid locale dependency
+    // TODO : To be refactored
     val dayNames =
         listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
     val monthNames =

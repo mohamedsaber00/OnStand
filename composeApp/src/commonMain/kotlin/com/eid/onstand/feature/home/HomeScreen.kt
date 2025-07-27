@@ -4,18 +4,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.eid.onstand.core.models.*
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeChild
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.rememberHazeState
-import kotlinx.coroutines.delay
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
 
 /**
@@ -25,23 +18,18 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalHazeMaterialsApi::class, ExperimentalTime::class)
 @Composable
 fun HomeScreen(
-    selectedBackground: BackgroundEffect? = null,
-    selectedClock: ClockWidget? = null,
-    selectedFont: FontFamily = FontFamily.ROBOTO,
-    selectedColor: Color = Color.White,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: HomeScreenViewModel = koinViewModel()
 ) {
-    var currentTime by remember { 
-        mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())) 
-    }
+    val uiState by viewModel.uiState.collectAsState()
+    val currentTime by viewModel.currentTime.collectAsState()
     
     val hazeState = rememberHazeState()
-    
-    LaunchedEffect(Unit) {
-        while (true) {
-            currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            delay(1000)
-        }
+
+    // Show loading or empty state while data is loading
+    if (uiState.isLoading) {
+        Box(modifier = modifier.fillMaxSize())
+        return
     }
     
     Box(
@@ -54,7 +42,7 @@ fun HomeScreen(
                 .hazeSource(hazeState)
         ) {
             // Use default background if none selected
-            val backgroundToRender = selectedBackground 
+            val backgroundToRender = uiState.selectedBackground
                 ?: BackgroundRegistry.getAll().firstOrNull()
             
             backgroundToRender?.Render(modifier = Modifier.fillMaxSize())
@@ -66,14 +54,14 @@ fun HomeScreen(
             contentAlignment = Alignment.Center
         ) {
             // Use default clock if none selected
-            val clockToRender = selectedClock 
+            val clockToRender = uiState.selectedClock
                 ?: ClockRegistry.getAll().firstOrNull()
             
             clockToRender?.Render(
                 currentTime = currentTime,
                 showSeconds = true,
-                fontFamily = selectedFont,
-                textColor = selectedColor,
+                fontFamily = uiState.selectedFont,
+                textColor = uiState.selectedColor,
                 isPreview = false,
                 hazeState = hazeState,
                 modifier = Modifier.fillMaxSize()

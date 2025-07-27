@@ -1,7 +1,6 @@
 package com.eid.onstand.feature.customization
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -27,19 +26,12 @@ import androidx.compose.ui.unit.sp
 import com.eid.onstand.core.models.*
 import com.eid.onstand.core.ui.theme.Colors
 import com.eid.onstand.core.ui.theme.GradientColors
-import com.eid.onstand.core.data.SettingsRepository
-import org.koin.compose.koinInject
-import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 import dev.chrisbanes.haze.rememberHazeState
 import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
-import kotlinx.coroutines.delay
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 /**
@@ -52,31 +44,14 @@ import kotlin.time.ExperimentalTime
 )
 @Composable
 fun CustomizationScreen(
-    selectedBackground: BackgroundEffect? = null,
-    selectedClock: ClockWidget? = null,
-    selectedFont: FontFamily = FontFamily.ROBOTO,
-    selectedColor: Color = Color.White,
-    onBackgroundSelected: (BackgroundEffect) -> Unit = {},
-    onClockSelected: (ClockWidget) -> Unit = {},
-    onFontSelected: (FontFamily) -> Unit = {},
-    onColorSelected: (Color) -> Unit = {},
     onBackPressed: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: CustomizationViewModel = koinViewModel()
 ) {
-    val settingsRepository: SettingsRepository = koinInject()
-    val coroutineScope = rememberCoroutineScope()
-    var currentTime by remember {
-        mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
-    }
+    val uiState by viewModel.uiState.collectAsState()
+    val currentTime by viewModel.currentTime.collectAsState()
 
     val hazeState = rememberHazeState()
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            delay(1000)
-        }
-    }
 
     Box(
         modifier = modifier
@@ -116,11 +91,11 @@ fun CustomizationScreen(
             ) {
                 // Preview at the top - fixed height for consistency
                 PreviewCard(
-                    background = selectedBackground,
-                    clock = selectedClock,
+                    background = uiState.selectedBackground,
+                    clock = uiState.selectedClock,
                     currentTime = currentTime,
-                    fontFamily = selectedFont,
-                    textColor = selectedColor,
+                    fontFamily = uiState.selectedFont,
+                    textColor = uiState.selectedColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
@@ -147,9 +122,9 @@ fun CustomizationScreen(
                     )
 
                     BackgroundSelectionRow(
-                        backgrounds = BackgroundRegistry.getAll(),
-                        selectedBackground = selectedBackground,
-                        onBackgroundSelected = onBackgroundSelected
+                        backgrounds = uiState.backgrounds,
+                        selectedBackground = uiState.selectedBackground,
+                        onBackgroundSelected = viewModel::selectBackground
                     )
 
                     // Clock Selection from Registry
@@ -162,13 +137,14 @@ fun CustomizationScreen(
                     )
 
                     ClockSelectionRow(
-                        clocks = ClockRegistry.getAll(),
-                        selectedClock = selectedClock,
-                        onClockSelected = onClockSelected
+                        clocks = uiState.clocks,
+                        selectedClock = uiState.selectedClock,
+                        onClockSelected = viewModel::selectClock,
+                        currentTime = currentTime
                     )
 
                     // Font Selection - only show for digital clocks
-                    if (selectedClock?.isDigital == true) {
+                    if (uiState.selectedClock?.isDigital == true) {
                         Text(
                             text = "Fonts",
                             color = Colors.TextPrimary,
@@ -178,8 +154,8 @@ fun CustomizationScreen(
                         )
 
                         FontSelectionRow(
-                            selectedFont = selectedFont,
-                            onFontSelected = onFontSelected
+                            selectedFont = uiState.selectedFont,
+                            onFontSelected = viewModel::selectFont
                         )
                     }
 
@@ -193,8 +169,8 @@ fun CustomizationScreen(
                     )
 
                     ColorSelectionRow(
-                        selectedColor = selectedColor,
-                        onColorSelected = onColorSelected,
+                        selectedColor = uiState.selectedColor,
+                        onColorSelected = viewModel::selectColor,
                         modifier = Modifier.padding(bottom = 100.dp)
                     )
                 }
@@ -232,15 +208,7 @@ fun CustomizationScreen(
             // Apply Button
             Button(
                 onClick = {
-                    coroutineScope.launch {
-                        settingsRepository.saveSettings(
-                            background = selectedBackground,
-                            clock = selectedClock,
-                            font = selectedFont,
-                            color = selectedColor
-                        )
-                        onBackPressed()
-                    }
+                    viewModel.applySettings { onBackPressed() }
                 },
                 modifier = Modifier
                     .weight(1f),
@@ -410,7 +378,8 @@ private fun BackgroundPreviewCard(
 private fun ClockSelectionRow(
     clocks: List<ClockWidget>,
     selectedClock: ClockWidget?,
-    onClockSelected: (ClockWidget) -> Unit
+    onClockSelected: (ClockWidget) -> Unit,
+    currentTime: kotlinx.datetime.LocalDateTime
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -428,6 +397,7 @@ private fun ClockSelectionRow(
                 clock = clock,
                 isSelected = isSelected,
                 onSelected = { onClockSelected(clock) },
+                currentTime = currentTime,
                 modifier = Modifier.scale(scale)
             )
         }
@@ -440,6 +410,7 @@ private fun ClockPreviewCard(
     clock: ClockWidget,
     isSelected: Boolean,
     onSelected: () -> Unit,
+    currentTime: kotlinx.datetime.LocalDateTime,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -478,24 +449,9 @@ private fun ClockPreviewCard(
                     .padding(horizontal = 4.dp, vertical = 2.dp),
                 contentAlignment = Alignment.Center
             ) {
-                // Mini clock preview
-                var previewTime by remember {
-                    mutableStateOf(
-                        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-                    )
-                }
-
-                LaunchedEffect(Unit) {
-                    while (true) {
-                        previewTime =
-                            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-                        delay(1000)
-                    }
-                }
-
                 // Simplified preview without container for small cards
                 clock.Render(
-                    currentTime = previewTime,
+                    currentTime = currentTime,
                     showSeconds = false,
                     fontFamily = FontFamily.ROBOTO,
                     textColor = Colors.ClockDefault,

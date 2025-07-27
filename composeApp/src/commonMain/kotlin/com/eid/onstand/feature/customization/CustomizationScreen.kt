@@ -30,6 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import dev.chrisbanes.haze.rememberHazeState
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
 import kotlin.time.ExperimentalTime
@@ -98,7 +99,7 @@ fun CustomizationScreen(
                     textColor = uiState.selectedColor,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.4f)
+                        .fillMaxHeight(0.4f)
                         .padding(bottom = 24.dp)
                 )
 
@@ -108,7 +109,7 @@ fun CustomizationScreen(
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .verticalScroll(rememberScrollState())
-                        .haze(hazeState),
+                        .hazeSource(hazeState),
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
 

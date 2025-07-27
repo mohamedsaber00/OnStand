@@ -12,4 +12,7 @@ val appModule = module {
     single { createDataStore() }
     single { CustomizationDataSource(get()) }
     single { SettingsRepository(get()) }
+
+    viewModel { CustomizationViewModel(get()) }
+    viewModel { HomeScreenViewModel(get()) }
 }

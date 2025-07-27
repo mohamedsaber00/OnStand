@@ -98,7 +98,7 @@ fun CustomizationScreen(
                     textColor = uiState.selectedColor,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
+                        .weight(0.4f)
                         .padding(bottom = 24.dp)
                 )
 

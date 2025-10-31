@@ -32,19 +32,34 @@ fun App() {
 
 @Composable
 fun AppContent() {
-    var showCustomization by remember { mutableStateOf(false) }
+    var currentScreen by remember { mutableStateOf(Screen.HOME) }
 
-    if (showCustomization) {
-        CustomizationScreen(
-            onBackPressed = { showCustomization = false }
-        )
-    } else {
-        Box(modifier = Modifier.fillMaxSize()) {
-            HomeScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable { showCustomization = true }
+    when (currentScreen) {
+        Screen.HOME -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                HomeScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { currentScreen = Screen.CUSTOMIZATION },
+                    onNavigateToDashboard = { currentScreen = Screen.DASHBOARD }
+                )
+            }
+        }
+        Screen.CUSTOMIZATION -> {
+            CustomizationScreen(
+                onBackPressed = { currentScreen = Screen.HOME }
+            )
+        }
+        Screen.DASHBOARD -> {
+            com.eid.onstand.feature.dashboard.DashboardScreen(
+                onBackPressed = { currentScreen = Screen.HOME }
             )
         }
     }
+}
+
+enum class Screen {
+    HOME,
+    CUSTOMIZATION,
+    DASHBOARD
 }

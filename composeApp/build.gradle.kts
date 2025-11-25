@@ -10,12 +10,6 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
-repositories {
-    mavenCentral()
-    google()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-}
-
 val osName = System.getProperty("os.name")
 val targetOs = when {
     osName == "Mac OS X" -> "macos"

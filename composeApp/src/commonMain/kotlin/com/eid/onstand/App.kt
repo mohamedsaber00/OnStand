@@ -1,16 +1,25 @@
 package com.eid.onstand
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.eid.onstand.core.AppInitializer
 import com.eid.onstand.core.di.appModule
 import com.eid.onstand.core.di.getPlatformModule
-import com.eid.onstand.feature.home.HomeScreen
 import com.eid.onstand.feature.customization.CustomizationScreen
+import com.eid.onstand.feature.dashboard.DashboardScreen
+import com.eid.onstand.feature.home.HomeScreen
+import com.eid.onstand.navigation.Route
+import com.eid.onstand.navigation.navConfig
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 
@@ -20,7 +29,6 @@ fun App() {
     KoinApplication(
         application = {
             modules(appModule, getPlatformModule())
-            // Initialize the app modules after Koin is set up
             AppInitializer.initialize()
         }
     ) {
@@ -32,34 +40,60 @@ fun App() {
 
 @Composable
 fun AppContent() {
-    var currentScreen by remember { mutableStateOf(Screen.HOME) }
+    val backStack = rememberNavBackStack(navConfig, Route.Home)
 
-    when (currentScreen) {
-        Screen.HOME -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                HomeScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { currentScreen = Screen.CUSTOMIZATION },
-                    onNavigateToDashboard = { currentScreen = Screen.DASHBOARD }
-                )
+    fun navigate(route: Route) {
+        when (route) {
+            is Route.Back -> {
+                if (backStack.size > 1) {
+                    backStack.removeLastOrNull()
+                }
+            }
+            is Route.Home -> {
+                backStack.removeAll { it != Route.Home }
+            }
+            else -> {
+                if (!backStack.contains(route)) {
+                    backStack.add(route)
+                }
             }
         }
-        Screen.CUSTOMIZATION -> {
-            CustomizationScreen(
-                onBackPressed = { currentScreen = Screen.HOME }
-            )
-        }
-        Screen.DASHBOARD -> {
-            com.eid.onstand.feature.dashboard.DashboardScreen(
-                onBackPressed = { currentScreen = Screen.HOME }
-            )
-        }
     }
-}
 
-enum class Screen {
-    HOME,
-    CUSTOMIZATION,
-    DASHBOARD
+    NavDisplay(
+        backStack = backStack,
+        onBack = { navigate(Route.Back) },
+        entryProvider = entryProvider {
+            entry<Route.Home> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    HomeScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable { navigate(Route.Customization) },
+                        onNavigateToDashboard = { navigate(Route.Dashboard) }
+                    )
+                }
+            }
+
+            entry<Route.Customization> {
+                CustomizationScreen(
+                    onBackPressed = { navigate(Route.Back) }
+                )
+            }
+
+            entry<Route.Dashboard> {
+                DashboardScreen(
+                    onBackPressed = { navigate(Route.Back) }
+                )
+            }
+        },
+        transitionSpec = {
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { -it })
+        },
+        popTransitionSpec = {
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { it })
+        }
+    )
 }

@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.eid.onstand.core.AppInitializer
 import com.eid.onstand.core.di.appModule
 import com.eid.onstand.core.di.getPlatformModule
 import com.eid.onstand.feature.customization.CustomizationScreen
@@ -29,7 +28,6 @@ fun App() {
     KoinApplication(
         application = {
             modules(appModule, getPlatformModule())
-            AppInitializer.initialize()
         }
     ) {
         MaterialTheme {

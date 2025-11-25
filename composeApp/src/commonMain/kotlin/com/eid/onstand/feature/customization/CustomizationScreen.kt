@@ -1,48 +1,34 @@
 package com.eid.onstand.feature.customization
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.ui.draw.scale
-import androidx.compose.foundation.background
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.draw.clip
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eid.onstand.core.models.*
+import com.eid.onstand.core.models.BackgroundEffect
 import com.eid.onstand.core.ui.theme.Colors
 import com.eid.onstand.core.ui.theme.GradientColors
 import org.koin.compose.viewmodel.koinViewModel
-import dev.chrisbanes.haze.rememberHazeState
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
-import dev.chrisbanes.haze.materials.HazeMaterials
-import kotlin.time.ExperimentalTime
 
 /**
- * Customization screen for selecting backgrounds, clocks, fonts, and colors.
- * Provides horizontal scrolling interface with live previews.
+ * Simple customization screen for selecting backgrounds.
  */
-@OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalTime::class,
-    ExperimentalHazeMaterialsApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomizationScreen(
     onBackPressed: () -> Unit = {},
@@ -50,20 +36,13 @@ fun CustomizationScreen(
     viewModel: CustomizationViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val currentTime by viewModel.currentTime.collectAsState()
-
-    val hazeState = rememberHazeState()
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                Brush.linearGradient(GradientColors.SCREEN_BACKGROUND)
-            )
+            .background(Brush.linearGradient(GradientColors.SCREEN_BACKGROUND))
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             // Header
             TopAppBar(
                 title = {
@@ -76,7 +55,7 @@ fun CustomizationScreen(
                 },
                 navigationIcon = {
                     TextButton(onClick = onBackPressed) {
-                        Text("←", color = Colors.TextPrimary, fontSize = 24.sp)
+                        Text("<-", color = Colors.TextPrimary, fontSize = 24.sp)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -90,91 +69,31 @@ fun CustomizationScreen(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
-                // Preview at the top - fixed height for consistency
+                // Preview at the top
                 PreviewCard(
                     background = uiState.selectedBackground,
-                    clock = uiState.selectedClock,
-                    currentTime = currentTime,
-                    fontFamily = uiState.selectedFont,
-                    textColor = uiState.selectedColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(0.4f)
                         .padding(bottom = 24.dp)
                 )
 
-                // Scrollable content - remaining space
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .verticalScroll(rememberScrollState())
-                        .hazeSource(hazeState),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
+                // Background selection
+                Text(
+                    text = "Backgrounds",
+                    color = Colors.TextPrimary,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
 
-                    // All Backgrounds in one row
-                    Text(
-                        text = "Backgrounds",
-                        color = Colors.TextPrimary,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
+                BackgroundSelectionRow(
+                    backgrounds = uiState.backgrounds,
+                    selectedBackground = uiState.selectedBackground,
+                    onBackgroundSelected = viewModel::selectBackground
+                )
 
-                    BackgroundSelectionRow(
-                        backgrounds = uiState.backgrounds,
-                        selectedBackground = uiState.selectedBackground,
-                        onBackgroundSelected = viewModel::selectBackground
-                    )
-
-                    // Clock Selection from Registry
-                    Text(
-                        text = "Clock Styles",
-                        color = Colors.TextPrimary,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
-
-                    ClockSelectionRow(
-                        clocks = uiState.clocks,
-                        selectedClock = uiState.selectedClock,
-                        onClockSelected = viewModel::selectClock,
-                        currentTime = currentTime
-                    )
-
-                    // Font Selection - only show for digital clocks
-                    if (uiState.selectedClock?.isDigital == true) {
-                        Text(
-                            text = "Fonts",
-                            color = Colors.TextPrimary,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.padding(bottom = 12.dp)
-                        )
-
-                        FontSelectionRow(
-                            selectedFont = uiState.selectedFont,
-                            onFontSelected = viewModel::selectFont
-                        )
-                    }
-
-                    // Color Selection
-                    Text(
-                        text = "Colors",
-                        color = Colors.TextPrimary,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
-
-                    ColorSelectionRow(
-                        selectedColor = uiState.selectedColor,
-                        onColorSelected = viewModel::selectColor,
-                        modifier = Modifier.padding(bottom = 100.dp)
-                    )
-                }
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
 
@@ -183,15 +102,13 @@ fun CustomizationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .hazeEffect(hazeState, style = HazeMaterials.regular(containerColor = Colors.Black))
+                .background(Colors.Black.copy(alpha = 0.5f))
                 .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Cancel Button
             OutlinedButton(
                 onClick = onBackPressed,
-                modifier = Modifier
-                    .weight(1f),
+                modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = Colors.TextPrimary,
                     containerColor = Colors.ButtonBackground
@@ -206,13 +123,9 @@ fun CustomizationScreen(
                 )
             }
 
-            // Apply Button
             Button(
-                onClick = {
-                    viewModel.applySettings { onBackPressed() }
-                },
-                modifier = Modifier
-                    .weight(1f),
+                onClick = { viewModel.applySettings { onBackPressed() } },
+                modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Colors.ButtonPrimaryTransparent
                 ),
@@ -233,10 +146,6 @@ fun CustomizationScreen(
 @Composable
 private fun PreviewCard(
     background: BackgroundEffect?,
-    clock: ClockWidget?,
-    currentTime: kotlinx.datetime.LocalDateTime,
-    fontFamily: FontFamily = FontFamily.ROBOTO,
-    textColor: Color = Color.White,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -250,19 +159,7 @@ private fun PreviewCard(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            // Render selected background
             background?.Render(modifier = Modifier.fillMaxSize())
-
-            // Render selected clock with proper preview sizing
-            clock?.Render(
-                currentTime = currentTime,
-                showSeconds = true,
-                fontFamily = fontFamily,
-                textColor = textColor,
-                isPreview = true,
-                hazeState = null, // No haze in preview for better visibility
-                modifier = Modifier.fillMaxSize()
-            )
         }
     }
 }
@@ -318,9 +215,7 @@ private fun BackgroundPreviewCard(
                     Modifier
                 }
             ),
-        colors = CardDefaults.cardColors(
-            containerColor = Colors.Transparent
-        ),
+        colors = CardDefaults.cardColors(containerColor = Colors.Transparent),
         shape = RoundedCornerShape(12.dp)
     ) {
         Box(
@@ -328,16 +223,13 @@ private fun BackgroundPreviewCard(
                 .fillMaxSize()
                 .clip(RoundedCornerShape(12.dp))
         ) {
-            // Background preview
             background.Render(modifier = Modifier.fillMaxSize())
 
             // Overlay with name
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(GradientColors.BACKGROUND_OVERLAY)
-                    )
+                    .background(Brush.verticalGradient(GradientColors.BACKGROUND_OVERLAY))
             )
 
             Text(
@@ -350,7 +242,6 @@ private fun BackgroundPreviewCard(
                     .padding(8.dp)
             )
 
-            // Selection indicator
             if (isSelected) {
                 Box(
                     modifier = Modifier
@@ -359,119 +250,18 @@ private fun BackgroundPreviewCard(
                         .size(20.dp)
                         .background(
                             color = Colors.SelectionIndicator,
-                            shape = androidx.compose.foundation.shape.CircleShape
+                            shape = CircleShape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "✓",
+                        text = "v",
                         fontSize = 12.sp,
                         color = Colors.TextPrimary,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun ClockSelectionRow(
-    clocks: List<ClockWidget>,
-    selectedClock: ClockWidget?,
-    onClockSelected: (ClockWidget) -> Unit,
-    currentTime: kotlinx.datetime.LocalDateTime
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        items(clocks) { clock ->
-            val isSelected = clock == selectedClock
-            val scale by animateFloatAsState(
-                targetValue = if (isSelected) 1.1f else 1f,
-                animationSpec = tween(300)
-            )
-
-            ClockPreviewCard(
-                clock = clock,
-                isSelected = isSelected,
-                onSelected = { onClockSelected(clock) },
-                currentTime = currentTime,
-                modifier = Modifier.scale(scale)
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalTime::class)
-@Composable
-private fun ClockPreviewCard(
-    clock: ClockWidget,
-    isSelected: Boolean,
-    onSelected: () -> Unit,
-    currentTime: kotlinx.datetime.LocalDateTime,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .width(110.dp)
-            .height(90.dp)
-            .clickable { onSelected() }
-            .then(
-                if (isSelected) {
-                    Modifier.border(
-                        width = 2.dp,
-                        color = Colors.SelectionBorder,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                } else {
-                    Modifier
-                }
-            ),
-        colors = CardDefaults.cardColors(
-            containerColor = Colors.BackgroundCard
-        ),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Show actual clock preview
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 4.dp, vertical = 2.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                // Simplified preview without container for small cards
-                clock.Render(
-                    currentTime = currentTime,
-                    showSeconds = false,
-                    fontFamily = FontFamily.ROBOTO,
-                    textColor = Colors.ClockDefault,
-                    isPreview = true,
-                    hazeState = null,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = clock.displayName,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                color = if (isSelected) Colors.TextPrimary else Colors.TextSecondary,
-                textAlign = TextAlign.Center,
-                maxLines = 1
-            )
         }
     }
 }

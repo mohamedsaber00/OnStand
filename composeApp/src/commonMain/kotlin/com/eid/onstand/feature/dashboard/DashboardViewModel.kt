@@ -3,20 +3,22 @@ package com.eid.onstand.feature.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eid.onstand.core.data.DashboardRepository
+import com.eid.onstand.core.models.DashboardLayout
 import com.eid.onstand.core.models.DashboardTile
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
- * UI state for the dashboard screen.
+ * UI state for the dashboard customization screen.
  */
 data class DashboardUiState(
     val tiles: List<DashboardTile> = emptyList(),
+    val layout: DashboardLayout = DashboardLayout.default,
     val isLoading: Boolean = true
 )
 
 /**
- * ViewModel for managing dashboard state and tile reordering.
+ * ViewModel for managing dashboard customization - layout selection and tile reordering.
  */
 class DashboardViewModel(
     private val repository: DashboardRepository
@@ -26,10 +28,10 @@ class DashboardViewModel(
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
 
     init {
-        loadTiles()
+        loadData()
     }
 
-    private fun loadTiles() {
+    private fun loadData() {
         viewModelScope.launch {
             repository.tiles.collect { tiles ->
                 _uiState.update {
@@ -39,6 +41,23 @@ class DashboardViewModel(
                     )
                 }
             }
+        }
+
+        viewModelScope.launch {
+            repository.layout.collect { layout ->
+                _uiState.update {
+                    it.copy(layout = layout)
+                }
+            }
+        }
+    }
+
+    /**
+     * Called when user selects a new layout.
+     */
+    fun selectLayout(layout: DashboardLayout) {
+        viewModelScope.launch {
+            repository.updateLayout(layout)
         }
     }
 
@@ -52,7 +71,24 @@ class DashboardViewModel(
     }
 
     /**
-     * Resets tiles to their default configuration.
+     * Saves the current configuration and calls onComplete.
+     */
+    fun applySettings(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            repository.saveConfig()
+            onComplete()
+        }
+    }
+
+    /**
+     * Discards changes and reverts to saved state.
+     */
+    fun discardChanges() {
+        repository.discardChanges()
+    }
+
+    /**
+     * Resets to default configuration.
      */
     fun resetToDefault() {
         viewModelScope.launch {

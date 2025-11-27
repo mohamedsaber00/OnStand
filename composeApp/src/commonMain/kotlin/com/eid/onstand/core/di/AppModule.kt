@@ -1,6 +1,7 @@
 package com.eid.onstand.core.di
 
 import com.eid.onstand.core.data.CustomizationDataSource
+import com.eid.onstand.core.data.DashboardDataSource
 import com.eid.onstand.core.data.DashboardRepository
 import com.eid.onstand.core.data.SettingsRepository
 import com.eid.onstand.core.data.createDataStore
@@ -13,10 +14,11 @@ import org.koin.dsl.module
 val appModule = module {
     single { createDataStore() }
     single { CustomizationDataSource(get()) }
+    single { DashboardDataSource(get()) }
     single { SettingsRepository(get()) }
-    single { DashboardRepository() }
+    single { DashboardRepository(get()) }
 
     viewModel { CustomizationViewModel(get()) }
-    viewModel { HomeScreenViewModel(get()) }
+    viewModel { HomeScreenViewModel(get(), get()) }
     viewModel { DashboardViewModel(get()) }
 }
